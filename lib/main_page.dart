@@ -1,44 +1,46 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/widgets/bottom_drawer.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map/plugin_api.dart';
+import 'package:latlong2/latlong.dart';
 
 class MainPage extends StatelessWidget {
   const MainPage({super.key});
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser!;
+    final _mapController = MapController();
 
     return Scaffold(
-        appBar: AppBar(title: const Text('Home'), backgroundColor: const Color(0xff31AFB9),),
-        body: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                'Signed In as',
-                style: TextStyle(fontSize: 16, color: Color(0xffCB8D71)),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                user.email!,
-                style: const TextStyle(
-                  fontSize: 20,
-                  color: Colors.blue
-                ),
-              ),
-              const SizedBox(height: 40),
-              ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(50),
-                      backgroundColor: const Color(0xFF31AFB9)),
-                  icon: const Icon(Icons.arrow_back, size: 32),
-                  label: const Text(
-                    'Sign Out',
-                    style: TextStyle(fontSize: 24),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Flexible(
+              child: FlutterMap(
+                  mapController: _mapController,
+                  options: MapOptions(
+                    center: LatLng(53.95968, -1.074224),
+                    zoom: 13,
                   ),
-                  onPressed: () => FirebaseAuth.instance.signOut()),
-            ],
-          ),
-        ));
+                  nonRotatedChildren: [],
+                  children: [
+                TileLayer(
+                  urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                  userAgentPackageName: 'dev.fleaflet.flutter_map.example',
+                ),
+              ])),
+        ],
+      ),
+      bottomNavigationBar: BottomAppBar(
+        elevation: 0,
+        color: Color(0xff344955),
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 10.0),
+          height: 56.0,
+          child: Row(children: <Widget>[
+            BottomDrawerWidget(),
+          ]),
+        ),
+      ),
+    );
   }
 }
