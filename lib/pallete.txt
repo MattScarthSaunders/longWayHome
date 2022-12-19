@@ -1,0 +1,5 @@
+backgroundColor: Color(0xff31AFB9) blue
+0xff504958 > grey
+0xff3D9198 > dark blue
+0xff92CEBA > green
+0xffCB8D71 > red
