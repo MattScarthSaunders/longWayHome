@@ -43,9 +43,13 @@ class MainPage extends StatelessWidget {
                             width: 80,
                             height: 80,
                             point: LatLng(latitude, longitude),
-                            builder: (ctx) => const FlutterLogo(
-                              textColor: Colors.blue,
-                              key: ObjectKey(Colors.blue),
+                            builder: (ctx) => Container(
+                              key: Key('blue'),
+                              child: Icon(
+                                Icons.location_on,
+                                color: Colors.red,
+                                size: 30.0,
+                              ),
                             ),
                           ),
                         ])
