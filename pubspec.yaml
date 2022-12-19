@@ -40,8 +40,10 @@ dependencies:
   email_validator: ^2.1.17
   flutter_map: ^3.0.0
   latlong2: ^0.8.1
+  location: ^4.2.0
 
   bottom_drawer: ^0.0.5
+  geolocator: ^9.0.2
 
 dev_dependencies:
   flutter_test:
