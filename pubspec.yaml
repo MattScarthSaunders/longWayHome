@@ -43,7 +43,6 @@ dependencies:
   location: ^4.2.0
 
   bottom_drawer: ^0.0.5
-  geolocator: ^9.0.2
 
 dev_dependencies:
   flutter_test:
