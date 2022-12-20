@@ -9,28 +9,27 @@ class MainPage extends StatelessWidget {
   const MainPage({super.key});
   @override
   Widget build(BuildContext context) {
-    final _mapController = MapController();
+    final mapController = MapController();
 
     return FutureBuilder(
         future: _determinePosition(),
         builder: ((context, snapshot) {
           if (snapshot.hasData) {
-            print(snapshot.data);
-            var latitude = snapshot.data?.latitude ?? 00;
-            var longitude = snapshot.data?.longitude ?? 00;
-            print(latitude);
+            var currentUserLatitude = snapshot.data?.latitude ?? 00;
+            var currentUserLongitude = snapshot.data?.longitude ?? 00;
             return Scaffold(
               body: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Flexible(
                       child: FlutterMap(
-                          mapController: _mapController,
+                          mapController: mapController,
                           options: MapOptions(
-                            center: LatLng(53.95968, -1.074224),
-                            zoom: 13,
+                            center: LatLng(
+                                currentUserLatitude, currentUserLongitude),
+                            zoom: 15,
                           ),
-                          nonRotatedChildren: [],
+                          nonRotatedChildren: const [],
                           children: [
                         TileLayer(
                           urlTemplate:
@@ -42,10 +41,11 @@ class MainPage extends StatelessWidget {
                           Marker(
                             width: 80,
                             height: 80,
-                            point: LatLng(latitude, longitude),
+                            point: LatLng(
+                                currentUserLatitude, currentUserLongitude),
                             builder: (ctx) => Container(
-                              key: Key('blue'),
-                              child: Icon(
+                              key: const Key('blue'),
+                              child: const Icon(
                                 Icons.location_on,
                                 color: Colors.red,
                                 size: 30.0,
@@ -58,9 +58,9 @@ class MainPage extends StatelessWidget {
               ),
               bottomNavigationBar: BottomAppBar(
                 elevation: 0,
-                color: Color(0xff344955),
+                color: const Color(0xff344955),
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   height: 56.0,
                   child: Row(children: <Widget>[
                     BottomDrawerWidget(),
@@ -69,7 +69,7 @@ class MainPage extends StatelessWidget {
               ),
             );
           } else {
-            return Text('oh shit');
+            return const Text('oh shit');
           }
         }));
   }
