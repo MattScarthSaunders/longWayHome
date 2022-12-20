@@ -3,21 +3,28 @@ import 'package:flutter_application_1/widgets/bottom_drawer.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:location/location.dart';
+import 'package:flutter_application_1/widgets/geolocation.dart';
 
-class MainPage extends StatelessWidget {
+class MainPage extends StatefulWidget {
   const MainPage({super.key});
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _MainPageState createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     final mapController = MapController();
-
+    bool serviceEnabled = false;
+    PermissionStatus? permissionGranted;
     return FutureBuilder(
         //can use a list of futures with Future.wait(Future[]) to have map react to multiple futures
-        future: _determinePosition(),
+        future: initialPosition(serviceEnabled, permissionGranted),
         builder: ((context, snapshot) {
           if (snapshot.hasData) {
-            var currentUserLatitude = snapshot.data?.latitude ?? 00;
-            var currentUserLongitude = snapshot.data?.longitude ?? 00;
             return Scaffold(
               body: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -26,8 +33,8 @@ class MainPage extends StatelessWidget {
                       child: FlutterMap(
                           mapController: mapController,
                           options: MapOptions(
-                            center: LatLng(
-                                currentUserLatitude, currentUserLongitude),
+                            center: LatLng(snapshot.data?.latitude ?? 00,
+                                snapshot.data?.longitude ?? 00),
                             zoom: 15,
                           ),
                           nonRotatedChildren: const [],
@@ -38,22 +45,10 @@ class MainPage extends StatelessWidget {
                           userAgentPackageName:
                               'dev.fleaflet.flutter_map.example',
                         ),
-                        MarkerLayer(markers: [
-                          Marker(
-                            width: 80,
-                            height: 80,
-                            point: LatLng(
-                                currentUserLatitude, currentUserLongitude),
-                            builder: (ctx) => Container(
-                              key: const Key('blue'),
-                              child: const Icon(
-                                Icons.location_on,
-                                color: Colors.red,
-                                size: 30.0,
-                              ),
-                            ),
-                          ),
-                        ])
+                        CurrentPOSMarker(
+                          serviceEnabled: serviceEnabled,
+                          permissionGranted: permissionGranted,
+                        ),
                       ])),
                 ],
               ),
@@ -75,42 +70,4 @@ class MainPage extends StatelessWidget {
           }
         }));
   }
-}
-
-Future<Position> _determinePosition() async {
-  bool serviceEnabled;
-  LocationPermission permission;
-
-  // Test if location services are enabled.
-  serviceEnabled = await Geolocator.isLocationServiceEnabled();
-  if (!serviceEnabled) {
-    // Location services are not enabled don't continue
-    // accessing the position and request users of the
-    // App to enable the location services.
-    return Future.error('Location services are disabled.');
-  }
-
-  permission = await Geolocator.checkPermission();
-  if (permission == LocationPermission.denied) {
-    permission = await Geolocator.requestPermission();
-    if (permission == LocationPermission.denied) {
-      // Permissions are denied, next time you could try
-      // requesting permissions again (this is also where
-      // Android's shouldShowRequestPermissionRationale
-      // returned true. According to Android guidelines
-      // your App should show an explanatory UI now.
-      return Future.error('Location permissions are denied');
-    }
-  }
-
-  if (permission == LocationPermission.deniedForever) {
-    // Permissions are denied forever, handle appropriately.
-    return Future.error(
-        'Location permissions are permanently denied, we cannot request permissions.');
-  }
-
-  // When we reach here, permissions are granted and we can
-  // continue accessing the position of the device.
-
-  return await Geolocator.getCurrentPosition();
 }

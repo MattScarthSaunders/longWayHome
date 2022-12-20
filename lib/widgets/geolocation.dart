@@ -1,55 +1,80 @@
 import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map/plugin_api.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:location/location.dart';
 
-import 'package:geolocator/geolocator.dart';
-
-/// Determine the current position of the device.
-///
-/// When the location services are not enabled or permissions
-/// are denied the `Future` will return an error.
-Future<Position> _determinePosition() async {
+// ignore: must_be_immutable
+class CurrentPOSMarker extends StatefulWidget {
+  CurrentPOSMarker(
+      {super.key,
+      required this.serviceEnabled,
+      required this.permissionGranted});
   bool serviceEnabled;
-  LocationPermission permission;
+  PermissionStatus? permissionGranted;
+  @override
+  // ignore: library_private_types_in_public_api
+  _CurrentPOSMarkerState createState() => _CurrentPOSMarkerState();
+}
 
-  // Test if location services are enabled.
-  serviceEnabled = await Geolocator.isLocationServiceEnabled();
-  if (!serviceEnabled) {
-    // Location services are not enabled don't continue
-    // accessing the position and request users of the
-    // App to enable the location services.
-    return Future.error('Location services are disabled.');
+class _CurrentPOSMarkerState extends State<CurrentPOSMarker> {
+  double lat = 0.0;
+  double lng = 0.0;
+  bool hasChanged = false;
+  Location location = Location();
+  // PermissionStatus? _permissionGranted;
+  _locateMe() async {
+    //if permision issues arise then add requestservice and requestpermission conditionals here
+
+    // Track user Movements
+    location.onLocationChanged.listen((res) {
+      if (res.latitude != lat || res.longitude != lng) {
+        setState(() {
+          lat = res.latitude ?? 00;
+          lng = res.longitude ?? 00;
+        });
+      }
+    });
   }
 
-  permission = await Geolocator.checkPermission();
-  if (permission == LocationPermission.denied) {
-    permission = await Geolocator.requestPermission();
-    if (permission == LocationPermission.denied) {
-      // Permissions are denied, next time you could try
-      // requesting permissions again (this is also where
-      // Android's shouldShowRequestPermissionRationale
-      // returned true. According to Android guidelines
-      // your App should show an explanatory UI now.
-      return Future.error('Location permissions are denied');
+  @override
+  Widget build(BuildContext context) {
+    _locateMe();
+    return MarkerLayer(markers: [
+      Marker(
+        width: 80,
+        height: 80,
+        point: LatLng(lat, lng),
+        builder: (ctx) => Container(
+          key: const Key('blue'),
+          child: const Icon(
+            Icons.location_on,
+            color: Colors.red,
+            size: 30.0,
+          ),
+        ),
+      ),
+    ]);
+  }
+}
+
+Future<LocationData> initialPosition(serviceEnabled, permissionGranted) async {
+  Location location = Location();
+  serviceEnabled = await location.serviceEnabled();
+  if (!serviceEnabled) {
+    serviceEnabled = await location.requestService();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
     }
   }
-
-  if (permission == LocationPermission.deniedForever) {
-    // Permissions are denied forever, handle appropriately.
-    return Future.error(
-        'Location permissions are permanently denied, we cannot request permissions.');
+  permissionGranted = await location.hasPermission();
+  if (permissionGranted == PermissionStatus.denied) {
+    permissionGranted = await location.requestPermission();
+    if (permissionGranted != PermissionStatus.granted) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
   }
-
-  final LocationSettings locationSettings = LocationSettings(
-    accuracy: LocationAccuracy.high,
-    distanceFilter: 100,
-  );
-  StreamSubscription<Position> positionStream =
-      Geolocator.getPositionStream(locationSettings: locationSettings)
-          .listen((Position? position) {
-    print(position == null
-        ? 'Unknown'
-        : '${position.latitude.toString()}, ${position.longitude.toString()}');
-  });
-  // When we reach here, permissions are granted and we can
-  // continue accessing the position of the device.
-  return await Geolocator.getCurrentPosition();
+  return await location.getLocation();
 }
