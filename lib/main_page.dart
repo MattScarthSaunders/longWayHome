@@ -71,7 +71,7 @@ class MainPage extends StatelessWidget {
               ),
             );
           } else {
-            return const Text('oh shit');
+            return const Text('Error loading geolocations');
           }
         }));
   }

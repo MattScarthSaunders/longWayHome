@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:geolocator/geolocator.dart';
 
 /// Determine the current position of the device.
@@ -36,6 +38,17 @@ Future<Position> _determinePosition() async {
         'Location permissions are permanently denied, we cannot request permissions.');
   }
 
+  final LocationSettings locationSettings = LocationSettings(
+    accuracy: LocationAccuracy.high,
+    distanceFilter: 100,
+  );
+  StreamSubscription<Position> positionStream =
+      Geolocator.getPositionStream(locationSettings: locationSettings)
+          .listen((Position? position) {
+    print(position == null
+        ? 'Unknown'
+        : '${position.latitude.toString()}, ${position.longitude.toString()}');
+  });
   // When we reach here, permissions are granted and we can
   // continue accessing the position of the device.
   return await Geolocator.getCurrentPosition();
