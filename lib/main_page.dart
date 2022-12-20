@@ -12,6 +12,7 @@ class MainPage extends StatelessWidget {
     final mapController = MapController();
 
     return FutureBuilder(
+        //can use a list of futures with Future.wait(Future[]) to have map react to multiple futures
         future: _determinePosition(),
         builder: ((context, snapshot) {
           if (snapshot.hasData) {
@@ -63,6 +64,7 @@ class MainPage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   height: 56.0,
                   child: Row(children: <Widget>[
+                    //pass data into and out of this drawer widget to manipulate map
                     BottomDrawerWidget(),
                   ]),
                 ),
