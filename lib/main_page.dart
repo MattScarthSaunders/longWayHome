@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/widgets/api_utils.dart';
 import 'package:flutter_application_1/widgets/bottom_drawer.dart';
 import 'package:flutter_application_1/widgets/poi_fetch.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -21,6 +24,7 @@ class _MainPageState extends State<MainPage> {
     final mapController = MapController();
     bool serviceEnabled = false;
     PermissionStatus? permissionGranted;
+
     return FutureBuilder(
         //can use a list of futures with Future.wait(Future[]) to have map react to multiple futures
         future: initialPosition(serviceEnabled, permissionGranted),
@@ -55,7 +59,7 @@ class _MainPageState extends State<MainPage> {
                             snapshot.data?.latitude ?? 00,
                             snapshot.data?.longitude ?? 00
                           ],
-                        )
+                        ),
                       ])),
                 ],
               ),
