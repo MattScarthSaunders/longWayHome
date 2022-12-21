@@ -7,11 +7,11 @@ import 'package:latlong2/latlong.dart';
 
 class PoiMarkers extends StatefulWidget {
   PoiMarkers(
-      {required this.currentPos,
+      {required this.positionCoordinate,
       this.markerLimit = 10,
       this.categoryIds = const [620]});
 
-  List currentPos;
+  List positionCoordinate;
   int markerLimit;
   List categoryIds;
 
@@ -34,32 +34,20 @@ class _PoiMarkerState extends State<PoiMarkers> {
         },
         body: jsonEncode({
           "locations": [
-            [-1.07412, 53.95978]
+            [widget.positionCoordinate[1], widget.positionCoordinate[0]]
           ],
           "range_type": "time",
-          "range": [1200],
+          "range": [600],
         }));
+    // print(jsonDecode(area.body)["features"][0]["geometry"]);
 
-    // var data = json.decode(area.body);
-
-    // Map<String, dynamic> map = json.decode(area.body);
-    // List<dynamic> data = map["dataKey"];
+    // List data = json
+    //     .decode(area.body)["features"][0]["geometry"]["coordinates"]
+    //     .values
+    //     .map((value) => value)
+    //     .toList();
+    // print(data);
     // print(data.runtimeType);
-    // var data = json.decode(area.body)["features"][0]["geometry"];
-    // print(data.runtimeType);
-    // debugPrint(data["features"][0]["geometry"]);
-    // log(data["features"][0]["geometry"]);
-
-    // print(json.decode(area.body).features[0].geometry);
-
-    // var somevar = json.decode(area.body.toString());
-
-    // print(somevar["features"][0]);
-    // print(somevar["features"][0].runtimeType);
-
-    final data =
-        Map<String, dynamic>.from(json.decode(area.body)["features"][0]);
-    print(data.runtimeType);
 
     final response = await http.post(
       Uri.parse('https://api.openrouteservice.org/pois'),
@@ -76,16 +64,8 @@ class _PoiMarkerState extends State<PoiMarkers> {
           // ],
           "geojson": {
             "type": "Polygon",
-            "coordinates": [
-              [
-                [8.80864522981668685, 53.07594435294385704],
-                [8.80864522981668685, 53.07536364271325624],
-                [8.80824790176417238, 53.07508856944613029],
-                [8.80803395588974247, 53.07545533380229585],
-                [8.80821733806782525, 53.07589850739933013],
-                [8.80864522981668685, 53.07594435294385704]
-              ]
-            ]
+            "coordinates": json.decode(area.body)["features"][0]["geometry"]
+                ["coordinates"]
           },
           "buffer": 200
         },
@@ -95,7 +75,7 @@ class _PoiMarkerState extends State<PoiMarkers> {
         }
       }),
     );
-    // print(response.body);
+    print(response.body);
     return response.body;
   }
 
@@ -111,7 +91,7 @@ class _PoiMarkerState extends State<PoiMarkers> {
                 ? parsed["features"].length
                 : widget.markerLimit;
 
-            // print(parsed["features"]);
+            print(parsed["features"]);
             for (var i = 0; i < featureTotal; i++) {
               var lon = parsed["features"][i]["geometry"]["coordinates"][0];
               var lat = parsed["features"][i]["geometry"]["coordinates"][1];

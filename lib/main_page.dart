@@ -50,10 +50,12 @@ class _MainPageState extends State<MainPage> {
                           serviceEnabled: serviceEnabled,
                           permissionGranted: permissionGranted,
                         ),
-                        PoiMarkers(currentPos: [
-                          snapshot.data?.latitude ?? 00,
-                          snapshot.data?.longitude ?? 00
-                        ])
+                        PoiMarkers(
+                          positionCoordinate: [
+                            snapshot.data?.latitude ?? 00,
+                            snapshot.data?.longitude ?? 00
+                          ],
+                        )
                       ])),
                 ],
               ),
