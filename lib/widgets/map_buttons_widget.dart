@@ -5,12 +5,11 @@ import 'package:flutter_application_1/widgets/geolocation.dart';
 import 'package:location/location.dart';
 
 class MapButtons extends StatelessWidget {
-  MapButtons(this.mapController, this.lat, this.lng, this.currZoom,
-      this.serviceEnabled, this.permissionGranted);
+  MapButtons(this.mapController, this.lat, this.lng, this.serviceEnabled,
+      this.permissionGranted);
   MapController mapController;
   double lat;
   double lng;
-  double currZoom;
   bool serviceEnabled;
   PermissionStatus? permissionGranted;
 
@@ -21,8 +20,7 @@ class MapButtons extends StatelessWidget {
         top: 100,
         child: FloatingActionButton(
           onPressed: () {
-            currZoom = currZoom - 1;
-            mapController.move(LatLng(lat, lng), currZoom);
+            mapController.move(mapController.center, mapController.zoom - 1);
           },
           backgroundColor: const Color(0xff31AFB9),
           child: const Icon(Icons.zoom_out),
@@ -33,8 +31,7 @@ class MapButtons extends StatelessWidget {
         top: 170,
         child: FloatingActionButton(
           onPressed: () {
-            currZoom = currZoom + 1;
-            mapController.move(LatLng(lat, lng), currZoom);
+            mapController.move(mapController.center, mapController.zoom + 1);
           },
           backgroundColor: const Color(0xff31AFB9),
           child: const Icon(Icons.zoom_in),

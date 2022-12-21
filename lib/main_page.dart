@@ -35,8 +35,8 @@ class _MainPageState extends State<MainPage> {
             lat = snapshot.data?.latitude ?? 00;
             lng = snapshot.data?.longitude ?? 00;
             return Scaffold(
-              floatingActionButton: MapButtons(mapController, lat, lng,
-                  currZoom, serviceEnabled, permissionGranted),
+              floatingActionButton: MapButtons(
+                  mapController, lat, lng, serviceEnabled, permissionGranted),
               body: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -56,10 +56,7 @@ class _MainPageState extends State<MainPage> {
                           userAgentPackageName:
                               'dev.fleaflet.flutter_map.example',
                         ),
-                        CurrentPOSMarker(
-                          serviceEnabled: serviceEnabled,
-                          permissionGranted: permissionGranted,
-                        ),
+                        CurrentPOSMarker(),
                       ])),
                 ],
               ),
