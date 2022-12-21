@@ -58,7 +58,7 @@ class _MainPageState extends State<MainPage> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   height: 56.0,
-                  child: Row(children: <Widget>[
+                  child: Row(children: const <Widget>[
                     //pass data into and out of this drawer widget to manipulate map
                     BottomDrawerWidget(),
                   ]),

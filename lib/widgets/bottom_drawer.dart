@@ -1,87 +1,82 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/widgets/adress_form.dart';
 
 class BottomDrawerWidget extends StatefulWidget {
+  const BottomDrawerWidget({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _BottomDrawerWidget createState() => _BottomDrawerWidget();
 }
 
 class _BottomDrawerWidget extends State<BottomDrawerWidget> {
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-        child: Align(
+    return Row(
+      
+        children: [
+          Align(
             alignment: Alignment.bottomCenter,
             child: ElevatedButton(
-                // style: ElevatedButton.styleFrom(
-                //     minimumSize: const Size.fromHeight(50),
-                //     backgroundColor: const Color(0xFF31AFB9)),
-                child: const Text('New Walk'),
-                onPressed: showMenu)));
+                  // style: ElevatedButton.styleFrom(
+                  //     minimumSize: const Size.fromHeight(50),
+                  //     backgroundColor: const Color(0xFF31AFB9)),
+                  onPressed: showMenu,
+                  // style: ElevatedButton.styleFrom(
+                  //     minimumSize: const Size.fromHeight(50),
+                  //     backgroundColor: const Color(0xFF31AFB9)),
+                  child: const Text('New Walk'))),
+
+          Align(
+            alignment: Alignment.bottomRight,
+            child: ElevatedButton(
+                  // style: ElevatedButton.styleFrom(
+                  //     minimumSize: const Size.fromHeight(50),
+                  //     backgroundColor: const Color(0xFF31AFB9)),
+                  onPressed: showMenu,
+                  // style: ElevatedButton.styleFrom(
+                  //     minimumSize: const Size.fromHeight(50),
+                  //     backgroundColor: const Color(0xFF31AFB9)),
+                  child: const Text('Profile')))
+                ]);
+    
   }
 
   showMenu() {
-    int drawerHeight = 60;
+    int drawerHeight = 250;
     showModalBottomSheet(
+        isScrollControlled: true,
         context: context,
         builder: (BuildContext context) {
-          return Container(
-            decoration: BoxDecoration(
-              // borderRadius: BorderRadius.only(
-              //   topLeft: Radius.circular(16.0),
-              //   topRight: Radius.circular(16.0),
-              // ),
-              color: Color(0xff232f34),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: <Widget>[
-                Container(
-                  height: 36,
+          final MediaQueryData mediaQueryData = MediaQuery.of(context);
+
+          return Padding(
+              padding:
+                  EdgeInsets.only(bottom: mediaQueryData.viewInsets.bottom),
+              child: SingleChildScrollView(
+                  child: Container(
+                decoration: const BoxDecoration(
+                  color: Color(0xff232f34),
                 ),
-                SizedBox(
-                    height: (drawerHeight).toDouble(),
-                    child: Stack(
-                      alignment: Alignment(0, 0),
-                      children: <Widget>[
-                        // Positioned(
-                        //   top: -36,
-                        //   child: Container(
-                        //     decoration: BoxDecoration(
-                        //         borderRadius:
-                        //             BorderRadius.all(Radius.circular(50)),
-                        //         border: Border.all(
-                        //             color: Color(0xff232f34), width: 10)),
-                        //   ),
-                        // ),
-                        Positioned(
-                          child: ListView(
-                            physics: NeverScrollableScrollPhysics(),
-                            children: <Widget>[
-                              ListTile(
-                                title: Text(
-                                  "Inbox",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                leading: Icon(
-                                  Icons.inbox,
-                                  color: Colors.white,
-                                ),
-                                onTap: () {},
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    SizedBox(
+                        height: (drawerHeight).toDouble(),
+                        child: Stack(
+                          children: <Widget>[
+                            Positioned(
+                              child: ListView(
+                                children: <Widget>[AddressForm()],
                               ),
-                            ],
-                          ),
-                        )
-                      ],
-                    )),
-                Container(
-                  height: 56,
-                  color: Color(0xff4a6572),
-                )
-              ],
-            ),
-          );
+                            )
+                          ],
+                        )),
+                  ],
+                ),
+              )));
         });
   }
 }
