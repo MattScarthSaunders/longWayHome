@@ -43,6 +43,8 @@ dependencies:
   location: ^4.2.0
 
   bottom_drawer: ^0.0.5
+  open_route_service: ^1.2.2
+  http: ^0.13.5
 
 dev_dependencies:
   flutter_test:

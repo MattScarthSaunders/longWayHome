@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/widgets/bottom_drawer.dart';
+import 'package:flutter_application_1/widgets/poi_fetch.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart';
@@ -49,6 +50,10 @@ class _MainPageState extends State<MainPage> {
                           serviceEnabled: serviceEnabled,
                           permissionGranted: permissionGranted,
                         ),
+                        PoiMarkers(currentPos: [
+                          snapshot.data?.latitude ?? 00,
+                          snapshot.data?.longitude ?? 00
+                        ])
                       ])),
                 ],
               ),
