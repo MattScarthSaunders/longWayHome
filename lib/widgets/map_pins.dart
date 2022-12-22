@@ -17,7 +17,7 @@ class PinsProvider with ChangeNotifier {
   }
 
   void addEndPin(String end) {
-    mapPins["End"] = end;
+    mapPins["end"] = end;
     notifyListeners();
   }
 

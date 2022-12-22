@@ -44,7 +44,6 @@ class _BottomDrawerWidget extends State<BottomDrawerWidget> {
   showMenu() {
     int drawerHeight = 250;
     showBottomSheet(
-        // isScrollControlled: true,
         context: context,
         builder: (BuildContext context) {
           final MediaQueryData mediaQueryData = MediaQuery.of(context);

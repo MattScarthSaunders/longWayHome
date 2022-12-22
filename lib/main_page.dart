@@ -17,6 +17,12 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  _handleLatLng(location) {
+    print(location);
+    double latitude = location.latitude;
+    double longitude = location.longitude;
+  }
+
   @override
   Widget build(BuildContext context) {
     final mapController = MapController();
@@ -38,7 +44,15 @@ class _MainPageState extends State<MainPage> {
                             center: LatLng(snapshot.data?.latitude ?? 00,
                                 snapshot.data?.longitude ?? 00),
                             zoom: 15,
-                            onTap: (tapPosition, point) => print(point),
+                            onTap: (tapPosition, point) {
+                              var pins = context.read<PinsProvider>();
+
+                              if (pins.mapPins["isStart"] ||
+                                  pins.mapPins["isEnd"]) {
+                                LatLng location = point;
+                                _handleLatLng(location);
+                              }
+                            },
                           ),
                           nonRotatedChildren: const [],
                           children: [

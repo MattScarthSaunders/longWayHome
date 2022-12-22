@@ -16,12 +16,24 @@ class AddressForm extends StatefulWidget {
 class AddressFormState extends State<AddressForm> {
   final _formKey = GlobalKey<FormState>();
 
-  final TextEditingController formController = TextEditingController();
-
   final TextEditingController _startPointController =
       TextEditingController(text: PinsProvider().mapPins["start"]);
   final TextEditingController _endPointController =
       TextEditingController(text: PinsProvider().mapPins["end"]);
+
+  _submitStart() {
+    _startPointController.addListener(() {
+      var pins = context.read<PinsProvider>();
+      pins.addStartPin(_startPointController.text);
+    });
+  }
+
+  _submitEnd() {
+    _endPointController.addListener(() {
+      var pins = context.read<PinsProvider>();
+      pins.addEndPin(_endPointController.text);
+    });
+  }
 
   _submitForm() {
     if (_formKey.currentState!.validate()) {
@@ -29,12 +41,8 @@ class AddressFormState extends State<AddressForm> {
         'startPoint': _startPointController.text,
         'endPoint': _endPointController.text,
       };
-      // print(newWalk.toString());
     }
   }
-
-  // print(PinsProvider().mapPins["start"],)
-  // PinsProvider().mapPins["end"],
 
   @override
   Widget build(BuildContext context) {
@@ -48,38 +56,48 @@ class AddressFormState extends State<AddressForm> {
           crossAxisAlignment: CrossAxisAlignment.end,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Consumer<PinsProvider>(
-              builder: (context, pinsProvider, child) => TextFormField(
-                style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
-                  labelText: 'Start position',
-                  labelStyle: TextStyle(color: Colors.white),
+            Focus(
+              onFocusChange: (hasFocus) {
+                _submitStart();
+              },
+              child: Consumer<PinsProvider>(
+                builder: (context, pinsProvider, child) => TextFormField(
+                  style: const TextStyle(color: Colors.white),
+                  decoration: const InputDecoration(
+                    labelText: 'Start position',
+                    labelStyle: TextStyle(color: Colors.white),
+                  ),
+                  controller: _startPointController,
+                  onChanged: (value) => pinsProvider.addStartPin(value),
+                  validator: (value) {
+                    if (value == null || !regex.hasMatch(value)) {
+                      return 'Please enter a valid postal code';
+                    }
+                    return null;
+                  },
                 ),
-                controller: _startPointController,
-                onChanged: (value) => pinsProvider.addStartPin(value),
-                validator: (value) {
-                  if (value == null || !regex.hasMatch(value)) {
-                    return 'Please enter a valid postal code';
-                  }
-                  return null;
-                },
               ),
             ),
-            Consumer<PinsProvider>(
-              builder: (context, pinsProvider, child) => TextFormField(
-                style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
-                  labelText: 'End position',
-                  labelStyle: TextStyle(color: Colors.white),
+            Focus(
+              onFocusChange: (value) {
+                _submitEnd();
+              },
+              child: Consumer<PinsProvider>(
+                builder: (context, pinsProvider, child) => TextFormField(
+                  style: const TextStyle(color: Colors.white),
+                  decoration: const InputDecoration(
+                    labelText: 'End position',
+                    labelStyle: TextStyle(color: Colors.white),
+                  ),
+                  controller: _endPointController,
+                  onChanged: (value) => pinsProvider.addEndPin(value),
+                  validator: (value) {
+                    if (value == null || !regex.hasMatch(value)) {
+                      return 'Please enter a valid postal code';
+                    }
+                    return null;
+                  },
                 ),
-                controller: _endPointController,
-                onChanged: (value) => pinsProvider.addEndPin(value),
-                validator: (value) {
-                  if (value == null || !regex.hasMatch(value)) {
-                    return 'Please enter a valid postal code';
-                  }
-                  return null;
-                },
               ),
             ),
             Padding(
@@ -87,19 +105,21 @@ class AddressFormState extends State<AddressForm> {
               child: Row(
                 children: [
                   ElevatedButton(
-                    onPressed: () {
-                      var pins = context.read<PinsProvider>();
-                      pins.start(!pins.mapPins["isStart"]);
-                      print(pins.mapPins["isStart"]);
-                    },
+                    onPressed: context.read<PinsProvider>().mapPins["isStart"]
+                        ? null
+                        : () {
+                            var pins = context.read<PinsProvider>();
+                            pins.start(true);
+                          },
                     child: const Text('start'),
                   ),
                   ElevatedButton(
-                    onPressed: () {
-                      var pins = context.read<PinsProvider>();
-                      pins.end(!pins.mapPins["isEnd"]);
-                      print(pins.mapPins["isEnd"]);
-                    },
+                    onPressed: context.read<PinsProvider>().mapPins["isEnd"]
+                        ? null
+                        : () {
+                            var pins = context.read<PinsProvider>();
+                            pins.end(true);
+                          },
                     child: const Text('end'),
                   ),
                 ],
