@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/widgets/api_utils.dart';
 import 'package:flutter_application_1/widgets/bottom_drawer.dart';
+import 'package:flutter_application_1/widgets/map_state_provider.dart';
 import 'package:flutter_application_1/widgets/poi_fetch.dart';
 import 'package:flutter_application_1/widgets/test_route.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 import 'package:flutter_application_1/widgets/geolocation.dart';
+import 'package:provider/provider.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -68,15 +70,16 @@ class _MainPageState extends State<MainPage> {
                           ],
                           endCoordinate: [53.7955, -1.5367],
                         ),
-                        PolylineLayer(
-                          polylineCulling: false,
-                          polylines: [
-                            Polyline(
-                                points: plottedRoute,
-                                color: Colors.red,
-                                strokeWidth: 10),
-                          ],
-                        )
+                        Consumer<MapStateProvider>(
+                            builder: (context, mapStateProvider, child) {
+                          return MarkerLayer(
+                            markers: mapStateProvider.allMarkers,
+                          );
+                        }),
+                        Consumer<MapStateProvider>(
+                            builder: (context, mapStateProvider, child) {
+                          return mapStateProvider.routePolyLine;
+                        }),
                         // TestRoute(positionCoordinate: [
                         //   snapshot.data?.latitude ?? 00,
                         //   snapshot.data?.longitude ?? 00
@@ -90,15 +93,25 @@ class _MainPageState extends State<MainPage> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   height: 56.0,
-                  child: Row(children: <Widget>[
-                    //pass data into and out of this drawer widget to manipulate map
-                    BottomDrawerWidget(
-                        notifyParent: refresh,
-                        plottedRoute: plottedRoute,
-                        snapshot: snapshot),
-                  ]),
+                  child: Row(
+                    children: <Widget>[
+                      //pass data into and out of this drawer widget to manipulate map
+                      BottomDrawerWidget(
+                          notifyParent: refresh,
+                          plottedRoute: plottedRoute,
+                          snapshot: snapshot),
+                      FloatingActionButton(onPressed: () {
+                        var coords = context.read<MapStateProvider>();
+                      }),
+                    ],
+                  ),
                 ),
               ),
+              floatingActionButton: FloatingActionButton(onPressed: () {
+                var coords = context.read<MapStateProvider>();
+                //this is a test button
+                coords.setInitialRoute([53.8008, -1.5491], [53.7955, -1.5367]);
+              }),
             );
           } else {
             return const Text('Error loading geolocations');

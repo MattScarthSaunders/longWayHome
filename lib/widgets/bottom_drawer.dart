@@ -36,27 +36,16 @@ class _BottomDrawerWidget extends State<BottomDrawerWidget> {
   }
 
   doTest(plottedRoute, snapshot) async {
-    // print(plottedRoute.runtimeType);
     List<LatLng> arr = [];
     print("button pressed");
-    await fetchInitialRoute(
-        [snapshot.data?.latitude ?? 00, snapshot.data?.longitude ?? 00],
-        [53.7955, -1.5367]).then((response) {
+    await fetchInitialRoute([53.8008, -1.5491], [53.7955, -1.5367])
+        .then((response) {
       final parsedRoute = json.decode(response.body.toString())["features"][0]
           ["geometry"]["coordinates"];
       parsedRoute.forEach((point) {
         plottedRoute.add(LatLng(point[1], point[0]));
       });
-      // print("arrr");
-      // print(arr);
-      // setState(() {
-      //   print("insetstate");
-      //   plottedRoute = arr;
-      // });
-      // print("indotest");
-      // print(plottedRoute);
     });
-    // print(arr);
   }
 
   showMenu() {
