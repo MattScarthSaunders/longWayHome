@@ -1,9 +1,9 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/widgets/api_utils.dart';
 import 'package:flutter_application_1/widgets/bottom_drawer.dart';
 import 'package:flutter_application_1/widgets/poi_fetch.dart';
+import 'package:flutter_application_1/widgets/test_route.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart';
@@ -19,8 +19,18 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  List<LatLng> plottedRoute = [];
+
   @override
   Widget build(BuildContext context) {
+    refresh() {
+      setState(() {
+        plottedRoute = plottedRoute;
+      });
+    }
+
+    print("inmainbuilder");
+    print(plottedRoute);
     final mapController = MapController();
     bool serviceEnabled = false;
     PermissionStatus? permissionGranted;
@@ -50,16 +60,27 @@ class _MainPageState extends State<MainPage> {
                           userAgentPackageName:
                               'dev.fleaflet.flutter_map.example',
                         ),
-                        CurrentPOSMarker(
-                          serviceEnabled: serviceEnabled,
-                          permissionGranted: permissionGranted,
-                        ),
+                        CurrentPOSMarker(),
                         PoiMarkers(
-                          positionCoordinate: [
+                          startCoordinate: [
                             snapshot.data?.latitude ?? 00,
                             snapshot.data?.longitude ?? 00
                           ],
+                          endCoordinate: [53.7955, -1.5367],
                         ),
+                        PolylineLayer(
+                          polylineCulling: false,
+                          polylines: [
+                            Polyline(
+                                points: plottedRoute,
+                                color: Colors.red,
+                                strokeWidth: 10),
+                          ],
+                        )
+                        // TestRoute(positionCoordinate: [
+                        //   snapshot.data?.latitude ?? 00,
+                        //   snapshot.data?.longitude ?? 00
+                        // ])
                       ])),
                 ],
               ),
@@ -71,7 +92,10 @@ class _MainPageState extends State<MainPage> {
                   height: 56.0,
                   child: Row(children: <Widget>[
                     //pass data into and out of this drawer widget to manipulate map
-                    BottomDrawerWidget(),
+                    BottomDrawerWidget(
+                        notifyParent: refresh,
+                        plottedRoute: plottedRoute,
+                        snapshot: snapshot),
                   ]),
                 ),
               ),

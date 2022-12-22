@@ -7,12 +7,10 @@ import 'package:location/location.dart';
 
 // ignore: must_be_immutable
 class CurrentPOSMarker extends StatefulWidget {
-  CurrentPOSMarker(
-      {super.key,
-      required this.serviceEnabled,
-      required this.permissionGranted});
-  bool serviceEnabled;
-  PermissionStatus? permissionGranted;
+  CurrentPOSMarker({
+    super.key,
+  });
+
   @override
   // ignore: library_private_types_in_public_api
   _CurrentPOSMarkerState createState() => _CurrentPOSMarkerState();

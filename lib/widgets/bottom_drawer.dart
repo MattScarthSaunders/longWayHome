@@ -1,7 +1,19 @@
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/widgets/api_utils.dart';
+import 'package:latlong2/latlong.dart';
 
 class BottomDrawerWidget extends StatefulWidget {
+  BottomDrawerWidget(
+      {required this.notifyParent,
+      required this.plottedRoute,
+      required this.snapshot});
+
+  List plottedRoute;
+  dynamic snapshot;
+  final Function() notifyParent;
+
   @override
   _BottomDrawerWidget createState() => _BottomDrawerWidget();
 }
@@ -17,7 +29,34 @@ class _BottomDrawerWidget extends State<BottomDrawerWidget> {
                 //     minimumSize: const Size.fromHeight(50),
                 //     backgroundColor: const Color(0xFF31AFB9)),
                 child: const Text('New Walk'),
-                onPressed: showMenu)));
+                onPressed: () {
+                  doTest(widget.plottedRoute, widget.snapshot);
+                  widget.notifyParent();
+                })));
+  }
+
+  doTest(plottedRoute, snapshot) async {
+    // print(plottedRoute.runtimeType);
+    List<LatLng> arr = [];
+    print("button pressed");
+    await fetchInitialRoute(
+        [snapshot.data?.latitude ?? 00, snapshot.data?.longitude ?? 00],
+        [53.7955, -1.5367]).then((response) {
+      final parsedRoute = json.decode(response.body.toString())["features"][0]
+          ["geometry"]["coordinates"];
+      parsedRoute.forEach((point) {
+        plottedRoute.add(LatLng(point[1], point[0]));
+      });
+      // print("arrr");
+      // print(arr);
+      // setState(() {
+      //   print("insetstate");
+      //   plottedRoute = arr;
+      // });
+      // print("indotest");
+      // print(plottedRoute);
+    });
+    // print(arr);
   }
 
   showMenu() {

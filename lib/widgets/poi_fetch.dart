@@ -8,12 +8,16 @@ import 'package:latlong2/latlong.dart';
 
 class PoiMarkers extends StatefulWidget {
   PoiMarkers(
-      {required this.positionCoordinate,
+      {required this.startCoordinate,
+      required this.endCoordinate,
       this.markerLimit = 10,
+      this.buffer = 120,
       this.categoryIds = const [620]});
 
-  List positionCoordinate;
+  List startCoordinate;
+  List endCoordinate;
   int markerLimit;
+  int buffer;
   List categoryIds;
 
   @override
@@ -25,11 +29,13 @@ class _PoiMarkerState extends State<PoiMarkers> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: fetchIsochroneBoundary(widget.positionCoordinate)
-            .then((isochroneGeoJson) {
-          return fetchPOIData(
-              isochroneGeoJson, widget.markerLimit, widget.categoryIds);
-        }).then((response) => response.body),
+        future: fetchInitialRoute(widget.startCoordinate, widget.endCoordinate)
+            .then((response) {
+          var coordinates = json.decode(response.body.toString())["features"][0]
+              ["geometry"]["coordinates"];
+          return fetchRoutePOIData(coordinates, widget.buffer,
+              widget.markerLimit, widget.categoryIds);
+        }).then((res) => res.body),
         builder: ((context, snapshot) {
           if (snapshot.hasData) {
             List<Marker> allMarkers = [];
@@ -38,7 +44,7 @@ class _PoiMarkerState extends State<PoiMarkers> {
                 ? parsed["features"].length
                 : widget.markerLimit;
 
-            print(parsed["features"]);
+            // print(parsed["features"]);
             for (var i = 0; i < featureTotal; i++) {
               var lon = parsed["features"][i]["geometry"]["coordinates"][0];
               var lat = parsed["features"][i]["geometry"]["coordinates"][1];
