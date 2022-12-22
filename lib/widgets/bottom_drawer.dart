@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/widgets/adress_form.dart';
+import 'package:flutter_application_1/widgets/map_pins.dart';
+import 'package:provider/provider.dart';
 
 class BottomDrawerWidget extends StatefulWidget {
   const BottomDrawerWidget({super.key});
@@ -13,40 +15,36 @@ class BottomDrawerWidget extends StatefulWidget {
 class _BottomDrawerWidget extends State<BottomDrawerWidget> {
   @override
   Widget build(BuildContext context) {
-    return Row(
-      
-        children: [
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: ElevatedButton(
-                  // style: ElevatedButton.styleFrom(
-                  //     minimumSize: const Size.fromHeight(50),
-                  //     backgroundColor: const Color(0xFF31AFB9)),
-                  onPressed: showMenu,
-                  // style: ElevatedButton.styleFrom(
-                  //     minimumSize: const Size.fromHeight(50),
-                  //     backgroundColor: const Color(0xFF31AFB9)),
-                  child: const Text('New Walk'))),
-
-          Align(
-            alignment: Alignment.bottomRight,
-            child: ElevatedButton(
-                  // style: ElevatedButton.styleFrom(
-                  //     minimumSize: const Size.fromHeight(50),
-                  //     backgroundColor: const Color(0xFF31AFB9)),
-                  onPressed: showMenu,
-                  // style: ElevatedButton.styleFrom(
-                  //     minimumSize: const Size.fromHeight(50),
-                  //     backgroundColor: const Color(0xFF31AFB9)),
-                  child: const Text('Profile')))
-                ]);
-    
+    return Row(children: [
+      Align(
+          alignment: Alignment.bottomCenter,
+          child: ElevatedButton(
+              // style: ElevatedButton.styleFrom(
+              //     minimumSize: const Size.fromHeight(50),
+              //     backgroundColor: const Color(0xFF31AFB9)),
+              onPressed: showMenu,
+              // style: ElevatedButton.styleFrom(
+              //     minimumSize: const Size.fromHeight(50),
+              //     backgroundColor: const Color(0xFF31AFB9)),
+              child: const Text('New Walk'))),
+      Align(
+          alignment: Alignment.bottomRight,
+          child: ElevatedButton(
+              // style: ElevatedButton.styleFrom(
+              //     minimumSize: const Size.fromHeight(50),
+              //     backgroundColor: const Color(0xFF31AFB9)),
+              onPressed: showMenu,
+              // style: ElevatedButton.styleFrom(
+              //     minimumSize: const Size.fromHeight(50),
+              //     backgroundColor: const Color(0xFF31AFB9)),
+              child: const Text('Profile')))
+    ]);
   }
 
   showMenu() {
     int drawerHeight = 250;
-    showModalBottomSheet(
-        isScrollControlled: true,
+    showBottomSheet(
+        // isScrollControlled: true,
         context: context,
         builder: (BuildContext context) {
           final MediaQueryData mediaQueryData = MediaQuery.of(context);
@@ -68,9 +66,9 @@ class _BottomDrawerWidget extends State<BottomDrawerWidget> {
                         child: Stack(
                           children: <Widget>[
                             Positioned(
-                              child: ListView(
-                                children: <Widget>[AddressForm()],
-                              ),
+                              child: ListView(children: [
+                                AddressForm(),
+                              ]),
                             )
                           ],
                         )),

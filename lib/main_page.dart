@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/widgets/bottom_drawer.dart';
+import 'package:flutter_application_1/widgets/map_pins.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 import 'package:flutter_application_1/widgets/geolocation.dart';
+import 'package:provider/provider.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -36,6 +38,7 @@ class _MainPageState extends State<MainPage> {
                             center: LatLng(snapshot.data?.latitude ?? 00,
                                 snapshot.data?.longitude ?? 00),
                             zoom: 15,
+                            onTap: (tapPosition, point) => print(point),
                           ),
                           nonRotatedChildren: const [],
                           children: [
@@ -58,7 +61,7 @@ class _MainPageState extends State<MainPage> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   height: 56.0,
-                  child: Row(children: const <Widget>[
+                  child: Row(children: <Widget>[
                     //pass data into and out of this drawer widget to manipulate map
                     BottomDrawerWidget(),
                   ]),
