@@ -17,7 +17,9 @@ class _BottomDrawerWidget extends State<BottomDrawerWidget> {
                 //     minimumSize: const Size.fromHeight(50),
                 //     backgroundColor: const Color(0xFF31AFB9)),
                 child: const Text('New Walk'),
-                onPressed: showMenu)));
+                onPressed: () {
+                  showMenu();
+                })));
   }
 
   showMenu() {
