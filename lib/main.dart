@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_application_1/auth_page.dart';
 import 'package:flutter_application_1/main_page.dart';
 import 'package:flutter_application_1/widgets/map_pins.dart';
+import 'package:flutter_application_1/widgets/map_state_provider.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -22,7 +23,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+
         ChangeNotifierProvider(create: (context) => PinsProvider()),
+
+        ChangeNotifierProvider(create: (context) => MapStateProvider()),
+
       ],
       child: MaterialApp(
           scaffoldMessengerKey: messengerKey,

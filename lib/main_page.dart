@@ -3,6 +3,8 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/widgets/bottom_drawer.dart';
 import 'package:flutter_application_1/widgets/map_pins.dart';
+import 'package:flutter_application_1/widgets/map_state_provider.dart';
+import 'package:flutter_application_1/widgets/map_buttons_widget.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart';
@@ -19,6 +21,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+
   _handleStartLatLng(location) {
     print('this is the start ${location}');
    String latitude = location.latitude.toString();
@@ -36,17 +39,28 @@ class _MainPageState extends State<MainPage> {
     
   }
 
+  List<LatLng> plottedRoute = [];
+
+
   @override
   Widget build(BuildContext context) {
     final mapController = MapController();
     bool serviceEnabled = false;
     PermissionStatus? permissionGranted;
+    double lat;
+    double lng;
+    double currZoom = 15;
+
     return FutureBuilder(
         //can use a list of futures with Future.wait(Future[]) to have map react to multiple futures
         future: initialPosition(serviceEnabled, permissionGranted),
         builder: ((context, snapshot) {
           if (snapshot.hasData) {
+            lat = snapshot.data?.latitude ?? 00;
+            lng = snapshot.data?.longitude ?? 00;
             return Scaffold(
+              floatingActionButton: MapButtons(
+                  mapController, lat, lng, serviceEnabled, permissionGranted),
               body: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -79,10 +93,15 @@ class _MainPageState extends State<MainPage> {
                           userAgentPackageName:
                               'dev.fleaflet.flutter_map.example',
                         ),
-                        CurrentPOSMarker(
-                          serviceEnabled: serviceEnabled,
-                          permissionGranted: permissionGranted,
-                        ),
+                        CurrentPOSMarker(),
+                        Consumer<MapStateProvider>(
+                            builder: (context, mapStateProvider, child) {
+                          return mapStateProvider.localPOIMarkers;
+                        }),
+                        Consumer<MapStateProvider>(
+                            builder: (context, mapStateProvider, child) {
+                          return mapStateProvider.routePolyLine;
+                        }),
                       ])),
                 ],
               ),
@@ -92,10 +111,12 @@ class _MainPageState extends State<MainPage> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   height: 56.0,
-                  child: Row(children: <Widget>[
-                    //pass data into and out of this drawer widget to manipulate map
-                    BottomDrawerWidget(),
-                  ]),
+                  child: Row(
+                    children: <Widget>[
+                      //pass data into and out of this drawer widget to manipulate map
+                      BottomDrawerWidget(),
+                    ],
+                  ),
                 ),
               ),
             );

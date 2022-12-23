@@ -15,6 +15,7 @@ class BottomDrawerWidget extends StatefulWidget {
 class _BottomDrawerWidget extends State<BottomDrawerWidget> {
   @override
   Widget build(BuildContext context) {
+
     return Row(children: [
       Align(
           alignment: Alignment.bottomCenter,
@@ -39,6 +40,7 @@ class _BottomDrawerWidget extends State<BottomDrawerWidget> {
               //     backgroundColor: const Color(0xFF31AFB9)),
               child: const Text('Profile')))
     ]);
+
   }
 
   showMenu() {
