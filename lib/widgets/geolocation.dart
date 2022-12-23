@@ -10,7 +10,6 @@ class CurrentPOSMarker extends StatefulWidget {
   CurrentPOSMarker({
     super.key,
   });
-
   @override
   // ignore: library_private_types_in_public_api
   _CurrentPOSMarkerState createState() => _CurrentPOSMarkerState();
