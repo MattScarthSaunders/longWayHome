@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/widgets/map_pins.dart';
+import 'package:flutter_application_1/widgets/map_state_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:geocoding/geocoding.dart';
 
@@ -61,6 +62,8 @@ class AddressFormState extends State<AddressForm> {
         'startPoint': _startPointController.text,
         'endPoint': _endPointController.text,
       };
+      var mapState = context.read<MapStateProvider>();
+      mapState.setRoute();
     }
   }
 

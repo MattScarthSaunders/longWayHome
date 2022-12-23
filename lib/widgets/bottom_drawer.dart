@@ -65,7 +65,7 @@ class _BottomDrawerWidget extends State<BottomDrawerWidget> {
                         child: Stack(
                           children: <Widget>[
                             Positioned(
-                              child: ListView(children: [
+                              child: ListView(children: const [
                                 AddressForm(),
                               ]),
                             )

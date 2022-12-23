@@ -158,14 +158,14 @@ class MapStateProvider with ChangeNotifier {
   //this handles generating the final route polyline
   void setRoute() {
     List fullRouteCoords = [
-      [startCoord[1], startCoord[0]]
+      [startCoord[0], startCoord[1]]
     ];
 
     allPOIMarkerCoords.forEach((marker) {
       fullRouteCoords.add([marker[1], marker[0]]);
     });
 
-    fullRouteCoords.add([endCoord[1], endCoord[0]]);
+    fullRouteCoords.add([endCoord[0], endCoord[1]]);
 
     //fetch route polyline from api
     fetchRoute(fullRouteCoords).then((res) {
