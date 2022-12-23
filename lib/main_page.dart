@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/widgets/bottom_drawer.dart';
 import 'package:flutter_application_1/widgets/map_pins.dart';
@@ -19,7 +21,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   _handleStartLatLng(location) {
     print('this is the start ${location}');
-    String latitude = location.latitude.toString();
+   String latitude = location.latitude.toString();
     String longitude = location.longitude.toString();
     context.read<PinsProvider>().addStartPin('$latitude, $longitude');
     context.read<PinsProvider>().start(false);
@@ -31,6 +33,7 @@ class _MainPageState extends State<MainPage> {
     String longitude = location.longitude.toString();
     context.read<PinsProvider>().addEndPin('$latitude, $longitude');
     context.read<PinsProvider>().end(false);
+    
   }
 
   @override

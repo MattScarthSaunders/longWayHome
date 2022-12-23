@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 // import 'package:latlong2/latlong.dart';
 
 class PinsProvider with ChangeNotifier {
   Map mapPins = {
-    "start": "start location",
-    "end": "end location",
+    "start": "",
+    "end": "",
     "isButton": false,
     "isEnd": false,
     "isStart": false
