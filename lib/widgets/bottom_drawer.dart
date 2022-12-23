@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/profile_page.dart';
 import 'package:flutter_application_1/widgets/adress_form.dart';
-import 'package:flutter_application_1/widgets/map_pins.dart';
+import 'package:flutter_application_1/widgets/map_state_provider.dart';
 import 'package:provider/provider.dart';
 
 class BottomDrawerWidget extends StatefulWidget {
@@ -15,32 +16,29 @@ class BottomDrawerWidget extends StatefulWidget {
 class _BottomDrawerWidget extends State<BottomDrawerWidget> {
   @override
   Widget build(BuildContext context) {
-
     return Row(children: [
       Align(
           alignment: Alignment.bottomCenter,
           child: ElevatedButton(
-              // style: ElevatedButton.styleFrom(
-              //     minimumSize: const Size.fromHeight(50),
-              //     backgroundColor: const Color(0xFF31AFB9)),
-              onPressed: showMenu,
-              // style: ElevatedButton.styleFrom(
-              //     minimumSize: const Size.fromHeight(50),
-              //     backgroundColor: const Color(0xFF31AFB9)),
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF31AFB9)),
+              onPressed: () {
+                showMenu();
+                var mapState = context.read<MapStateProvider>();
+                mapState.init();
+              },
               child: const Text('New Walk'))),
       Align(
           alignment: Alignment.bottomRight,
           child: ElevatedButton(
-              // style: ElevatedButton.styleFrom(
-              //     minimumSize: const Size.fromHeight(50),
-              //     backgroundColor: const Color(0xFF31AFB9)),
-              onPressed: showMenu,
-              // style: ElevatedButton.styleFrom(
-              //     minimumSize: const Size.fromHeight(50),
-              //     backgroundColor: const Color(0xFF31AFB9)),
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF31AFB9)),
+              onPressed: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => ProfilePage()));
+              },
               child: const Text('Profile')))
     ]);
-
   }
 
   showMenu() {

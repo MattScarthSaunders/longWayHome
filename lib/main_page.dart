@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/widgets/bottom_drawer.dart';
 import 'package:flutter_application_1/widgets/map_pins.dart';
@@ -8,7 +6,6 @@ import 'package:flutter_application_1/widgets/map_buttons_widget.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:location/location.dart';
 import 'package:flutter_application_1/widgets/geolocation.dart';
 import 'package:provider/provider.dart';
 
@@ -21,108 +18,79 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-
-  _handleStartLatLng(location) {
-    print('this is the start ${location}');
-   String latitude = location.latitude.toString();
-    String longitude = location.longitude.toString();
-    context.read<PinsProvider>().addStartPin('$latitude, $longitude');
-    context.read<PinsProvider>().start(false);
-  }
-
-  _handleEndLatLng(location) {
-    print('this is the end ${location}');
-    String latitude = location.latitude.toString();
-    String longitude = location.longitude.toString();
-    context.read<PinsProvider>().addEndPin('$latitude, $longitude');
-    context.read<PinsProvider>().end(false);
-    
-  }
-
-  List<LatLng> plottedRoute = [];
-
-
   @override
   Widget build(BuildContext context) {
-    final mapController = MapController();
-    bool serviceEnabled = false;
-    PermissionStatus? permissionGranted;
-    double lat;
-    double lng;
-    double currZoom = 15;
+    var mapState = context.read<MapStateProvider>();
+    mapState.setInitialPosition();
 
-    return FutureBuilder(
-        //can use a list of futures with Future.wait(Future[]) to have map react to multiple futures
-        future: initialPosition(serviceEnabled, permissionGranted),
-        builder: ((context, snapshot) {
-          if (snapshot.hasData) {
-            lat = snapshot.data?.latitude ?? 00;
-            lng = snapshot.data?.longitude ?? 00;
-            return Scaffold(
-              floatingActionButton: MapButtons(
-                  mapController, lat, lng, serviceEnabled, permissionGranted),
-              body: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Flexible(
-                      child: FlutterMap(
-                          mapController: mapController,
-                          options: MapOptions(
-                            center: LatLng(snapshot.data?.latitude ?? 00,
-                                snapshot.data?.longitude ?? 00),
-                            zoom: 15,
-                            onTap: (tapPosition, point) {
-                              var pins = context.read<PinsProvider>();
-
-                              if (pins.mapPins["isStart"]) {
-                                LatLng location = point;
-                                _handleStartLatLng(location);
-                                pins.isButton(false);
-                              } else if (pins.mapPins["isEnd"]){
-                                LatLng location = point;
-                                _handleEndLatLng(location);
-                                pins.isButton(false);
-                              }
-                            },
-                          ),
-                          nonRotatedChildren: const [],
-                          children: [
-                        TileLayer(
-                          urlTemplate:
-                              "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-                          userAgentPackageName:
-                              'dev.fleaflet.flutter_map.example',
-                        ),
-                        CurrentPOSMarker(),
-                        Consumer<MapStateProvider>(
-                            builder: (context, mapStateProvider, child) {
-                          return mapStateProvider.localPOIMarkers;
-                        }),
-                        Consumer<MapStateProvider>(
-                            builder: (context, mapStateProvider, child) {
-                          return mapStateProvider.routePolyLine;
-                        }),
-                      ])),
-                ],
-              ),
-              bottomNavigationBar: BottomAppBar(
-                elevation: 0,
-                color: const Color(0xff344955),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  height: 56.0,
-                  child: Row(
-                    children: <Widget>[
-                      //pass data into and out of this drawer widget to manipulate map
-                      BottomDrawerWidget(),
-                    ],
+    return Scaffold(
+      floatingActionButton: MapButtons(),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Consumer2<MapStateProvider, PinsProvider>(
+              builder: (context, mapStateProvider, pinsProvider, child) {
+            return Flexible(
+                child: FlutterMap(
+                    mapController: mapStateProvider.mapController,
+                    options: MapOptions(
+                      center: LatLng(0.0, 0.0),
+                      zoom: 15,
+                      onTap: (tapPosition, point) {
+                        if (pinsProvider.mapPins["isStart"]) {
+                          pinsProvider.handleStartLatLng(point);
+                          pinsProvider.isButton(false);
+                          mapStateProvider.setStartMarkerLocation(point);
+                          mapStateProvider.startCoord = [
+                            point.longitude,
+                            point.latitude
+                          ];
+                          if (mapStateProvider.endCoord.isNotEmpty) {
+                            mapStateProvider.setInitialRoute();
+                          }
+                        } else if (pinsProvider.mapPins["isEnd"]) {
+                          pinsProvider.handleEndLatLng(point);
+                          pinsProvider.isButton(false);
+                          mapStateProvider.setEndMarkerLocation(point);
+                          mapStateProvider.endCoord = [
+                            point.longitude,
+                            point.latitude
+                          ];
+                          if (mapStateProvider.startCoord.isNotEmpty) {
+                            mapStateProvider.setInitialRoute();
+                          }
+                        }
+                      },
+                    ),
+                    nonRotatedChildren: const [],
+                    children: [
+                  TileLayer(
+                    urlTemplate:
+                        "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                    userAgentPackageName: 'dev.fleaflet.flutter_map.example',
                   ),
-                ),
-              ),
-            );
-          } else {
-            return const Text('Error loading geolocations');
-          }
-        }));
+                  CurrentPOSMarker(),
+                  MarkerLayer(markers: [
+                    mapStateProvider.startMark,
+                    mapStateProvider.endMark
+                  ]),
+                  mapStateProvider.localPOIMarkers,
+                  mapStateProvider.routePolyLine,
+                ]));
+          }),
+        ],
+      ),
+      bottomNavigationBar: BottomAppBar(
+        elevation: 0,
+        color: const Color(0xff344955),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          height: 56.0,
+          child: Row(
+            children: const [BottomDrawerWidget()],
+          ),
+        ),
+      ),
+    );
   }
 }

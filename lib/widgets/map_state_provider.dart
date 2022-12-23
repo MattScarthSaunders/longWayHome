@@ -1,14 +1,20 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/widgets/api_utils.dart';
+import 'package:flutter_application_1/widgets/geolocation.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:google_polyline_algorithm/google_polyline_algorithm.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:location/location.dart';
 
 class MapStateProvider with ChangeNotifier {
   //input
-  List startCoord = [53.8008, -1.5491];
-  List endCoord = [53.79180834446052, -1.5322132416910172];
+  List startCoord = [];
+  List endCoord = [];
+  List userCoord = [];
+  final mapController = MapController();
+  bool serviceEnabled = false;
+  PermissionStatus? permissionGranted;
 
   //coords
   List<LatLng> plottedRoute = [];
@@ -17,7 +23,7 @@ class MapStateProvider with ChangeNotifier {
 
   //rendering
   late Marker startMark = Marker(
-    point: LatLng(startCoord[0], startCoord[1]),
+    point: LatLng(0.0, 0.0),
     width: 100,
     height: 100,
     builder: (ctx) => Container(
@@ -30,7 +36,7 @@ class MapStateProvider with ChangeNotifier {
     ),
   );
   late Marker endMark = Marker(
-    point: LatLng(startCoord[0], startCoord[1]),
+    point: LatLng(0.0, 0.0),
     width: 100,
     height: 100,
     builder: (ctx) => Container(
@@ -54,18 +60,32 @@ class MapStateProvider with ChangeNotifier {
   );
   Widget localPOIMarkers = MarkerLayer(markers: []);
 
-  //this handles generating an initial route between two points
-  void setInitialRoute(startPoint, endPoint) {
-    List<LatLng> tempRoute = [];
+  void setInitialPosition() {
+    initialPosition(serviceEnabled, permissionGranted).then((res) {
+      userCoord = [res.longitude, res.latitude];
+      return;
+    }).then((res) {
+      mapController.move(LatLng(userCoord[1], userCoord[0]), 15);
+      notifyListeners();
+    });
+  }
 
+  //this handles generating an initial route between two points
+  void setInitialRoute() {
+    List<LatLng> tempRoute = [];
     //fetch route from api
-    fetchInitialRoute(startPoint, endPoint).then((res) {
+    fetchInitialRoute(startCoord, endCoord).then((res) {
       final parsedRoute = json.decode(res.body.toString())["features"][0]
           ["geometry"]["coordinates"];
+
       parsedRoute.forEach((point) {
         tempRoute.add(LatLng(point[1], point[0]));
       });
+      print('we get this far3');
+
       plottedRoute = tempRoute;
+      print('we get this far4');
+
       return;
     }).then((res) {
       routePolyLine = PolylineLayer(
@@ -77,6 +97,7 @@ class MapStateProvider with ChangeNotifier {
           ),
         ],
       );
+      setRoutePOI(100, 50, [130, 220, 330, 620]);
       notifyListeners();
     });
   }
@@ -174,16 +195,16 @@ class MapStateProvider with ChangeNotifier {
     });
   }
 
-  void setStartMarkerLocation() {
+  void setStartMarkerLocation(point) {
     startMark = Marker(
-      point: LatLng(53.7955, -1.5390),
+      point: LatLng(point.latitude, point.longitude),
       width: 100,
       height: 100,
       builder: (ctx) => Container(
         key: const Key('blue'),
         child: const Icon(
           Icons.location_on,
-          color: Colors.blue,
+          color: Colors.green,
           size: 30.0,
         ),
       ),
@@ -192,9 +213,37 @@ class MapStateProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setEndMarkerLocation() {
+  void setEndMarkerLocation(point) {
     endMark = Marker(
-      point: LatLng(53.7955, -1.5390),
+      point: LatLng(point.latitude, point.longitude),
+      width: 100,
+      height: 100,
+      builder: (ctx) => Container(
+        key: const Key('blue'),
+        child: const Icon(
+          Icons.location_on,
+          color: Colors.red,
+          size: 30.0,
+        ),
+      ),
+    );
+
+    notifyListeners();
+  }
+
+  void init() {
+    print('innit');
+    //input
+    startCoord = [];
+    endCoord = [];
+
+    //coords
+    plottedRoute = [];
+    allPOIMarkerCoords = [];
+    allPOIMarkers = [];
+
+    startMark = Marker(
+      point: LatLng(0.0, 0.0),
       width: 100,
       height: 100,
       builder: (ctx) => Container(
@@ -206,7 +255,30 @@ class MapStateProvider with ChangeNotifier {
         ),
       ),
     );
-
+    endMark = Marker(
+      point: LatLng(0.0, 0.0),
+      width: 100,
+      height: 100,
+      builder: (ctx) => Container(
+        key: const Key('blue'),
+        child: const Icon(
+          Icons.location_on,
+          color: Colors.blue,
+          size: 30.0,
+        ),
+      ),
+    );
+    routePolyLine = PolylineLayer(
+      polylineCulling: false,
+      polylines: [
+        Polyline(
+          points: [],
+          color: Colors.blue,
+          strokeWidth: 10,
+        ),
+      ],
+    );
+    localPOIMarkers = MarkerLayer(markers: []);
     notifyListeners();
   }
 }

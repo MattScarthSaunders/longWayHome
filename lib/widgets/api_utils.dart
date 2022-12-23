@@ -5,7 +5,7 @@ fetchInitialRoute(startPoint, endPoint) async {
   const apiKey = '5b3ce3597851110001cf62489513c460675e42199a86c0f6d7133d72';
 
   return await http.get(Uri.parse(
-      'https://api.openrouteservice.org/v2/directions/foot-hiking?api_key=$apiKey&start=${startPoint[1]},${startPoint[0]}&end=${endPoint[1]},${endPoint[0]}'));
+      'https://api.openrouteservice.org/v2/directions/foot-hiking?api_key=$apiKey&start=${startPoint[0]},${startPoint[1]}&end=${endPoint[0]},${endPoint[1]}'));
 }
 
 fetchRoutePOIData(

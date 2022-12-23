@@ -39,8 +39,6 @@ class AddressFormState extends State<AddressForm> {
     }
   }
 
-  
-
   @override
   void initState() {
     super.initState();
@@ -63,7 +61,6 @@ class AddressFormState extends State<AddressForm> {
         'startPoint': _startPointController.text,
         'endPoint': _endPointController.text,
       };
-      print(newWalk);
     }
   }
 
@@ -130,25 +127,21 @@ class AddressFormState extends State<AddressForm> {
                     builder: (context, pinsProvider, child) => Row(
                       children: [
                         ElevatedButton(
-                          onPressed:
-                              context.read<PinsProvider>().mapPins["isButton"]
-                                  ? null
-                                  : () {
-                                      var pins = context.read<PinsProvider>();
-                                      pins.isButton(true);
-                                      pins.start(true);
-                                    },
+                          onPressed: pinsProvider.mapPins["isButton"]
+                              ? null
+                              : () {
+                                  pinsProvider.isButton(true);
+                                  pinsProvider.start(true);
+                                },
                           child: const Text('start'),
                         ),
                         ElevatedButton(
-                          onPressed:
-                              context.read<PinsProvider>().mapPins["isButton"]
-                                  ? null
-                                  : () {
-                                      var pins = context.read<PinsProvider>();
-                                      pins.isButton(true);
-                                      pins.end(true);
-                                    },
+                          onPressed: pinsProvider.mapPins["isButton"]
+                              ? null
+                              : () {
+                                  pinsProvider.isButton(true);
+                                  pinsProvider.end(true);
+                                },
                           child: const Text('end'),
                         ),
                         ElevatedButton(

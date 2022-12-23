@@ -37,4 +37,18 @@ class PinsProvider with ChangeNotifier {
     mapPins["isEnd"] = value;
     notifyListeners();
   }
+
+  handleStartLatLng(location) {
+    String latitude = location.latitude.toString();
+    String longitude = location.longitude.toString();
+    addStartPin('$latitude, $longitude');
+    start(false);
+  }
+
+  handleEndLatLng(location) {
+    String latitude = location.latitude.toString();
+    String longitude = location.longitude.toString();
+    addEndPin('$latitude, $longitude');
+    end(false);
+  }
 }
