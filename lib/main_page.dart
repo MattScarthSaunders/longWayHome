@@ -17,10 +17,20 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  _handleLatLng(location) {
-    print(location);
-    double latitude = location.latitude;
-    double longitude = location.longitude;
+  _handleStartLatLng(location) {
+    print('this is the start ${location}');
+    String latitude = location.latitude.toString();
+    String longitude = location.longitude.toString();
+    context.read<PinsProvider>().addStartPin('$latitude, $longitude');
+    context.read<PinsProvider>().start(false);
+  }
+
+  _handleEndLatLng(location) {
+    print('this is the end ${location}');
+    String latitude = location.latitude.toString();
+    String longitude = location.longitude.toString();
+    context.read<PinsProvider>().addEndPin('$latitude, $longitude');
+    context.read<PinsProvider>().end(false);
   }
 
   @override
@@ -47,10 +57,14 @@ class _MainPageState extends State<MainPage> {
                             onTap: (tapPosition, point) {
                               var pins = context.read<PinsProvider>();
 
-                              if (pins.mapPins["isStart"] ||
-                                  pins.mapPins["isEnd"]) {
+                              if (pins.mapPins["isStart"]) {
                                 LatLng location = point;
-                                _handleLatLng(location);
+                                _handleStartLatLng(location);
+                                pins.isButton(false);
+                              } else if (pins.mapPins["isEnd"]){
+                                LatLng location = point;
+                                _handleEndLatLng(location);
+                                pins.isButton(false);
                               }
                             },
                           ),

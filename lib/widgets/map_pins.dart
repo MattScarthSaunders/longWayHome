@@ -5,8 +5,9 @@ class PinsProvider with ChangeNotifier {
   Map mapPins = {
     "start": "start location",
     "end": "end location",
-    "isStart": false,
+    "isButton": false,
     "isEnd": false,
+    "isStart": false
   };
 
   late bool isStart = false;
@@ -18,6 +19,11 @@ class PinsProvider with ChangeNotifier {
 
   void addEndPin(String end) {
     mapPins["end"] = end;
+    notifyListeners();
+  }
+
+  void isButton(bool value) {
+    mapPins["isButton"] = value;
     notifyListeners();
   }
 

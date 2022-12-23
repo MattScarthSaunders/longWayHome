@@ -16,10 +16,23 @@ class AddressForm extends StatefulWidget {
 class AddressFormState extends State<AddressForm> {
   final _formKey = GlobalKey<FormState>();
 
-  final TextEditingController _startPointController =
-      TextEditingController(text: PinsProvider().mapPins["start"]);
-  final TextEditingController _endPointController =
-      TextEditingController(text: PinsProvider().mapPins["end"]);
+  final TextEditingController _startPointController = TextEditingController();
+final TextEditingController _endPointController = TextEditingController();
+
+
+
+@override
+void initState() {
+
+  super.initState();
+  final pinsProvider = context.read<PinsProvider>();
+
+  // Initialize the controllers with the current mapPins values
+  _startPointController.text = pinsProvider.mapPins['start'];
+  _endPointController.text = pinsProvider.mapPins['end'];
+
+  _startPointController.addListener(() { print(_startPointController.text); });
+}
 
   _submitStart() {
     _startPointController.addListener(() {
@@ -56,12 +69,13 @@ class AddressFormState extends State<AddressForm> {
           crossAxisAlignment: CrossAxisAlignment.end,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Focus(
-              onFocusChange: (hasFocus) {
-                _submitStart();
-              },
-              child: Consumer<PinsProvider>(
-                builder: (context, pinsProvider, child) => TextFormField(
+            Consumer<PinsProvider>(
+              builder: (context, pinsProvider, child) => Focus(
+                onFocusChange: (hasFocus) {
+
+                  pinsProvider.addStartPin(_startPointController.text);
+                },
+                child: TextFormField(
                   style: const TextStyle(color: Colors.white),
                   decoration: const InputDecoration(
                     labelText: 'Start position',
@@ -102,29 +116,35 @@ class AddressFormState extends State<AddressForm> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: Row(
-                children: [
-                  ElevatedButton(
-                    onPressed: context.read<PinsProvider>().mapPins["isStart"]
-                        ? null
-                        : () {
-                            var pins = context.read<PinsProvider>();
-                            pins.start(true);
-                          },
-                    child: const Text('start'),
-                  ),
-                  ElevatedButton(
-                    onPressed: context.read<PinsProvider>().mapPins["isEnd"]
-                        ? null
-                        : () {
-                            var pins = context.read<PinsProvider>();
-                            pins.end(true);
-                          },
-                    child: const Text('end'),
-                  ),
-                ],
+              child: Consumer<PinsProvider>(
+                builder: (context, pinsProvider, child) => Row(
+                  children: [
+                    ElevatedButton(
+                      onPressed:
+                          context.read<PinsProvider>().mapPins["isButton"]
+                              ? null
+                              : () {
+                                  var pins = context.read<PinsProvider>();
+                                  pins.isButton(true);
+                                  pins.start(true);
+                                },
+                      child: const Text('start'),
+                    ),
+                    ElevatedButton(
+                      onPressed:
+                          context.read<PinsProvider>().mapPins["isButton"]
+                              ? null
+                              : () {
+                                  var pins = context.read<PinsProvider>();
+                                  pins.isButton(true);
+                                  pins.end(true);
+                                },
+                      child: const Text('end'),
+                    ),
+                  ],
+                ),
               ),
-            ),
+            )
           ],
         ),
       ),
