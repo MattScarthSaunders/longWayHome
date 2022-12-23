@@ -19,6 +19,7 @@ class MapButtons extends StatelessWidget {
         right: 0,
         top: 100,
         child: FloatingActionButton(
+          heroTag: Text("mapbtn1"),
           onPressed: () {
             mapController.move(mapController.center, mapController.zoom - 1);
           },
@@ -30,6 +31,7 @@ class MapButtons extends StatelessWidget {
         right: 0,
         top: 170,
         child: FloatingActionButton(
+          heroTag: Text("mapbtn2"),
           onPressed: () {
             mapController.move(mapController.center, mapController.zoom + 1);
           },
@@ -41,6 +43,7 @@ class MapButtons extends StatelessWidget {
         right: 0,
         top: 260,
         child: FloatingActionButton(
+          heroTag: Text("mapbtn3"),
           onPressed: () {
             initialPosition(serviceEnabled, permissionGranted).then((res) {
               lat = res.latitude ?? 00;
