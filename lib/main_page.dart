@@ -1,5 +1,8 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/widgets/bottom_drawer.dart';
+import 'package:flutter_application_1/widgets/map_pins.dart';
 import 'package:flutter_application_1/widgets/map_state_provider.dart';
 import 'package:flutter_application_1/widgets/map_buttons_widget.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -18,7 +21,26 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+
+  _handleStartLatLng(location) {
+    print('this is the start ${location}');
+   String latitude = location.latitude.toString();
+    String longitude = location.longitude.toString();
+    context.read<PinsProvider>().addStartPin('$latitude, $longitude');
+    context.read<PinsProvider>().start(false);
+  }
+
+  _handleEndLatLng(location) {
+    print('this is the end ${location}');
+    String latitude = location.latitude.toString();
+    String longitude = location.longitude.toString();
+    context.read<PinsProvider>().addEndPin('$latitude, $longitude');
+    context.read<PinsProvider>().end(false);
+    
+  }
+
   List<LatLng> plottedRoute = [];
+
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +71,19 @@ class _MainPageState extends State<MainPage> {
                             center: LatLng(snapshot.data?.latitude ?? 00,
                                 snapshot.data?.longitude ?? 00),
                             zoom: 15,
+                            onTap: (tapPosition, point) {
+                              var pins = context.read<PinsProvider>();
+
+                              if (pins.mapPins["isStart"]) {
+                                LatLng location = point;
+                                _handleStartLatLng(location);
+                                pins.isButton(false);
+                              } else if (pins.mapPins["isEnd"]){
+                                LatLng location = point;
+                                _handleEndLatLng(location);
+                                pins.isButton(false);
+                              }
+                            },
                           ),
                           nonRotatedChildren: const [],
                           children: [
