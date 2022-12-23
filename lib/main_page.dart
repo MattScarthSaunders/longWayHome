@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/widgets/api_utils.dart';
 import 'package:flutter_application_1/widgets/bottom_drawer.dart';
 import 'package:flutter_application_1/widgets/map_state_provider.dart';
-import 'package:flutter_application_1/widgets/poi_fetch.dart';
-import 'package:flutter_application_1/widgets/test_route.dart';
+import 'package:flutter_application_1/widgets/deprecatedReferences/poi_fetch.dart';
+import 'package:flutter_application_1/widgets/deprecatedReferences/test_route.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart';
@@ -25,14 +25,6 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    refresh() {
-      setState(() {
-        plottedRoute = plottedRoute;
-      });
-    }
-
-    print("inmainbuilder");
-    print(plottedRoute);
     final mapController = MapController();
     bool serviceEnabled = false;
     PermissionStatus? permissionGranted;
@@ -63,27 +55,14 @@ class _MainPageState extends State<MainPage> {
                               'dev.fleaflet.flutter_map.example',
                         ),
                         CurrentPOSMarker(),
-                        PoiMarkers(
-                          startCoordinate: [
-                            snapshot.data?.latitude ?? 00,
-                            snapshot.data?.longitude ?? 00
-                          ],
-                          endCoordinate: [53.7955, -1.5367],
-                        ),
                         Consumer<MapStateProvider>(
                             builder: (context, mapStateProvider, child) {
-                          return MarkerLayer(
-                            markers: mapStateProvider.allMarkers,
-                          );
+                          return mapStateProvider.localPOIMarkers;
                         }),
                         Consumer<MapStateProvider>(
                             builder: (context, mapStateProvider, child) {
                           return mapStateProvider.routePolyLine;
                         }),
-                        // TestRoute(positionCoordinate: [
-                        //   snapshot.data?.latitude ?? 00,
-                        //   snapshot.data?.longitude ?? 00
-                        // ])
                       ])),
                 ],
               ),
@@ -96,22 +75,11 @@ class _MainPageState extends State<MainPage> {
                   child: Row(
                     children: <Widget>[
                       //pass data into and out of this drawer widget to manipulate map
-                      BottomDrawerWidget(
-                          notifyParent: refresh,
-                          plottedRoute: plottedRoute,
-                          snapshot: snapshot),
-                      FloatingActionButton(onPressed: () {
-                        var coords = context.read<MapStateProvider>();
-                      }),
+                      BottomDrawerWidget(),
                     ],
                   ),
                 ),
               ),
-              floatingActionButton: FloatingActionButton(onPressed: () {
-                var coords = context.read<MapStateProvider>();
-                //this is a test button
-                coords.setInitialRoute([53.8008, -1.5491], [53.7955, -1.5367]);
-              }),
             );
           } else {
             return const Text('Error loading geolocations');

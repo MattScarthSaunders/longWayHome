@@ -1,19 +1,7 @@
-import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/widgets/api_utils.dart';
-import 'package:latlong2/latlong.dart';
 
 class BottomDrawerWidget extends StatefulWidget {
-  BottomDrawerWidget(
-      {required this.notifyParent,
-      required this.plottedRoute,
-      required this.snapshot});
-
-  List plottedRoute;
-  dynamic snapshot;
-  final Function() notifyParent;
-
   @override
   _BottomDrawerWidget createState() => _BottomDrawerWidget();
 }
@@ -30,22 +18,8 @@ class _BottomDrawerWidget extends State<BottomDrawerWidget> {
                 //     backgroundColor: const Color(0xFF31AFB9)),
                 child: const Text('New Walk'),
                 onPressed: () {
-                  doTest(widget.plottedRoute, widget.snapshot);
-                  widget.notifyParent();
+                  showMenu();
                 })));
-  }
-
-  doTest(plottedRoute, snapshot) async {
-    List<LatLng> arr = [];
-    print("button pressed");
-    await fetchInitialRoute([53.8008, -1.5491], [53.7955, -1.5367])
-        .then((response) {
-      final parsedRoute = json.decode(response.body.toString())["features"][0]
-          ["geometry"]["coordinates"];
-      parsedRoute.forEach((point) {
-        plottedRoute.add(LatLng(point[1], point[0]));
-      });
-    });
   }
 
   showMenu() {

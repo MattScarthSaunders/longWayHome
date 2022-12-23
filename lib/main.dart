@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => MapStateProvider())
+        ChangeNotifierProvider(create: (context) => MapStateProvider()),
       ],
       child: MaterialApp(
           scaffoldMessengerKey: messengerKey,

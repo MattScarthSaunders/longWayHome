@@ -26,7 +26,7 @@ fetchRoutePOIData(
       "limit": markerLimit,
       "filters": {
         "category_group_ids": categoryIds,
-      }
+      },
     }),
   );
 }
@@ -41,7 +41,10 @@ fetchRoute(List coordinates) async {
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': apiKey,
       },
-      body: jsonEncode({"coordinates": coordinates}));
+      body: jsonEncode({
+        "coordinates": coordinates,
+        "preference": "fastest",
+      }));
 }
 
 fetchIsochroneBoundary(positionCoordinate) async {
