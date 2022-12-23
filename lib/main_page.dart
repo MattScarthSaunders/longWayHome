@@ -1,13 +1,13 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/widgets/bottom_drawer.dart';
+import 'package:flutter_application_1/widgets/map_state_provider.dart';
 import 'package:flutter_application_1/widgets/map_buttons_widget.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 import 'package:flutter_application_1/widgets/geolocation.dart';
+import 'package:provider/provider.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -18,6 +18,8 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  List<LatLng> plottedRoute = [];
+
   @override
   Widget build(BuildContext context) {
     final mapController = MapController();
@@ -57,6 +59,14 @@ class _MainPageState extends State<MainPage> {
                               'dev.fleaflet.flutter_map.example',
                         ),
                         CurrentPOSMarker(),
+                        Consumer<MapStateProvider>(
+                            builder: (context, mapStateProvider, child) {
+                          return mapStateProvider.localPOIMarkers;
+                        }),
+                        Consumer<MapStateProvider>(
+                            builder: (context, mapStateProvider, child) {
+                          return mapStateProvider.routePolyLine;
+                        }),
                       ])),
                 ],
               ),
@@ -66,10 +76,12 @@ class _MainPageState extends State<MainPage> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   height: 56.0,
-                  child: Row(children: <Widget>[
-                    //pass data into and out of this drawer widget to manipulate map
-                    BottomDrawerWidget(),
-                  ]),
+                  child: Row(
+                    children: <Widget>[
+                      //pass data into and out of this drawer widget to manipulate map
+                      BottomDrawerWidget(),
+                    ],
+                  ),
                 ),
               ),
             );
