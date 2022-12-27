@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:latlong2/latlong.dart';
-// import 'package:latlong2/latlong.dart';
+import 'package:geocoding/geocoding.dart';
 
 class PinsProvider with ChangeNotifier {
   Map mapPins = {
@@ -12,6 +11,8 @@ class PinsProvider with ChangeNotifier {
   };
 
   late bool isStart = false;
+
+  late String selectedInput = '';
 
   final TextEditingController startPointController =
       TextEditingController(text: 'Start Point');
@@ -55,5 +56,28 @@ class PinsProvider with ChangeNotifier {
     String longitude = location.longitude.toString();
     addEndPin('$latitude, $longitude');
     end(false);
+  }
+
+  getPostcode(cords) async {
+    try {
+//NOTE: IN TESTING THIS IS NOT 100% ACCURATE. Not our code, it's the package. Some postcodes come out incomplete.
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(cords.latitude, cords.longitude);
+
+      String postCode = placemarks[0].postalCode ?? "";
+      if (selectedInput == 'start') {
+        startPointController.text = postCode;
+      } else if (selectedInput == 'end') {
+        endPointController.text = postCode;
+      }
+      return postCode;
+    } catch (e) {
+      return cords;
+    }
+  }
+
+  getCoords(postcode) async {
+    List<Location> locations = await locationFromAddress(postcode);
+    return locations[0];
   }
 }

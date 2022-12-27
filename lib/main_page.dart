@@ -21,6 +21,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     var mapState = context.read<MapStateProvider>();
+    var pinState = context.read<PinsProvider>();
     mapState.setInitialPosition();
 
     return Scaffold(
@@ -37,27 +38,28 @@ class _MainPageState extends State<MainPage> {
                       center: LatLng(0.0, 0.0),
                       zoom: 15,
                       onTap: (tapPosition, point) {
-                        if (pinsProvider.mapPins["isStart"]) {
-                          pinsProvider.handleStartLatLng(point);
-                          pinsProvider.isButton(false);
-                          mapStateProvider.setStartMarkerLocation(point);
-                          mapStateProvider.startCoord = [
+                        if (pinsProvider.selectedInput == "start") {
+                          pinState.isButton(false);
+                          pinState.getPostcode(point);
+                          mapState.setStartMarkerLocation(point);
+                          mapState.startCoord = [
                             point.longitude,
                             point.latitude
                           ];
                           if (mapStateProvider.endCoord.isNotEmpty) {
-                            mapStateProvider.setInitialRoute();
+                            mapState.setInitialRoute();
                           }
-                        } else if (pinsProvider.mapPins["isEnd"]) {
-                          pinsProvider.handleEndLatLng(point);
-                          pinsProvider.isButton(false);
+                        } else if (pinsProvider.selectedInput == "end") {
+                          pinState.isButton(false);
+                          pinState.getPostcode(point);
+
                           mapStateProvider.setEndMarkerLocation(point);
                           mapStateProvider.endCoord = [
                             point.longitude,
                             point.latitude
                           ];
                           if (mapStateProvider.startCoord.isNotEmpty) {
-                            mapStateProvider.setInitialRoute();
+                            mapState.setInitialRoute();
                           }
                         }
                       },
