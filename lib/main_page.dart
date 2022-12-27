@@ -39,7 +39,7 @@ class _MainPageState extends State<MainPage> {
                       zoom: 15,
                       onTap: (tapPosition, point) {
                         if (pinsProvider.selectedInput == "start") {
-                          pinState.isButton(false);
+                          pinState.setButton(false);
                           pinState.getPostcode(point);
                           mapState.setStartMarkerLocation(point);
                           mapState.startCoord = [
@@ -50,7 +50,7 @@ class _MainPageState extends State<MainPage> {
                             mapState.setInitialRoute();
                           }
                         } else if (pinsProvider.selectedInput == "end") {
-                          pinState.isButton(false);
+                          pinState.setButton(false);
                           pinState.getPostcode(point);
 
                           mapStateProvider.setEndMarkerLocation(point);

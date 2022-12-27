@@ -111,21 +111,21 @@ class AddressFormState extends State<AddressForm> {
                   builder: (context, pinsProvider, child) => Row(
                     children: [
                       ElevatedButton(
-                        onPressed: pinsProvider.mapPins["isButton"]
+                        onPressed: pinsProvider.isButton
                             ? null
                             : () {
-                                pinsProvider.isButton(true);
                                 var pinState = context.read<PinsProvider>();
+                                pinState.setButton(true);
                                 pinState.selectedInput = "start";
                               },
                         child: const Text('start'),
                       ),
                       ElevatedButton(
-                        onPressed: pinsProvider.mapPins["isButton"]
+                        onPressed: pinsProvider.isButton
                             ? null
                             : () {
-                                pinsProvider.isButton(true);
                                 var pinState = context.read<PinsProvider>();
+                                pinState.setButton(true);
                                 pinState.selectedInput = "end";
                               },
                         child: const Text('end'),

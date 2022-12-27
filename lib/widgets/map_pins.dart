@@ -2,15 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 
 class PinsProvider with ChangeNotifier {
-  Map mapPins = {
-    "start": "",
-    "end": "",
-    "isButton": false,
-    "isEnd": false,
-    "isStart": false
-  };
-
-  late bool isStart = false;
+  late bool isButton = false;
 
   late String selectedInput = '';
 
@@ -19,43 +11,9 @@ class PinsProvider with ChangeNotifier {
   final TextEditingController endPointController =
       TextEditingController(text: 'End Point');
 
-  void addStartPin(String start) {
-    mapPins["start"] = start;
+  void setButton(bool value) {
+    isButton = value;
     notifyListeners();
-  }
-
-  void addEndPin(String end) {
-    mapPins["end"] = end;
-    notifyListeners();
-  }
-
-  void isButton(bool value) {
-    mapPins["isButton"] = value;
-    notifyListeners();
-  }
-
-  void start(bool value) {
-    mapPins["isStart"] = value;
-    notifyListeners();
-  }
-
-  void end(bool value) {
-    mapPins["isEnd"] = value;
-    notifyListeners();
-  }
-
-  handleStartLatLng(location) {
-    String latitude = location.latitude.toString();
-    String longitude = location.longitude.toString();
-    addStartPin('$latitude, $longitude');
-    start(false);
-  }
-
-  handleEndLatLng(location) {
-    String latitude = location.latitude.toString();
-    String longitude = location.longitude.toString();
-    addEndPin('$latitude, $longitude');
-    end(false);
   }
 
   getPostcode(cords) async {
