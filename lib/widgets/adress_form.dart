@@ -8,9 +8,7 @@ class AddressForm extends StatefulWidget {
 
   @override
   // ignore: library_private_types_in_public_api
-  AddressFormState createState() {
-    return AddressFormState();
-  }
+  AddressFormState createState() => AddressFormState();
 }
 
 class AddressFormState extends State<AddressForm> {
@@ -60,7 +58,7 @@ class AddressFormState extends State<AddressForm> {
                     pinState
                         .getCoords(pinState.startPointController.text)
                         .then((res) {
-                      mapState.setStartMarkerLocation(res);
+                      mapState.setMarkerLocation(res, "start");
                       mapState.startCoord = [res.longitude, res.latitude];
                       if (mapState.endCoord.isNotEmpty) {
                         mapState.setInitialRoute();
@@ -95,7 +93,7 @@ class AddressFormState extends State<AddressForm> {
                     pinState
                         .getCoords(pinState.endPointController.text)
                         .then((res) {
-                      mapState.setEndMarkerLocation(res);
+                      mapState.setMarkerLocation(res, "end");
                       mapState.endCoord = [res.longitude, res.latitude];
                       if (mapState.endCoord.isNotEmpty) {
                         mapState.setInitialRoute();

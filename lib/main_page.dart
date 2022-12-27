@@ -41,23 +41,16 @@ class _MainPageState extends State<MainPage> {
                         if (pinsProvider.selectedInput == "start") {
                           pinState.setButton(false);
                           pinState.getPostcode(point);
-                          mapState.setStartMarkerLocation(point);
-                          mapState.startCoord = [
-                            point.longitude,
-                            point.latitude
-                          ];
+                          mapState.setMarkerLocation(point, "start");
+                          mapState.setCoords(point, "start");
                           if (mapStateProvider.endCoord.isNotEmpty) {
                             mapState.setInitialRoute();
                           }
                         } else if (pinsProvider.selectedInput == "end") {
                           pinState.setButton(false);
                           pinState.getPostcode(point);
-
-                          mapStateProvider.setEndMarkerLocation(point);
-                          mapStateProvider.endCoord = [
-                            point.longitude,
-                            point.latitude
-                          ];
+                          mapStateProvider.setMarkerLocation(point, "end");
+                          mapState.setCoords(point, "end");
                           if (mapStateProvider.startCoord.isNotEmpty) {
                             mapState.setInitialRoute();
                           }

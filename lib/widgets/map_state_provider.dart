@@ -60,6 +60,14 @@ class MapStateProvider with ChangeNotifier {
   );
   Widget localPOIMarkers = const MarkerLayer(markers: []);
 
+  void setCoords(point, type) {
+    if (type == 'start') {
+      startCoord = [point.longitude, point.latitude];
+    } else if (type == 'end') {
+      endCoord = [point.longitude, point.latitude];
+    }
+  }
+
   void setInitialPosition() {
     initialPosition(serviceEnabled, permissionGranted).then((res) {
       userCoord = [res.longitude, res.latitude];
@@ -193,38 +201,28 @@ class MapStateProvider with ChangeNotifier {
     });
   }
 
-  void setStartMarkerLocation(point) {
-    startMark = Marker(
+  void setMarkerLocation(point, type) {
+    final markColor = type == "start" ? Colors.green : Colors.red;
+
+    Marker mark = Marker(
       point: LatLng(point.latitude, point.longitude),
       width: 100,
       height: 100,
       builder: (ctx) => Container(
         key: const Key('blue'),
-        child: const Icon(
+        child: Icon(
           Icons.location_on,
-          color: Colors.green,
+          color: markColor,
           size: 30.0,
         ),
       ),
     );
 
-    notifyListeners();
-  }
-
-  void setEndMarkerLocation(point) {
-    endMark = Marker(
-      point: LatLng(point.latitude, point.longitude),
-      width: 100,
-      height: 100,
-      builder: (ctx) => Container(
-        key: const Key('blue'),
-        child: const Icon(
-          Icons.location_on,
-          color: Colors.red,
-          size: 30.0,
-        ),
-      ),
-    );
+    if (type == 'start') {
+      startMark = mark;
+    } else if (type == "end") {
+      endMark = mark;
+    }
 
     notifyListeners();
   }

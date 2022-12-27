@@ -18,7 +18,7 @@ class PinsProvider with ChangeNotifier {
 
   getPostcode(cords) async {
     try {
-//NOTE: IN TESTING THIS IS NOT 100% ACCURATE. Not our code, it's the package. Some postcodes come out incomplete.
+//NOTE: IN TESTING THIS IS NOT 100% EFFECTIVE. Some postcodes come out incomplete.
       List<Placemark> placemarks =
           await placemarkFromCoordinates(cords.latitude, cords.longitude);
 
