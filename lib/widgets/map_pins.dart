@@ -13,6 +13,11 @@ class PinsProvider with ChangeNotifier {
 
   late bool isStart = false;
 
+  final TextEditingController startPointController =
+      TextEditingController(text: 'Start Point');
+  final TextEditingController endPointController =
+      TextEditingController(text: 'End Point');
+
   void addStartPin(String start) {
     mapPins["start"] = start;
     notifyListeners();

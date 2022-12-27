@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/widgets/map_state_provider.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
+import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class CurrentPOSMarker extends StatefulWidget {
@@ -37,6 +39,8 @@ class _CurrentPOSMarkerState extends State<CurrentPOSMarker> {
 
   @override
   Widget build(BuildContext context) {
+    var mapState = context.read<MapStateProvider>();
+    mapState.userCoord = [lng, lat];
     _locateMe();
     return MarkerLayer(markers: [
       Marker(

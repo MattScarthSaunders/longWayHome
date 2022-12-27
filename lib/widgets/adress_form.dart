@@ -17,18 +17,14 @@ class AddressForm extends StatefulWidget {
 class AddressFormState extends State<AddressForm> {
   final _formKey = GlobalKey<FormState>();
 
-  final TextEditingController _startPointController =
-      TextEditingController(text: 'Start Point');
-  final TextEditingController _endPointController =
-      TextEditingController(text: 'End Point');
-
   getPostcode(cords) async {
     try {
-      List splitString = cords.split(',');
+      List splitString = cords.split(', ');
 
       double lat = double.parse(splitString[0]);
       double lng = double.parse(splitString[1]);
 
+//NOTE: IN TESTING THIS IS NOT 100% ACCURATE. Not our code, it's the package.
       List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
       // print(placemarks[0].postalCode);
 
@@ -40,6 +36,11 @@ class AddressFormState extends State<AddressForm> {
     }
   }
 
+  getCoords(postcode) async {
+    List<Location> locations = await locationFromAddress(postcode);
+    return locations[0];
+  }
+
   @override
   void initState() {
     super.initState();
@@ -48,19 +49,21 @@ class AddressFormState extends State<AddressForm> {
 
     pinsProvider.addListener(() {
       getPostcode(pinsProvider.mapPins['start']).then((postCode) {
-        _startPointController.text = postCode;
+        pinsProvider.startPointController.text = postCode;
       });
       getPostcode(pinsProvider.mapPins['end']).then((postCode) {
-        _endPointController.text = postCode;
+        pinsProvider.endPointController.text = postCode;
       });
     });
   }
 
   _submitForm() {
     if (_formKey.currentState!.validate()) {
+      final pinsProvider = context.read<PinsProvider>();
+
       final newWalk = {
-        'startPoint': _startPointController.text,
-        'endPoint': _endPointController.text,
+        'startPoint': pinsProvider.startPointController.text,
+        'endPoint': pinsProvider.endPointController.text,
       };
       var mapState = context.read<MapStateProvider>();
       mapState.setRoute();
@@ -75,90 +78,112 @@ class AddressFormState extends State<AddressForm> {
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
         child: Form(
           key: _formKey,
-          child: Consumer<PinsProvider>(
-            builder: (context, pinsProvider, child) => Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Consumer<PinsProvider>(
-                  builder: (context, pinsProvider, child) => Focus(
-                    // onFocusChange: (hasFocus) {
-                    //   pinsProvider.addStartPin(_startPointController.text);
-                    // },
-                    child: TextFormField(
-                      style: const TextStyle(color: Colors.white),
-                      decoration: const InputDecoration(
-                        labelText: 'Start position',
-                        labelStyle: TextStyle(color: Colors.white),
-                      ),
-                      controller: _startPointController,
-                      // onChanged: (value) => pinsProvider.addStartPin(value),
-                      validator: (value) {
-                        if (value == null || !regex.hasMatch(value)) {
-                          return 'Please enter a valid postal code';
-                        }
-                        return null;
-                      },
-                    ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Consumer<PinsProvider>(builder: (context, pinsProvider, child) {
+                return TextFormField(
+                  style: const TextStyle(color: Colors.white),
+                  decoration: const InputDecoration(
+                    labelText: 'Start position',
+                    labelStyle: TextStyle(color: Colors.white),
                   ),
-                ),
-                Focus(
-                  onFocusChange: (value) {
-                    pinsProvider.addEndPin(_startPointController.text);
+                  controller: pinsProvider.startPointController,
+                  // onChanged: (value) => pinsProvider.addStartPin(value),
+                  validator: (value) {
+                    if (value == null || !regex.hasMatch(value)) {
+                      return 'Please enter a valid postal code';
+                    }
+                    return null;
                   },
-                  child: Consumer<PinsProvider>(
-                    builder: (context, pinsProvider, child) => TextFormField(
-                      style: const TextStyle(color: Colors.white),
-                      decoration: const InputDecoration(
-                        labelText: 'End position',
-                        labelStyle: TextStyle(color: Colors.white),
+                );
+              }),
+              ElevatedButton(
+                onPressed: () {
+                  var mapState = context.read<MapStateProvider>();
+                  var pinState = context.read<PinsProvider>();
+
+                  if (regex.hasMatch(pinState.startPointController.text)) {
+                    getCoords(pinState.startPointController.text).then((res) {
+                      mapState.setStartMarkerLocation(res);
+                      mapState.startCoord = [res.longitude, res.latitude];
+                      if (mapState.endCoord.isNotEmpty) {
+                        mapState.setInitialRoute();
+                      }
+                    });
+                  }
+                },
+                child: const Text('Set Start'),
+              ),
+              Consumer<PinsProvider>(
+                builder: (context, pinsProvider, child) => TextFormField(
+                  style: const TextStyle(color: Colors.white),
+                  decoration: const InputDecoration(
+                    labelText: 'End position',
+                    labelStyle: TextStyle(color: Colors.white),
+                  ),
+                  controller: pinsProvider.endPointController,
+                  // onChanged: (value) => pinsProvider.addEndPin(value),
+                  validator: (value) {
+                    if (value == null || !regex.hasMatch(value)) {
+                      return 'Please enter a valid postal code';
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  var mapState = context.read<MapStateProvider>();
+                  var pinState = context.read<PinsProvider>();
+
+                  if (regex.hasMatch(pinState.startPointController.text)) {
+                    getCoords(pinState.endPointController.text).then((res) {
+                      mapState.setEndMarkerLocation(res);
+                      mapState.endCoord = [res.longitude, res.latitude];
+                      if (mapState.endCoord.isNotEmpty) {
+                        mapState.setInitialRoute();
+                      }
+                    });
+                  }
+                },
+                child: const Text('Set End'),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: Consumer<PinsProvider>(
+                  builder: (context, pinsProvider, child) => Row(
+                    children: [
+                      ElevatedButton(
+                        onPressed: pinsProvider.mapPins["isButton"]
+                            ? null
+                            : () {
+                                pinsProvider.isButton(true);
+                                pinsProvider.start(true);
+                              },
+                        child: const Text('start'),
                       ),
-                      controller: _endPointController,
-                      // onChanged: (value) => pinsProvider.addEndPin(value),
-                      validator: (value) {
-                        if (value == null || !regex.hasMatch(value)) {
-                          return 'Please enter a valid postal code';
-                        }
-                        return null;
-                      },
-                    ),
+                      ElevatedButton(
+                        onPressed: pinsProvider.mapPins["isButton"]
+                            ? null
+                            : () {
+                                pinsProvider.isButton(true);
+                                pinsProvider.end(true);
+                              },
+                        child: const Text('end'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          _submitForm();
+                        },
+                        child: const Text('Submit'),
+                      ),
+                    ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: Consumer<PinsProvider>(
-                    builder: (context, pinsProvider, child) => Row(
-                      children: [
-                        ElevatedButton(
-                          onPressed: pinsProvider.mapPins["isButton"]
-                              ? null
-                              : () {
-                                  pinsProvider.isButton(true);
-                                  pinsProvider.start(true);
-                                },
-                          child: const Text('start'),
-                        ),
-                        ElevatedButton(
-                          onPressed: pinsProvider.mapPins["isButton"]
-                              ? null
-                              : () {
-                                  pinsProvider.isButton(true);
-                                  pinsProvider.end(true);
-                                },
-                          child: const Text('end'),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            _submitForm();
-                          },
-                          child: const Text('Submit'),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-              ],
-            ),
+              )
+            ],
           ),
         ));
   }

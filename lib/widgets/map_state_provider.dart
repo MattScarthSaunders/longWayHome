@@ -58,7 +58,7 @@ class MapStateProvider with ChangeNotifier {
       ),
     ],
   );
-  Widget localPOIMarkers = MarkerLayer(markers: []);
+  Widget localPOIMarkers = const MarkerLayer(markers: []);
 
   void setInitialPosition() {
     initialPosition(serviceEnabled, permissionGranted).then((res) {
@@ -81,10 +81,8 @@ class MapStateProvider with ChangeNotifier {
       parsedRoute.forEach((point) {
         tempRoute.add(LatLng(point[1], point[0]));
       });
-      print('we get this far3');
 
       plottedRoute = tempRoute;
-      print('we get this far4');
 
       return;
     }).then((res) {
@@ -232,7 +230,6 @@ class MapStateProvider with ChangeNotifier {
   }
 
   void init() {
-    print('innit');
     //input
     startCoord = [];
     endCoord = [];
