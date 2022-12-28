@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class CurrentPOSMarker extends StatefulWidget {
-  CurrentPOSMarker({
+  const CurrentPOSMarker({
     super.key,
   });
   @override
@@ -23,7 +23,7 @@ class _CurrentPOSMarkerState extends State<CurrentPOSMarker> {
   bool hasChanged = false;
   Location location = Location();
   // PermissionStatus? _permissionGranted;
-  _locateMe() async {
+  locateMe() async {
     //if permision issues arise then add requestservice and requestpermission conditionals here
 
     // Track user Movements
@@ -41,7 +41,7 @@ class _CurrentPOSMarkerState extends State<CurrentPOSMarker> {
   Widget build(BuildContext context) {
     var mapState = context.read<MapStateProvider>();
     mapState.userCoord = [lng, lat];
-    _locateMe();
+    locateMe();
     return MarkerLayer(markers: [
       Marker(
         width: 80,

@@ -7,9 +7,9 @@ class PinsProvider with ChangeNotifier {
   late String selectedInput = '';
 
   final TextEditingController startPointController =
-      TextEditingController(text: 'Start Point');
+      TextEditingController(text: '');
   final TextEditingController endPointController =
-      TextEditingController(text: 'End Point');
+      TextEditingController(text: '');
 
   void setButton(bool value) {
     isButton = value;
