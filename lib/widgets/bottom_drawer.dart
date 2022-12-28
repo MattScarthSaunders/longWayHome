@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/profile_page.dart';
 import 'package:flutter_application_1/widgets/adress_form.dart';
+import 'package:flutter_application_1/widgets/state-providers/form_state_provider.dart';
 import 'package:flutter_application_1/widgets/state-providers/map_state_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -23,9 +24,11 @@ class _BottomDrawerWidget extends State<BottomDrawerWidget> {
               style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF31AFB9)),
               onPressed: () {
-                showMenu();
                 var mapState = context.read<MapStateProvider>();
+                var pinState = context.read<PinsProvider>();
                 mapState.init();
+                pinState.init();
+                showMenu();
               },
               child: const Text('New Walk'))),
       Align(

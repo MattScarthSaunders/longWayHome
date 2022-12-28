@@ -93,6 +93,8 @@ class AddressFormState extends State<AddressForm> {
                     }
                   },
                   child: const Text('Set Start'),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF31AFB9)),
                 ),
               ],
             ),
@@ -155,6 +157,8 @@ class AddressFormState extends State<AddressForm> {
                     }
                   },
                   child: const Text('Set End'),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF31AFB9)),
                 ),
               ],
             ),
@@ -163,6 +167,8 @@ class AddressFormState extends State<AddressForm> {
                 _submitForm();
               },
               child: const Text('Submit'),
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF31AFB9)),
             ),
           ],
         ),

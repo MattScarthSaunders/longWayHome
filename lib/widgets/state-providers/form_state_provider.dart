@@ -9,10 +9,8 @@ class PinsProvider with ChangeNotifier {
   var startIconColor = Colors.black;
   var endIconColor = Colors.black;
 
-  final TextEditingController startPointController =
-      TextEditingController(text: '');
-  final TextEditingController endPointController =
-      TextEditingController(text: '');
+  TextEditingController startPointController = TextEditingController(text: '');
+  TextEditingController endPointController = TextEditingController(text: '');
 
   void setButton(bool value) {
     isButton = value;
@@ -56,5 +54,15 @@ class PinsProvider with ChangeNotifier {
   getCoords(postcode) async {
     List<Location> locations = await locationFromAddress(postcode);
     return locations[0];
+  }
+
+  init() {
+    isButton = false;
+    selectedInput = '';
+    startIconColor = Colors.black;
+    endIconColor = Colors.black;
+    startPointController = TextEditingController(text: '');
+    endPointController = TextEditingController(text: '');
+    notifyListeners();
   }
 }

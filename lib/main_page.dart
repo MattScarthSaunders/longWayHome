@@ -49,7 +49,7 @@ class _MainPageState extends State<MainPage> {
                         } else if (pinsProvider.selectedInput == "end") {
                           pinState.setButton(false);
                           pinState.getPostcode(point);
-                          mapStateProvider.setMarkerLocation(point, "end");
+                          mapState.setMarkerLocation(point, "end");
                           mapState.setCoords(point, "end");
                           if (mapStateProvider.startCoord.isNotEmpty) {
                             mapState.setInitialRoute();
