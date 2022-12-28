@@ -66,7 +66,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                 ),
                 onPressed: signIn),
             Container(
-              padding: EdgeInsets.all(35),
+              padding: const EdgeInsets.all(35),
               child: RichText(
                 text: TextSpan(
                     style: const TextStyle(color: Colors.white, fontSize: 20),

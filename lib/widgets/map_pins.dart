@@ -6,6 +6,9 @@ class PinsProvider with ChangeNotifier {
 
   late String selectedInput = '';
 
+  var startIconColor = Colors.black;
+  var endIconColor = Colors.black;
+
   final TextEditingController startPointController =
       TextEditingController(text: '');
   final TextEditingController endPointController =
@@ -13,6 +16,22 @@ class PinsProvider with ChangeNotifier {
 
   void setButton(bool value) {
     isButton = value;
+    notifyListeners();
+  }
+
+  setInput(type) {
+    selectedInput = type;
+    if (type == "start") {
+      startIconColor = Colors.blue;
+      endIconColor = Colors.black;
+    } else if (type == "end") {
+      startIconColor = Colors.black;
+      endIconColor = Colors.blue;
+    } else {
+      startIconColor = Colors.black;
+      endIconColor = Colors.black;
+    }
+
     notifyListeners();
   }
 
