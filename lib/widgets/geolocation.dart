@@ -35,6 +35,10 @@ class _CurrentPOSMarkerState extends State<CurrentPOSMarker> {
         });
       }
     });
+
+    void dispose() {
+      super.dispose();
+    }
   }
 
   @override

@@ -51,6 +51,18 @@ class AddressFormState extends State<AddressForm> {
               }),
               ElevatedButton(
                 onPressed: () {
+                  var pinState = context.read<PinsProvider>();
+                  if (pinState.isButton) {
+                    return;
+                  } else {
+                    pinState.setButton(true);
+                    pinState.selectedInput = "start";
+                  }
+                },
+                child: const Text('start'),
+              ),
+              ElevatedButton(
+                onPressed: () {
                   var mapState = context.read<MapStateProvider>();
                   var pinState = context.read<PinsProvider>();
 
