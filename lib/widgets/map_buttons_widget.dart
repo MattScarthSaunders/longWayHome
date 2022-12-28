@@ -53,7 +53,7 @@ class MapButtons extends StatelessWidget {
                   15);
             },
             backgroundColor: const Color(0xff31AFB9),
-            child: const Icon(Icons.navigation),
+            child: const Icon(Icons.gps_fixed_outlined),
           ),
         )
       ]);
