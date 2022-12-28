@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/widgets/state-providers/location_state_provider.dart';
 import 'package:flutter_application_1/widgets/state-providers/map_state_provider.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart';
@@ -10,8 +11,8 @@ class MapButtons extends StatelessWidget {
   MapButtons();
 
   Widget build(BuildContext context) {
-    return Consumer<MapStateProvider>(
-        builder: (context, mapStateProvider, child) {
+    return Consumer2<MapStateProvider, LocationStateProvider>(
+        builder: (context, mapStateProvider, locationStateProvider, child) {
       return Stack(children: [
         Positioned(
           right: 0,
@@ -48,8 +49,7 @@ class MapButtons extends StatelessWidget {
             heroTag: Text("mapbtn3"),
             onPressed: () {
               mapStateProvider.mapController.move(
-                  LatLng(mapStateProvider.userCoord[1],
-                      mapStateProvider.userCoord[0]),
+                  LatLng(locationStateProvider.lat, locationStateProvider.lng),
                   15);
             },
             backgroundColor: const Color(0xff31AFB9),
