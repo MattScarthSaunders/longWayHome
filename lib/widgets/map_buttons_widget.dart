@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/widgets/map_state_provider.dart';
+import 'package:flutter_application_1/widgets/state-providers/map_state_provider.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_application_1/widgets/geolocation.dart';

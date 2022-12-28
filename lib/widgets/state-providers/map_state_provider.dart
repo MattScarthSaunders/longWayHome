@@ -100,6 +100,7 @@ class MapStateProvider with ChangeNotifier {
           Polyline(
             points: plottedRoute,
             color: Colors.blue,
+            strokeWidth: 6,
           ),
         ],
       );
@@ -190,7 +191,7 @@ class MapStateProvider with ChangeNotifier {
           Polyline(
             points: routePoints,
             color: Colors.orange,
-            strokeWidth: 10,
+            strokeWidth: 6,
           ),
         ],
       );

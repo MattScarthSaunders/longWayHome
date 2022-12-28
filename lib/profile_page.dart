@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/widgets/state-providers/map_state_provider.dart';
 import 'package:flutter_application_1/widgets/user_api.dart';
+import 'package:provider/provider.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -18,7 +20,6 @@ class ProfilePage extends StatelessWidget {
         builder: ((context, snapshot) {
           if (snapshot.hasData) {
             //refer to data as below to render profile information
-            print(json.decode(snapshot.data.toString()));
             return Scaffold(
                 appBar: AppBar(
                   title: const Text('Home'),
@@ -63,6 +64,8 @@ class ProfilePage extends StatelessWidget {
                             style: TextStyle(fontSize: 24),
                           ),
                           onPressed: () {
+                            var mapState = context.read<MapStateProvider>();
+                            mapState.init();
                             FirebaseAuth.instance.signOut();
                             Navigator.of(context).pop();
                           }),

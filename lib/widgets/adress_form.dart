@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/widgets/map_pins.dart';
-import 'package:flutter_application_1/widgets/map_state_provider.dart';
+import 'package:flutter_application_1/widgets/state-providers/form_state_provider.dart';
+import 'package:flutter_application_1/widgets/state-providers/map_state_provider.dart';
 import 'package:provider/provider.dart';
 
 class AddressForm extends StatefulWidget {
@@ -168,8 +168,5 @@ class AddressFormState extends State<AddressForm> {
         ),
       ),
     );
-    // ],
-    // ),
-    // ));
   }
 }
