@@ -23,10 +23,10 @@ class _BottomDrawerWidget extends State<BottomDrawerWidget> {
               style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF31AFB9)),
               onPressed: () {
-                var mapState = context.read<MapStateProvider>();
-                var pinState = context.read<PinsProvider>();
-                mapState.init();
-                pinState.init();
+                var mapStateSetter = context.read<MapStateProvider>();
+                var pinStateSetter = context.read<FormStateProvider>();
+                mapStateSetter.init();
+                pinStateSetter.init();
                 showMenu();
               },
               child: const Text('New Walk'))),
@@ -36,8 +36,8 @@ class _BottomDrawerWidget extends State<BottomDrawerWidget> {
               style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF31AFB9)),
               onPressed: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => ProfilePage()));
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const ProfilePage()));
               },
               child: const Text('Profile')))
     ]);

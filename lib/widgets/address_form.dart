@@ -16,8 +16,8 @@ class AddressFormState extends State<AddressForm> {
 
   _submitForm() {
     if (_formKey.currentState!.validate()) {
-      var mapState = context.read<MapStateProvider>();
-      mapState.setRoute();
+      var mapStateSetter = context.read<MapStateProvider>();
+      mapStateSetter.setRoute();
     }
   }
 
@@ -36,15 +36,15 @@ class AddressFormState extends State<AddressForm> {
             Row(
               children: [
                 Expanded(
-                  child: Consumer<PinsProvider>(
-                      builder: (context, pinsProvider, child) {
+                  child: Consumer<FormStateProvider>(
+                      builder: (context, pinStateListener, child) {
                     return TextFormField(
                       style: const TextStyle(color: Colors.white),
                       decoration: const InputDecoration(
                         labelText: 'Start position',
                         labelStyle: TextStyle(color: Colors.white),
                       ),
-                      controller: pinsProvider.startPointController,
+                      controller: pinStateListener.startPointController,
                       validator: (value) {
                         if (value == null || !regex.hasMatch(value)) {
                           return 'Please enter a valid postal code';
@@ -56,59 +56,64 @@ class AddressFormState extends State<AddressForm> {
                 ),
                 IconButton(
                   onPressed: () {
-                    var pinState = context.read<PinsProvider>();
-                    if (pinState.isButton) {
-                      pinState.setButton(false);
+                    var pinStateSetter = context.read<FormStateProvider>();
+                    if (pinStateSetter.isButton) {
+                      pinStateSetter.setButton(false);
 
-                      pinState.setInput('none');
+                      pinStateSetter.setInput('none');
                     } else {
-                      pinState.setButton(true);
-                      pinState.setInput('start');
+                      pinStateSetter.setButton(true);
+                      pinStateSetter.setInput('start');
                     }
                   },
                   iconSize: 30,
-                  icon: Consumer<PinsProvider>(
-                      builder: (context, pinsProvider, child) {
+                  icon: Consumer<FormStateProvider>(
+                      builder: (context, pinStateListener, child) {
                     return Icon(
                       Icons.location_on,
-                      color: pinsProvider.startIconColor,
+                      color: pinStateListener.startIconColor,
                     );
                   }),
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    var mapState = context.read<MapStateProvider>();
-                    var pinState = context.read<PinsProvider>();
+                    var mapStateSetter = context.read<MapStateProvider>();
+                    var pinStateSetter = context.read<FormStateProvider>();
 
-                    if (regex.hasMatch(pinState.startPointController.text)) {
-                      pinState
-                          .getCoords(pinState.startPointController.text)
+                    if (regex
+                        .hasMatch(pinStateSetter.startPointController.text)) {
+                      pinStateSetter
+                          .getCoords(pinStateSetter.startPointController.text)
                           .then((res) {
-                        mapState.setMarkerLocation(res, "start");
-                        mapState.startCoord = [res.longitude, res.latitude];
-                        if (mapState.endCoord.isNotEmpty) {
-                          mapState.setInitialRoute();
+                        mapStateSetter.setMarkerLocation(res, "start");
+                        mapStateSetter.startCoord = [
+                          res.longitude,
+                          res.latitude
+                        ];
+                        if (mapStateSetter.endCoord.isNotEmpty) {
+                          mapStateSetter.setInitialRoute();
                         }
                       });
                     }
                   },
-                  child: const Text('Set Start'),
                   style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF31AFB9)),
+                  child: const Text('Set Start'),
                 ),
               ],
             ),
             Row(
               children: [
                 Expanded(
-                  child: Consumer<PinsProvider>(
-                    builder: (context, pinsProvider, child) => TextFormField(
+                  child: Consumer<FormStateProvider>(
+                    builder: (context, pinStateListener, child) =>
+                        TextFormField(
                       style: const TextStyle(color: Colors.white),
                       decoration: const InputDecoration(
                         labelText: 'End position',
                         labelStyle: TextStyle(color: Colors.white),
                       ),
-                      controller: pinsProvider.endPointController,
+                      controller: pinStateListener.endPointController,
                       validator: (value) {
                         if (value == null || !regex.hasMatch(value)) {
                           return 'Please enter a valid postal code';
@@ -120,45 +125,46 @@ class AddressFormState extends State<AddressForm> {
                 ),
                 IconButton(
                   onPressed: () {
-                    var pinState = context.read<PinsProvider>();
-                    if (pinState.isButton) {
-                      pinState.setButton(false);
+                    var pinStateSetter = context.read<FormStateProvider>();
+                    if (pinStateSetter.isButton) {
+                      pinStateSetter.setButton(false);
 
-                      pinState.setInput('none');
+                      pinStateSetter.setInput('none');
                     } else {
-                      pinState.setButton(true);
-                      pinState.setInput('end');
+                      pinStateSetter.setButton(true);
+                      pinStateSetter.setInput('end');
                     }
                   },
                   iconSize: 30,
-                  icon: Consumer<PinsProvider>(
-                      builder: (context, pinsProvider, child) {
+                  icon: Consumer<FormStateProvider>(
+                      builder: (context, pinStateListener, child) {
                     return Icon(
                       Icons.location_on,
-                      color: pinsProvider.endIconColor,
+                      color: pinStateListener.endIconColor,
                     );
                   }),
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    var mapState = context.read<MapStateProvider>();
-                    var pinState = context.read<PinsProvider>();
+                    var mapStateSetter = context.read<MapStateProvider>();
+                    var pinStateSetter = context.read<FormStateProvider>();
 
-                    if (regex.hasMatch(pinState.startPointController.text)) {
-                      pinState
-                          .getCoords(pinState.endPointController.text)
+                    if (regex
+                        .hasMatch(pinStateSetter.startPointController.text)) {
+                      pinStateSetter
+                          .getCoords(pinStateSetter.endPointController.text)
                           .then((res) {
-                        mapState.setMarkerLocation(res, "end");
-                        mapState.endCoord = [res.longitude, res.latitude];
-                        if (mapState.endCoord.isNotEmpty) {
-                          mapState.setInitialRoute();
+                        mapStateSetter.setMarkerLocation(res, "end");
+                        mapStateSetter.endCoord = [res.longitude, res.latitude];
+                        if (mapStateSetter.endCoord.isNotEmpty) {
+                          mapStateSetter.setInitialRoute();
                         }
                       });
                     }
                   },
-                  child: const Text('Set End'),
                   style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF31AFB9)),
+                  child: const Text('Set End'),
                 ),
               ],
             ),

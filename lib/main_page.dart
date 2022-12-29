@@ -20,41 +20,25 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
-    var mapState = context.read<MapStateProvider>();
-    var pinState = context.read<PinsProvider>();
-    mapState.setInitialPosition();
+    var mapStateSetter = context.read<MapStateProvider>();
+    mapStateSetter.setInitialPosition();
 
     return Scaffold(
-      floatingActionButton: MapButtons(),
+      floatingActionButton: const MapButtons(),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Consumer2<MapStateProvider, PinsProvider>(
-              builder: (context, mapStateProvider, pinsProvider, child) {
+          Consumer2<MapStateProvider, FormStateProvider>(
+              builder: (context, mapStateListener, pinStateListener, child) {
             return Flexible(
                 child: FlutterMap(
-                    mapController: mapStateProvider.mapController,
+                    mapController: mapStateListener.mapController,
                     options: MapOptions(
                       center: LatLng(0.0, 0.0),
                       zoom: 15,
                       onTap: (tapPosition, point) {
-                        if (pinsProvider.selectedInput == "start") {
-                          pinState.setButton(false);
-                          pinState.getPostcode(point);
-                          mapState.setMarkerLocation(point, "start");
-                          mapState.setCoords(point, "start");
-                          if (mapStateProvider.endCoord.isNotEmpty) {
-                            mapState.setInitialRoute();
-                          }
-                        } else if (pinsProvider.selectedInput == "end") {
-                          pinState.setButton(false);
-                          pinState.getPostcode(point);
-                          mapState.setMarkerLocation(point, "end");
-                          mapState.setCoords(point, "end");
-                          if (mapStateProvider.startCoord.isNotEmpty) {
-                            mapState.setInitialRoute();
-                          }
-                        }
+                        setFormMarkers(
+                            pinStateListener, mapStateListener, point);
                       },
                     ),
                     nonRotatedChildren: const [],
@@ -64,13 +48,13 @@ class _MainPageState extends State<MainPage> {
                         "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                     userAgentPackageName: 'dev.fleaflet.flutter_map.example',
                   ),
-                  mapStateProvider.routePolyLine,
-                  CurrentPOSMarker(),
+                  mapStateListener.routePolyLine,
+                  const CurrentPOSMarker(),
                   MarkerLayer(markers: [
-                    mapStateProvider.startMark,
-                    mapStateProvider.endMark
+                    mapStateListener.startMark,
+                    mapStateListener.endMark
                   ]),
-                  mapStateProvider.localPOIMarkers,
+                  mapStateListener.localPOIMarkers,
                 ]));
           }),
         ],
@@ -87,5 +71,28 @@ class _MainPageState extends State<MainPage> {
         ),
       ),
     );
+  }
+
+  setFormMarkers(pinStateListener, mapStateListener, point) {
+    var pinStateSetter = context.read<FormStateProvider>();
+    var mapStateSetter = context.read<MapStateProvider>();
+
+    if (pinStateListener.selectedInput == "start") {
+      pinStateSetter.setButton(false);
+      pinStateSetter.getPostcode(point);
+      mapStateSetter.setMarkerLocation(point, "start");
+      mapStateSetter.setCoords(point, "start");
+      if (mapStateListener.endCoord.isNotEmpty) {
+        mapStateSetter.setInitialRoute();
+      }
+    } else if (pinStateListener.selectedInput == "end") {
+      pinStateSetter.setButton(false);
+      pinStateSetter.getPostcode(point);
+      mapStateSetter.setMarkerLocation(point, "end");
+      mapStateSetter.setCoords(point, "end");
+      if (mapStateListener.startCoord.isNotEmpty) {
+        mapStateSetter.setInitialRoute();
+      }
+    }
   }
 }
