@@ -36,7 +36,10 @@ class AddressFormState extends State<AddressForm> {
           children: [
             Consumer<FormStateProvider>(
                 builder: (context, pinStateListener, child) {
-              return Row(children: setFormContent(pinStateListener));
+              return Center(
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: setFormContent(pinStateListener)));
             }),
           ],
         ),
@@ -66,7 +69,7 @@ class AddressFormState extends State<AddressForm> {
           },
           style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF31AFB9)),
-          child: const Text('Submit'),
+          child: const Text('Generate Walk'),
         )
       ];
     } else {

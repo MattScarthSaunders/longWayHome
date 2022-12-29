@@ -61,9 +61,9 @@ class MapStateProvider with ChangeNotifier {
   Widget localPOIMarkers = const MarkerLayer(markers: []);
 
   void setCoords(point, type) {
-    if (type == 'start') {
+    if (type == 'Start') {
       startCoord = [point.longitude, point.latitude];
-    } else if (type == 'end') {
+    } else if (type == 'End') {
       endCoord = [point.longitude, point.latitude];
     }
   }
@@ -203,7 +203,7 @@ class MapStateProvider with ChangeNotifier {
   }
 
   void setMarkerLocation(point, type) {
-    final markColor = type == "start" ? Colors.green : Colors.red;
+    final markColor = type == "Start" ? Colors.green : Colors.red;
 
     Marker mark = Marker(
       point: LatLng(point.latitude, point.longitude),
@@ -219,9 +219,9 @@ class MapStateProvider with ChangeNotifier {
       ),
     );
 
-    if (type == 'start') {
+    if (type == 'Start') {
       startMark = mark;
-    } else if (type == "end") {
+    } else if (type == "End") {
       endMark = mark;
     }
 
