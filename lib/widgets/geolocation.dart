@@ -21,19 +21,22 @@ class CurrentPOSMarker extends StatefulWidget {
 class _CurrentPOSMarkerState extends State<CurrentPOSMarker> {
   @override
   Widget build(BuildContext context) {
-    var locationState = context.read<LocationStateProvider>();
+    var locationStateSetter = context.read<LocationStateProvider>();
 
-    locationState.locateMe();
+    locationStateSetter.locateMe();
 
     return Consumer<LocationStateProvider>(
-        builder: (context, locationStateProvider, child) {
+        builder: (context, locationStateListener, child) {
       var mapState = context.read<MapStateProvider>();
-      mapState.userCoord = [locationState.lng, locationState.lat];
+      mapState.userCoord = [
+        locationStateListener.lng,
+        locationStateListener.lat
+      ];
       return MarkerLayer(markers: [
         Marker(
           width: 80,
           height: 80,
-          point: LatLng(locationStateProvider.lat, locationStateProvider.lng),
+          point: LatLng(locationStateListener.lat, locationStateListener.lng),
           builder: (ctx) => Container(
             key: const Key('blue'),
             child: const Icon(

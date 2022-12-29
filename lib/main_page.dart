@@ -77,7 +77,7 @@ class _MainPageState extends State<MainPage> {
     var pinStateSetter = context.read<FormStateProvider>();
     var mapStateSetter = context.read<MapStateProvider>();
 
-    if (pinStateListener.selectedInput == "start") {
+    if (pinStateListener.selectedInput == "Start") {
       pinStateSetter.setButton(false);
       pinStateSetter.getPostcode(point);
       mapStateSetter.setMarkerLocation(point, "start");
@@ -85,7 +85,7 @@ class _MainPageState extends State<MainPage> {
       if (mapStateListener.endCoord.isNotEmpty) {
         mapStateSetter.setInitialRoute();
       }
-    } else if (pinStateListener.selectedInput == "end") {
+    } else if (pinStateListener.selectedInput == "End") {
       pinStateSetter.setButton(false);
       pinStateSetter.getPostcode(point);
       mapStateSetter.setMarkerLocation(point, "end");

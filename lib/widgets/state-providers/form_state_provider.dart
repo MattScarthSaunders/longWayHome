@@ -3,6 +3,8 @@ import 'package:geocoding/geocoding.dart';
 
 class FormStateProvider with ChangeNotifier {
   late bool isButton = false;
+  late bool startComplete = false;
+  late bool endComplete = false;
 
   late String selectedInput = '';
 
@@ -19,10 +21,10 @@ class FormStateProvider with ChangeNotifier {
 
   setInput(type) {
     selectedInput = type;
-    if (type == "start") {
+    if (type == "Start") {
       startIconColor = Colors.blue;
       endIconColor = Colors.black;
-    } else if (type == "end") {
+    } else if (type == "End") {
       startIconColor = Colors.black;
       endIconColor = Colors.blue;
     } else {
@@ -40,9 +42,9 @@ class FormStateProvider with ChangeNotifier {
           await placemarkFromCoordinates(cords.latitude, cords.longitude);
 
       String postCode = placemarks[0].postalCode ?? "";
-      if (selectedInput == 'start') {
+      if (selectedInput == 'Start') {
         startPointController.text = postCode;
-      } else if (selectedInput == 'end') {
+      } else if (selectedInput == 'End') {
         endPointController.text = postCode;
       }
       return postCode;
@@ -56,8 +58,19 @@ class FormStateProvider with ChangeNotifier {
     return locations[0];
   }
 
+  formSectionComplete(type) {
+    if (type == "Start") {
+      startComplete = true;
+    } else if (type == "End") {
+      endComplete = true;
+    }
+    notifyListeners();
+  }
+
   init() {
     isButton = false;
+    startComplete = false;
+    endComplete = false;
     selectedInput = '';
     startIconColor = Colors.black;
     endIconColor = Colors.black;
