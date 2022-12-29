@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/widgets/state-providers/map_state_provider.dart';
 import 'package:flutter_application_1/widgets/user_api.dart';
@@ -73,7 +71,7 @@ class ProfilePage extends StatelessWidget {
                   ),
                 ));
           } else {
-            return CircularProgressIndicator();
+            return const Center(child: CircularProgressIndicator());
           }
         }));
   }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 
-class PinsProvider with ChangeNotifier {
+class FormStateProvider with ChangeNotifier {
   late bool isButton = false;
 
   late String selectedInput = '';
