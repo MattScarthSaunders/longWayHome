@@ -14,18 +14,8 @@ class AddressForm extends StatefulWidget {
 class AddressFormState extends State<AddressForm> {
   final _formKey = GlobalKey<FormState>();
 
-  _submitForm() {
-    if (_formKey.currentState!.validate()) {
-      var mapStateSetter = context.read<MapStateProvider>();
-      mapStateSetter.setRoute();
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final regex = RegExp(
-        r'^([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\s?[0-9][A-Za-z]{2})$');
-
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
       child: Form(
@@ -47,6 +37,13 @@ class AddressFormState extends State<AddressForm> {
     );
   }
 
+  _submitForm() {
+    if (_formKey.currentState!.validate()) {
+      var mapStateSetter = context.read<MapStateProvider>();
+      mapStateSetter.setRoute();
+    }
+  }
+
   setFormContent(pinStateListener) {
     final regex = RegExp(
         r'^([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\s?[0-9][A-Za-z]{2})$');
@@ -62,6 +59,7 @@ class AddressFormState extends State<AddressForm> {
     }
 
     if (pinStateListener.startComplete && pinStateListener.endComplete) {
+      //if form complete, submit and generate route
       return [
         ElevatedButton(
           onPressed: () {
@@ -73,6 +71,7 @@ class AddressFormState extends State<AddressForm> {
         )
       ];
     } else {
+      //return programmatic form entry sections, i.e start location then end location then....
       return [
         Expanded(
           child: Consumer<FormStateProvider>(

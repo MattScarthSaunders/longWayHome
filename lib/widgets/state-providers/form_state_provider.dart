@@ -14,11 +14,13 @@ class FormStateProvider with ChangeNotifier {
   TextEditingController startPointController = TextEditingController(text: '');
   TextEditingController endPointController = TextEditingController(text: '');
 
+//sets when a button has been pressed? idk? It all breaks if I remove this.
   void setButton(bool value) {
     isButton = value;
     notifyListeners();
   }
 
+  //sets current form input type
   setInput(type) {
     selectedInput = type;
     if (type == "Start") {
@@ -35,6 +37,7 @@ class FormStateProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  //gets postcode from coords
   getPostcode(cords) async {
     try {
 //NOTE: IN TESTING THIS IS NOT 100% EFFECTIVE. Some postcodes come out incomplete.
@@ -53,11 +56,13 @@ class FormStateProvider with ChangeNotifier {
     }
   }
 
+  //gets coords from postcode
   getCoords(postcode) async {
     List<Location> locations = await locationFromAddress(postcode);
     return locations[0];
   }
 
+  //notifies when certain form section is filled out
   formSectionComplete(type) {
     if (type == "Start") {
       startComplete = true;
@@ -67,6 +72,7 @@ class FormStateProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  //resets state
   init() {
     isButton = false;
     startComplete = false;

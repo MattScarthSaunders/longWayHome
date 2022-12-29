@@ -60,6 +60,7 @@ class MapStateProvider with ChangeNotifier {
   );
   Widget localPOIMarkers = const MarkerLayer(markers: []);
 
+  //sets start and end point coords
   void setCoords(point, type) {
     if (type == 'Start') {
       startCoord = [point.longitude, point.latitude];
@@ -68,6 +69,7 @@ class MapStateProvider with ChangeNotifier {
     }
   }
 
+  //sets initial user position on map
   void setInitialPosition() {
     initialPosition(serviceEnabled, permissionGranted).then((res) {
       userCoord = [res.longitude, res.latitude];
@@ -202,6 +204,7 @@ class MapStateProvider with ChangeNotifier {
     });
   }
 
+  //sets start and end point markers on map
   void setMarkerLocation(point, type) {
     final markColor = type == "Start" ? Colors.green : Colors.red;
 
@@ -228,6 +231,7 @@ class MapStateProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  //resets state
   void init() {
     //input
     startCoord = [];
