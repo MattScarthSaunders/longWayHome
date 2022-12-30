@@ -25,11 +25,11 @@ class AddressFormState extends State<AddressForm> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Consumer<FormStateProvider>(
-                builder: (context, pinStateListener, child) {
+                builder: (context, formStateListener, child) {
               return Center(
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: setFormContent(pinStateListener)));
+                      children: setFormContent(formStateListener)));
             }),
           ],
         ),
@@ -44,21 +44,18 @@ class AddressFormState extends State<AddressForm> {
     }
   }
 
-  setFormContent(pinStateListener) {
+  setFormContent(formStateListener) {
     final regex = RegExp(
         r'^([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\s?[0-9][A-Za-z]{2})$');
 
     String type = '';
-    var pointController = pinStateListener.startPointController;
-    if (!pinStateListener.startComplete) {
+    if (!formStateListener.startComplete) {
       type = "Start";
-      pointController = pinStateListener.startPointController;
     } else {
       type = "End";
-      pointController = pinStateListener.endPointController;
     }
 
-    if (pinStateListener.startComplete && pinStateListener.endComplete) {
+    if (formStateListener.startComplete && formStateListener.endComplete) {
       //if form complete, submit and generate route
       return [
         ElevatedButton(
@@ -74,24 +71,17 @@ class AddressFormState extends State<AddressForm> {
       //return programmatic form entry sections, i.e start location then end location then....
       return [
         Expanded(
-          child: Consumer<FormStateProvider>(
-              builder: (context, pinStateListener, child) {
-            return TextFormField(
-              style: const TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                labelText: '$type Postcode',
-                labelStyle: TextStyle(color: Colors.white),
-              ),
-              controller: pointController,
-              validator: (value) {
-                if (value == null || !regex.hasMatch(value)) {
-                  return 'Please enter a valid postal code';
-                }
-                return null;
-              },
-            );
-          }),
-        ),
+            child: TextFormField(
+                style: const TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  labelText: '$type Postcode',
+                  labelStyle: TextStyle(color: Colors.white),
+                ),
+                controller: formStateListener.pointController,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) => value != "" && !regex.hasMatch(value!)
+                    ? 'Please enter a valid postal code'
+                    : null)),
         IconButton(
           onPressed: () {
             var pinStateSetter = context.read<FormStateProvider>();
@@ -118,13 +108,16 @@ class AddressFormState extends State<AddressForm> {
             var mapStateSetter = context.read<MapStateProvider>();
             var pinStateSetter = context.read<FormStateProvider>();
 
-            if (regex.hasMatch(pointController.text)) {
-              pinStateSetter.getCoords(pointController.text).then((res) {
+            if (regex.hasMatch(formStateListener.pointController.text)) {
+              pinStateSetter
+                  .getCoords(formStateListener.pointController.text)
+                  .then((res) {
                 mapStateSetter.setMarkerLocation(res, type);
                 type == "Start"
                     ? mapStateSetter.startCoord = [res.longitude, res.latitude]
                     : mapStateSetter.endCoord = [res.longitude, res.latitude];
                 pinStateSetter.formSectionComplete(type);
+                pinStateSetter.pointController = TextEditingController();
               });
             }
           },

@@ -11,8 +11,8 @@ class FormStateProvider with ChangeNotifier {
   var startIconColor = Colors.black;
   var endIconColor = Colors.black;
 
-  TextEditingController startPointController = TextEditingController(text: '');
-  TextEditingController endPointController = TextEditingController(text: '');
+  TextEditingController pointController = TextEditingController();
+  // TextEditingController endPointController = TextEditingController(text: '');
 
 //sets when a button has been pressed? idk? It all breaks if I remove this.
   void setButton(bool value) {
@@ -45,11 +45,12 @@ class FormStateProvider with ChangeNotifier {
           await placemarkFromCoordinates(cords.latitude, cords.longitude);
 
       String postCode = placemarks[0].postalCode ?? "";
-      if (selectedInput == 'Start') {
-        startPointController.text = postCode;
-      } else if (selectedInput == 'End') {
-        endPointController.text = postCode;
-      }
+      // if (selectedInput == 'Start') {
+      //   pointController.text = postCode;
+      // } else if (selectedInput == 'End') {
+      //   endPointController.text = postCode;
+      // }
+      pointController.text = postCode;
       return postCode;
     } catch (e) {
       return cords;
@@ -80,8 +81,9 @@ class FormStateProvider with ChangeNotifier {
     selectedInput = '';
     startIconColor = Colors.black;
     endIconColor = Colors.black;
-    startPointController = TextEditingController(text: '');
-    endPointController = TextEditingController(text: '');
+    // startPointController = TextEditingController(text: '');
+    // endPointController = TextEditingController(text: '');
+    pointController = TextEditingController();
     notifyListeners();
   }
 }

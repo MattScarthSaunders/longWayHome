@@ -80,16 +80,16 @@ class _MainPageState extends State<MainPage> {
     if (pinStateListener.selectedInput == "Start") {
       pinStateSetter.setButton(false);
       pinStateSetter.getPostcode(point);
-      mapStateSetter.setMarkerLocation(point, "start");
-      mapStateSetter.setCoords(point, "start");
+      mapStateSetter.setMarkerLocation(point, "Start");
+      mapStateSetter.setCoords(point, "Start");
       if (mapStateListener.endCoord.isNotEmpty) {
         mapStateSetter.setInitialRoute();
       }
     } else if (pinStateListener.selectedInput == "End") {
       pinStateSetter.setButton(false);
       pinStateSetter.getPostcode(point);
-      mapStateSetter.setMarkerLocation(point, "end");
-      mapStateSetter.setCoords(point, "end");
+      mapStateSetter.setMarkerLocation(point, "End");
+      mapStateSetter.setCoords(point, "End");
       if (mapStateListener.startCoord.isNotEmpty) {
         mapStateSetter.setInitialRoute();
       }
