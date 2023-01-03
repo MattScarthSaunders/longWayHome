@@ -1,13 +1,16 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/widgets/state-providers/location_state_provider.dart';
+import 'package:flutter_application_1/widgets/state-providers/map_state_provider.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
+import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class CurrentPOSMarker extends StatefulWidget {
-  CurrentPOSMarker({
+  const CurrentPOSMarker({
     super.key,
   });
   @override
@@ -16,43 +19,35 @@ class CurrentPOSMarker extends StatefulWidget {
 }
 
 class _CurrentPOSMarkerState extends State<CurrentPOSMarker> {
-  double lat = 0.0;
-  double lng = 0.0;
-  bool hasChanged = false;
-  Location location = Location();
-  // PermissionStatus? _permissionGranted;
-  _locateMe() async {
-    //if permision issues arise then add requestservice and requestpermission conditionals here
-
-    // Track user Movements
-    location.onLocationChanged.listen((res) {
-      if (res.latitude != lat || res.longitude != lng) {
-        setState(() {
-          lat = res.latitude ?? 00;
-          lng = res.longitude ?? 00;
-        });
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    _locateMe();
-    return MarkerLayer(markers: [
-      Marker(
-        width: 80,
-        height: 80,
-        point: LatLng(lat, lng),
-        builder: (ctx) => Container(
-          key: const Key('blue'),
-          child: const Icon(
-            Icons.location_on,
-            color: Colors.red,
-            size: 30.0,
+    var locationStateSetter = context.read<LocationStateProvider>();
+
+    locationStateSetter.locateMe();
+
+    return Consumer<LocationStateProvider>(
+        builder: (context, locationStateListener, child) {
+      var mapState = context.read<MapStateProvider>();
+      mapState.userCoord = [
+        locationStateListener.lng,
+        locationStateListener.lat
+      ];
+      return MarkerLayer(markers: [
+        Marker(
+          width: 80,
+          height: 80,
+          point: LatLng(locationStateListener.lat, locationStateListener.lng),
+          builder: (ctx) => Container(
+            key: const Key('blue'),
+            child: const Icon(
+              Icons.gps_fixed_outlined,
+              color: Color(0xff31AFB9),
+              size: 30.0,
+            ),
           ),
         ),
-      ),
-    ]);
+      ]);
+    });
   }
 }
 
