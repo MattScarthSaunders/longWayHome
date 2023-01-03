@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/widgets/state-providers/form_state_provider.dart';
 import 'package:flutter_application_1/widgets/state-providers/map_state_provider.dart';
 import 'package:flutter_application_1/widgets/user_api.dart';
 import 'package:provider/provider.dart';
@@ -63,7 +64,9 @@ class ProfilePage extends StatelessWidget {
                           ),
                           onPressed: () {
                             var mapState = context.read<MapStateProvider>();
+                            var formState = context.read<FormStateProvider>();
                             mapState.init();
+                            formState.init();
                             FirebaseAuth.instance.signOut();
                             Navigator.of(context).pop();
                           }),
