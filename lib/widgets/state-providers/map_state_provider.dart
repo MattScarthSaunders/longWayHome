@@ -22,6 +22,10 @@ class MapStateProvider with ChangeNotifier {
   List<Marker> allPOIMarkers = [];
 
   //rendering
+  bool isInitialRouteLoading = false;
+  bool isPOILoading = false;
+  bool isRouteLoading = false;
+
   late Marker startMark = Marker(
     point: LatLng(0.0, 0.0),
     width: 100,
@@ -83,6 +87,7 @@ class MapStateProvider with ChangeNotifier {
   //this handles generating an initial route between two points
   void setInitialRoute() {
     List<LatLng> tempRoute = [];
+    isInitialRouteLoading = true;
     //fetch route from api
     fetchInitialRoute(startCoord, endCoord).then((res) {
       final parsedRoute = json.decode(res.body.toString())["features"][0]
@@ -107,6 +112,7 @@ class MapStateProvider with ChangeNotifier {
         ],
       );
       setRoutePOI(100, 10, [130, 220, 330, 620]);
+      isInitialRouteLoading = false;
       notifyListeners();
     });
   }
@@ -114,6 +120,7 @@ class MapStateProvider with ChangeNotifier {
   //this handles retrieving the local POIs
   void setRoutePOI(buffer, markerLimit, categoryIds) {
     List tempCoords = [];
+    isPOILoading = true;
 
     plottedRoute.forEach((latlng) {
       tempCoords.add([latlng.longitude, latlng.latitude]);
@@ -160,6 +167,8 @@ class MapStateProvider with ChangeNotifier {
       return;
     }).then((res) {
       localPOIMarkers = MarkerLayer(markers: allPOIMarkers);
+      isPOILoading = false;
+
       notifyListeners();
     });
   }
@@ -175,6 +184,8 @@ class MapStateProvider with ChangeNotifier {
     });
 
     fullRouteCoords.add([endCoord[0], endCoord[1]]);
+
+    isRouteLoading = true;
 
     //fetch route polyline from api
     fetchRoute(fullRouteCoords).then((res) {
@@ -200,6 +211,8 @@ class MapStateProvider with ChangeNotifier {
 
       return;
     }).then((res) {
+      isRouteLoading = false;
+
       notifyListeners();
     });
   }
