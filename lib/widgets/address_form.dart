@@ -61,6 +61,7 @@ class AddressFormState extends State<AddressForm> {
         ElevatedButton(
           onPressed: () {
             _submitForm();
+            var pinStateSetter = context.read<FormStateProvider>();
           },
           style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF31AFB9)),
@@ -87,7 +88,6 @@ class AddressFormState extends State<AddressForm> {
             var pinStateSetter = context.read<FormStateProvider>();
             if (pinStateSetter.isButton) {
               pinStateSetter.setButton(false);
-
               pinStateSetter.setInput('none');
             } else {
               pinStateSetter.setButton(true);
@@ -119,6 +119,8 @@ class AddressFormState extends State<AddressForm> {
                 pinStateSetter.formSectionComplete(type);
                 pinStateSetter.pointController = TextEditingController();
               });
+              pinStateSetter.setButton(false);
+              pinStateSetter.setInput('none');
             }
           },
           style: ElevatedButton.styleFrom(
