@@ -6,6 +6,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:google_polyline_algorithm/google_polyline_algorithm.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
+import 'package:http/http.dart' as http;
 
 class MapStateProvider with ChangeNotifier {
   //input
@@ -202,6 +203,30 @@ class MapStateProvider with ChangeNotifier {
     }).then((res) {
       notifyListeners();
     });
+  }
+
+  Future<http.Response> saveRoute() async {
+    final response = await http.post(
+      Uri.parse(
+          "https://rich-puce-bear-gown.cyclic.app/api/user/63a08560482372cd329d6888/route"),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: json.encode({'routeName': 'York walk', 'routeData': plottedRoute}),
+    );
+
+    return jsonDecode(response.body[0]);
+  }
+
+  Future<http.Response> getRoutes() async {
+    final response = await http.get(
+      Uri.parse(
+          "https://rich-puce-bear-gown.cyclic.app/api/user/63a08560482372cd329d6888/routes"),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+    return jsonDecode(response.body);
   }
 
   //sets start and end point markers on map

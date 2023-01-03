@@ -10,6 +10,14 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _results() async {
+      var walk = await context.read<MapStateProvider>().getRoutes();
+      return walk;
+    }
+
+    var walks = _results();
+    print(walks);
+
     final user = FirebaseAuth.instance.currentUser!;
 
     return FutureBuilder(
@@ -17,62 +25,74 @@ class ProfilePage extends StatelessWidget {
           return res.body;
         }),
         builder: ((context, snapshot) {
+          // print(snapshot.data);
           if (snapshot.hasData) {
             //refer to data as below to render profile information
             return Scaffold(
-                appBar: AppBar(
-                  title: const Text('Home'),
-                  backgroundColor: const Color(0xff31AFB9),
-                ),
-                body: Padding(
-                  padding: const EdgeInsets.all(32),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        'Signed In as',
-                        style:
-                            TextStyle(fontSize: 16, color: Color(0xffCB8D71)),
+              appBar: AppBar(
+                title: const Text('Home'),
+                backgroundColor: const Color(0xff31AFB9),
+              ),
+              body: Padding(
+                padding: const EdgeInsets.all(32),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SizedBox(height: 40),
+                    Expanded(
+                      child: ListView.builder(
+                        // itemCount: walk.length,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            title: Text("heelo"),
+                            subtitle: Text('This is a subtitle'),
+                          );
+                        },
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        user.email!,
-                        style:
-                            const TextStyle(fontSize: 20, color: Colors.blue),
-                      ),
-                      const SizedBox(height: 40),
-                      ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                              minimumSize: const Size.fromHeight(50),
-                              backgroundColor: const Color(0xFF31AFB9)),
-                          icon: const Icon(Icons.arrow_back, size: 32),
-                          label: const Text(
-                            'back to map',
-                            style: TextStyle(fontSize: 24),
-                          ),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          }),
-                      ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                              minimumSize: const Size.fromHeight(50),
-                              backgroundColor: const Color(0xFF31AFB9)),
-                          icon: const Icon(Icons.arrow_back, size: 32),
-                          label: const Text(
-                            'Sign Out',
-                            style: TextStyle(fontSize: 24),
-                          ),
-                          onPressed: () {
-                            context.read<MapStateProvider>().init();
-                            context.read<FormStateProvider>().init();
-                            context.read<FormStateProvider>().init();
+                    ),
+                    const Text(
+                      'Signed In as',
+                      style: TextStyle(fontSize: 16, color: Color(0xffCB8D71)),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      user.email!,
+                      style: const TextStyle(fontSize: 20, color: Colors.blue),
+                    ),
+                    const SizedBox(height: 40),
+                    ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                            minimumSize: const Size.fromHeight(50),
+                            backgroundColor: const Color(0xFF31AFB9)),
+                        icon: const Icon(Icons.arrow_back, size: 32),
+                        label: const Text(
+                          'back to map',
+                          style: TextStyle(fontSize: 24),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        }),
+                    ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                            minimumSize: const Size.fromHeight(50),
+                            backgroundColor: const Color(0xFF31AFB9)),
+                        icon: const Icon(Icons.arrow_back, size: 32),
+                        label: const Text(
+                          'Sign Out',
+                          style: TextStyle(fontSize: 24),
+                        ),
+                        onPressed: () {
+                          context.read<MapStateProvider>().init();
+                          context.read<FormStateProvider>().init();
+                          context.read<FormStateProvider>().init();
 
-                            FirebaseAuth.instance.signOut();
-                            Navigator.of(context).pop();
-                          }),
-                    ],
-                  ),
-                ));
+                          FirebaseAuth.instance.signOut();
+                          Navigator.of(context).pop();
+                        }),
+                  ],
+                ),
+              ),
+            );
           } else {
             return const Center(child: CircularProgressIndicator());
           }

@@ -34,7 +34,12 @@ class AddressFormState extends State<AddressForm> {
                     style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF31AFB9)),
                     child: const Text('Generate Walk'),
-                  )
+                  ),
+                  ElevatedButton(
+                      onPressed: () {
+                        _saveWalk();
+                      },
+                      child: Text("Save route")),
                 ])));
   }
 
@@ -43,6 +48,11 @@ class AddressFormState extends State<AddressForm> {
       var mapStateSetter = context.read<MapStateProvider>();
       mapStateSetter.setRoute();
     }
+  }
+
+  _saveWalk() {
+    var mapStateSetter = context.read<MapStateProvider>();
+    mapStateSetter.saveRoute();
   }
 
   setFormContent(type) {
