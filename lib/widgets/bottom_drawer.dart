@@ -44,7 +44,7 @@ class _BottomDrawerWidget extends State<BottomDrawerWidget> {
   }
 
   showMenu() {
-    int drawerHeight = 100;
+    int drawerHeight = 200;
     showBottomSheet(
         context: context,
         builder: (BuildContext context) {

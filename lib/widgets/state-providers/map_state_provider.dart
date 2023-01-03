@@ -106,7 +106,7 @@ class MapStateProvider with ChangeNotifier {
           ),
         ],
       );
-      setRoutePOI(100, 50, [130, 220, 330, 620]);
+      setRoutePOI(100, 10, [130, 220, 330, 620]);
       notifyListeners();
     });
   }

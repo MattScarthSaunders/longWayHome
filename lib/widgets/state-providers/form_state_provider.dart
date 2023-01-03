@@ -1,5 +1,8 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:http/http.dart';
 
 class FormStateProvider with ChangeNotifier {
   late bool isButton = false;
@@ -11,7 +14,9 @@ class FormStateProvider with ChangeNotifier {
   var startIconColor = Colors.black;
   var endIconColor = Colors.black;
 
-  TextEditingController pointController = TextEditingController();
+  TextEditingController startPointController = TextEditingController();
+  TextEditingController endPointController = TextEditingController();
+
   // TextEditingController endPointController = TextEditingController(text: '');
 
 //sets when a button has been pressed? idk? It all breaks if I remove this.
@@ -43,14 +48,28 @@ class FormStateProvider with ChangeNotifier {
 //NOTE: IN TESTING THIS IS NOT 100% EFFECTIVE. Some postcodes come out incomplete.
       List<Placemark> placemarks =
           await placemarkFromCoordinates(cords.latitude, cords.longitude);
+      String postCode = "";
 
-      String postCode = placemarks[0].postalCode ?? "";
-      // if (selectedInput == 'Start') {
-      //   pointController.text = postCode;
-      // } else if (selectedInput == 'End') {
-      //   endPointController.text = postCode;
-      // }
-      pointController.text = postCode;
+      for (int i = 0; i < placemarks.length; i++) {
+        if ((placemarks[i].postalCode?.length ?? 0) < 4) {
+          continue;
+        } else {
+          postCode = placemarks[i].postalCode ?? "";
+          break;
+        }
+      }
+
+      // postCode = "Could not find Postcode";
+
+      // String postCode = placemarks[0].postalCode ?? "";
+      if (selectedInput == 'Start') {
+        startPointController.text = postCode;
+      } else if (selectedInput == 'End') {
+        endPointController.text = postCode;
+      }
+      // pointController.text = postCode;
+      print(placemarks);
+      print(postCode);
       return postCode;
     } catch (e) {
       return cords;
@@ -59,7 +78,9 @@ class FormStateProvider with ChangeNotifier {
 
   //gets coords from postcode
   getCoords(postcode) async {
+    print(postcode);
     List<Location> locations = await locationFromAddress(postcode);
+    print(locations);
     return locations[0];
   }
 
@@ -81,9 +102,9 @@ class FormStateProvider with ChangeNotifier {
     selectedInput = '';
     startIconColor = Colors.black;
     endIconColor = Colors.black;
-    // startPointController = TextEditingController(text: '');
-    // endPointController = TextEditingController(text: '');
-    pointController = TextEditingController();
+    startPointController = TextEditingController(text: '');
+    endPointController = TextEditingController(text: '');
+    // pointController = TextEditingController();
     notifyListeners();
   }
 }

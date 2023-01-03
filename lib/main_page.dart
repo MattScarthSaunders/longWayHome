@@ -79,7 +79,8 @@ class _MainPageState extends State<MainPage> {
 
     if (pinStateListener.selectedInput == "Start") {
       pinStateSetter.setButton(false);
-      pinStateSetter.getPostcode(point);
+      pinStateSetter.setInput("none");
+      // pinStateSetter.getPostcode(point);
       mapStateSetter.setMarkerLocation(point, "Start");
       mapStateSetter.setCoords(point, "Start");
       if (mapStateListener.endCoord.isNotEmpty) {
@@ -87,7 +88,8 @@ class _MainPageState extends State<MainPage> {
       }
     } else if (pinStateListener.selectedInput == "End") {
       pinStateSetter.setButton(false);
-      pinStateSetter.getPostcode(point);
+      pinStateSetter.setInput("none");
+      // pinStateSetter.getPostcode(point);
       mapStateSetter.setMarkerLocation(point, "End");
       mapStateSetter.setCoords(point, "End");
       if (mapStateListener.startCoord.isNotEmpty) {

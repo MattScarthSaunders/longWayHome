@@ -17,24 +17,25 @@ class AddressFormState extends State<AddressForm> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Consumer<FormStateProvider>(
-                builder: (context, formStateListener, child) {
-              return Center(
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: setFormContent(formStateListener)));
-            }),
-          ],
-        ),
-      ),
-    );
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+        child: Form(
+            key: _formKey,
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  setFormContent("Start"),
+                  setFormContent("End"),
+                  ElevatedButton(
+                    onPressed: () {
+                      _submitForm();
+                      var pinStateSetter = context.read<FormStateProvider>();
+                    },
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF31AFB9)),
+                    child: const Text('Generate Walk'),
+                  )
+                ])));
   }
 
   _submitForm() {
@@ -44,90 +45,118 @@ class AddressFormState extends State<AddressForm> {
     }
   }
 
-  setFormContent(formStateListener) {
+  setFormContent(type) {
     final regex = RegExp(
         r'^([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\s?[0-9][A-Za-z]{2})$');
 
-    String type = '';
-    if (!formStateListener.startComplete) {
-      type = "Start";
-    } else {
-      type = "End";
-    }
+    // String type = '';
+    // if (!formStateListener.startComplete) {
+    //   type = "Start";
+    // } else {
+    //   type = "End";
+    // }
 
-    if (formStateListener.startComplete && formStateListener.endComplete) {
-      //if form complete, submit and generate route
-      return [
-        ElevatedButton(
-          onPressed: () {
-            _submitForm();
-            var pinStateSetter = context.read<FormStateProvider>();
-          },
-          style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF31AFB9)),
-          child: const Text('Generate Walk'),
-        )
-      ];
-    } else {
-      //return programmatic form entry sections, i.e start location then end location then....
-      return [
-        Expanded(
-            child: TextFormField(
-                style: const TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  labelText: '$type Postcode',
-                  labelStyle: TextStyle(color: Colors.white),
-                ),
-                controller: formStateListener.pointController,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: (value) => value != "" && !regex.hasMatch(value!)
-                    ? 'Please enter a valid postal code'
-                    : null)),
-        IconButton(
-          onPressed: () {
-            var pinStateSetter = context.read<FormStateProvider>();
-            if (pinStateSetter.isButton) {
-              pinStateSetter.setButton(false);
-              pinStateSetter.setInput('none');
-            } else {
-              pinStateSetter.setButton(true);
-              pinStateSetter.setInput(type);
-            }
-          },
-          iconSize: 30,
-          icon: Consumer<FormStateProvider>(
-              builder: (context, pinStateListener, child) {
-            return Icon(Icons.location_on,
-                color: type == "Start"
-                    ? pinStateListener.startIconColor
-                    : pinStateListener.endIconColor);
-          }),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            var mapStateSetter = context.read<MapStateProvider>();
-            var pinStateSetter = context.read<FormStateProvider>();
+    // if (formStateListener.startComplete && formStateListener.endComplete) {
+    //   //if form complete, submit and generate route
+    //   return [];
+    // } else {
+    //   //return programmatic form entry sections, i.e start location then end location then....
 
-            if (regex.hasMatch(formStateListener.pointController.text)) {
-              pinStateSetter
-                  .getCoords(formStateListener.pointController.text)
-                  .then((res) {
-                mapStateSetter.setMarkerLocation(res, type);
-                type == "Start"
-                    ? mapStateSetter.startCoord = [res.longitude, res.latitude]
-                    : mapStateSetter.endCoord = [res.longitude, res.latitude];
-                pinStateSetter.formSectionComplete(type);
-                pinStateSetter.pointController = TextEditingController();
-              });
-              pinStateSetter.setButton(false);
-              pinStateSetter.setInput('none');
-            }
-          },
-          style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF31AFB9)),
-          child: const Text('Submit'),
-        ),
-      ];
-    }
+    return Consumer<FormStateProvider>(
+        builder: (context, formStateListener, child) {
+      return Center(
+          child: Row(
+        children: [
+          Expanded(
+              child: TextFormField(
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    labelText: '$type Postcode',
+                    labelStyle: TextStyle(color: Colors.white),
+                  ),
+                  controller: type == "Start"
+                      ? formStateListener.startPointController
+                      : formStateListener.endPointController,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) => value != "" && !regex.hasMatch(value!)
+                      ? 'Please enter a valid postal code'
+                      : null)),
+          ElevatedButton(
+            onPressed: () {
+              var mapStateSetter = context.read<MapStateProvider>();
+              var pinStateSetter = context.read<FormStateProvider>();
+
+              // if (type == "Start") {
+              //   if (mapStateSetter.startCoord.isNotEmpty) {
+              //     pinStateSetter.formSectionComplete(type);
+              //     pinStateSetter.startPointController = TextEditingController();
+              //   }
+              // } else if (type == "End") {
+              //   if (mapStateSetter.endCoord.isNotEmpty) {
+              //     pinStateSetter.formSectionComplete(type);
+              //     pinStateSetter.endPointController = TextEditingController();
+              //     mapStateSetter.setInitialRoute();
+              //   }
+              // }
+
+              var pointController = type == "Start"
+                  ? formStateListener.startPointController
+                  : formStateListener.endPointController;
+
+              if (regex.hasMatch(pointController.text)) {
+                pinStateSetter.getCoords(pointController.text).then((res) {
+                  mapStateSetter.setMarkerLocation(res, type);
+                  type == "Start"
+                      ? mapStateSetter.startCoord = [
+                          res.longitude,
+                          res.latitude
+                        ]
+                      : mapStateSetter.endCoord = [res.longitude, res.latitude];
+                  pinStateSetter.formSectionComplete(type);
+
+                  // pinStateSetter.pointController = TextEditingController();
+                  // if (type == "End") {
+                  //   mapStateSetter.setInitialRoute();
+                  // }
+                  if (mapStateSetter.endCoord.isNotEmpty &&
+                      mapStateSetter.startCoord.isNotEmpty) {
+                    // print("test");
+                    mapStateSetter.setInitialRoute();
+                  }
+                });
+                pinStateSetter.setButton(false);
+                pinStateSetter.setInput('none');
+                // print(mapStateSetter.endCoord);
+                // print(mapStateSetter.startCoord);
+
+              }
+            },
+            style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF31AFB9)),
+            child: Text('Set $type'),
+          ),
+          IconButton(
+            onPressed: () {
+              var pinStateSetter = context.read<FormStateProvider>();
+              if (pinStateSetter.isButton) {
+                pinStateSetter.setButton(false);
+                pinStateSetter.setInput('none');
+              } else if (!pinStateSetter.isButton) {
+                pinStateSetter.setButton(true);
+                pinStateSetter.setInput(type);
+              }
+            },
+            iconSize: 30,
+            icon: Consumer<FormStateProvider>(
+                builder: (context, pinStateListener, child) {
+              return Icon(Icons.location_on,
+                  color: type == "Start"
+                      ? pinStateListener.startIconColor
+                      : pinStateListener.endIconColor);
+            }),
+          ),
+        ],
+      ));
+    });
   }
 }
