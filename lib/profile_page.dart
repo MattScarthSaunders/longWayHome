@@ -63,10 +63,10 @@ class ProfilePage extends StatelessWidget {
                             style: TextStyle(fontSize: 24),
                           ),
                           onPressed: () {
-                            var mapState = context.read<MapStateProvider>();
-                            var formState = context.read<FormStateProvider>();
-                            mapState.init();
-                            formState.init();
+                            context.read<MapStateProvider>().init();
+                            context.read<FormStateProvider>().init();
+                            context.read<FormStateProvider>().init();
+
                             FirebaseAuth.instance.signOut();
                             Navigator.of(context).pop();
                           }),
