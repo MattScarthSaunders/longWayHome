@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/widgets/api_utils.dart';
 import 'package:flutter_application_1/widgets/geolocation.dart';
@@ -6,6 +7,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:google_polyline_algorithm/google_polyline_algorithm.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
+import 'package:provider/provider.dart';
 
 class MapStateProvider with ChangeNotifier {
   //input
@@ -131,10 +133,8 @@ class MapStateProvider with ChangeNotifier {
     fetchRoutePOIData(tempCoords, buffer, markerLimit, categoryIds).then((res) {
       allPOIMarkerCoords = [];
       List<Marker> tempMarkers = [];
-      List tempMarkerNames = [];
 
       var parsed = json.decode(res.body.toString());
-      print(parsed);
       int featureTotal = 0;
       parsed["features"] == null
           ? featureTotal = 0
@@ -152,55 +152,47 @@ class MapStateProvider with ChangeNotifier {
           parsed["features"][i]["properties"]["osm_tags"] != null
               ? parsed["features"][i]["properties"]["osm_tags"]["name"]
               : "",
-          false
         ]);
-        // print(parsed["features"][i]["properties"]["osm_tags"]);
-        // tempMarkerNames.add([
-        //   parsed["features"][i]["properties"]["osm_tags"] != null
-        //       ? parsed["features"][i]["properties"]["osm_tags"]["name"]
-        //       : "",
-        //   false
-        // ]);
       }
-
-//conditional rendering required:
-//
-
-      allPOIMarkerCoords.forEach((element) {
-        print(element);
-        tempMarkers.add(
-          Marker(
-            point: LatLng(element[0], element[1]),
-            width: 100,
-            height: 100,
-            builder: (ctx) => GestureDetector(
-              onTap: () {
-                //here :)
-                // set tern[i] = !tern[i]
-
-                ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
-                  content: Text(element[2]),
-                ));
-              },
-              key: const Key('blue'),
-              child: Column(
-                children: const [
-                  // tern[i] ? Text("test"): null,
-
-                  Icon(
-                    Icons.location_on,
-                    color: Colors.blue,
-                    size: 30.0,
+      for (var i = 0; i < allPOIMarkerCoords.length; i++) {
+        tempMarkers.add(Marker(
+          point: LatLng(allPOIMarkerCoords[i][0], allPOIMarkerCoords[i][1]),
+          width: 100,
+          height: 100,
+          builder: (ctx) => GestureDetector(
+            onTap: () => showDialog<String>(
+              context: ctx,
+              builder: (BuildContext context) => AlertDialog(
+                titlePadding: const EdgeInsets.only(
+                    top: 20, left: 20, right: 20, bottom: 0),
+                title: Text(
+                  allPOIMarkerCoords[i][2] == ""
+                      ? "POI Name not Found"
+                      : allPOIMarkerCoords[i][2],
+                  style: const TextStyle(color: Colors.white),
+                ),
+                backgroundColor: const Color(0xff504958),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, 'Close'),
+                    child: const Text(
+                      'Close',
+                      style: TextStyle(color: Color(0xff31AFB9)),
+                    ),
                   ),
                 ],
               ),
             ),
+            child: const Icon(
+              Icons.location_on,
+              color: Colors.blue,
+              size: 30.0,
+            ),
           ),
-        );
-      });
+        ));
+      }
 
       allPOIMarkers = tempMarkers;
-
       return;
     }).then((res) {
       localPOIMarkers = MarkerLayer(markers: allPOIMarkers);
