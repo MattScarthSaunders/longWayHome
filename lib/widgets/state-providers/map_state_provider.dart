@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/widgets/api_utils.dart';
 import 'package:flutter_application_1/widgets/geolocation.dart';
@@ -7,7 +7,6 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:google_polyline_algorithm/google_polyline_algorithm.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
-import 'package:provider/provider.dart';
 
 class MapStateProvider with ChangeNotifier {
   //input
@@ -208,7 +207,8 @@ class MapStateProvider with ChangeNotifier {
       [startCoord[0], startCoord[1]]
     ];
 
-    allPOIMarkerCoords.forEach((marker) {
+    sortPOIsDistance(allPOIMarkerCoords, [startCoord[1], startCoord[0]])
+        .forEach((marker) {
       fullRouteCoords.add([marker[1], marker[0]]);
     });
 
@@ -271,6 +271,22 @@ class MapStateProvider with ChangeNotifier {
     }
 
     notifyListeners();
+  }
+
+  List sortPOIsDistance(POIList, startPoint) {
+    int distance(coor1, coor2) {
+      dynamic x = coor2[0] - coor1[0];
+      dynamic y = coor2[1] - coor1[1];
+      return (sqrt((x * x) + (y * y)) * 10000).toInt();
+    }
+
+    List sortByDistance(coordinates, point) {
+      coordinates
+          .sort((a, b) => distance(a, point).compareTo(distance(b, point)));
+      return coordinates;
+    }
+
+    return sortByDistance(POIList, startPoint);
   }
 
   //resets state
