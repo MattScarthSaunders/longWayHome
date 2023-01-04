@@ -21,6 +21,7 @@ class MapStateProvider with ChangeNotifier {
   List<LatLng> plottedRoute = [];
   List allPOIMarkerCoords = [];
   List<Marker> allPOIMarkers = [];
+  List mapPoints = [];
 
   //rendering
   late Marker startMark = Marker(
@@ -207,11 +208,12 @@ class MapStateProvider with ChangeNotifier {
 
 //this handles generating the saved route polyline
   void plotSavedRoute(List<dynamic> coords) {
-      List<LatLng> latLngList = [];
+    List<LatLng> latLngList = [];
 
-     for (var dynamicObject in coords) {
-    latLngList.add(LatLng(dynamicObject['coordinates'][1], dynamicObject['coordinates'][0]));
-  }
+    for (var dynamicObject in coords) {
+      latLngList.add(LatLng(
+          dynamicObject['coordinates'][1], dynamicObject['coordinates'][0]));
+    }
     plottedRoute = latLngList;
     routePolyLine = PolylineLayer(
       polylineCulling: false,
@@ -245,6 +247,7 @@ class MapStateProvider with ChangeNotifier {
         'Content-Type': 'application/json; charset=UTF-8',
       },
     );
+    notifyListeners();
     return jsonDecode(response.body);
   }
 

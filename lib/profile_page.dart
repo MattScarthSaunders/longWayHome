@@ -10,11 +10,9 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List mapPoints = [];
-
     var mapStateSetter = context.read<MapStateProvider>();
     mapStateSetter.getRoutes().then((results) {
-      mapPoints = results["routes"];
+      mapStateSetter.mapPoints = results["routes"];
     });
 
     final user = FirebaseAuth.instance.currentUser!;
@@ -42,33 +40,39 @@ class ProfilePage extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // const SizedBox(height: 40),
                     Expanded(
-                      child: ListView.builder(
-                        itemCount: mapPoints.length,
-                        itemBuilder: (context, index) {
-                          return Card(
-                            child: Column(
-                              children: [
-                                ListTile(
-                                  title: Text(mapPoints[index]["routeName"]),
-                                  subtitle:
-                                      Text(mapPoints[index]["dateCreated"]),
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                      child: Consumer<MapStateProvider>(
+                        builder: (context, mapStateProvider, child) {
+                          return ListView.builder(
+                            itemCount: mapStateSetter.mapPoints.length,
+                            itemBuilder: (context, index) {
+                              return Card(
+                                child: Column(
                                   children: [
-                                    TextButton(
-                                        onPressed: () {
-                                          _renderSavedRoute(
-                                              mapPoints[index]["routeData"]);
-                                          Navigator.pop(context);
-                                        },
-                                        child: Text("See Route on map"))
+                                    ListTile(
+                                      title: Text(mapStateSetter
+                                          .mapPoints[index]["routeName"]),
+                                      subtitle: Text(mapStateSetter
+                                          .mapPoints[index]["dateCreated"]),
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        TextButton(
+                                            onPressed: () {
+                                              _renderSavedRoute(mapStateSetter
+                                                      .mapPoints[index]
+                                                  ["routeData"]);
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text("See Route on map"))
+                                      ],
+                                    )
                                   ],
-                                )
-                              ],
-                            ),
+                                ),
+                              );
+                            },
                           );
                         },
                       ),
