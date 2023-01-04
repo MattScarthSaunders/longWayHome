@@ -22,6 +22,7 @@ class MapStateProvider with ChangeNotifier {
   List<Marker> allPOIMarkers = [];
 
   //rendering
+  List<bool> showMarkerDialogue = [];
   late Marker startMark = Marker(
     point: LatLng(0.0, 0.0),
     width: 100,
@@ -123,8 +124,10 @@ class MapStateProvider with ChangeNotifier {
     fetchRoutePOIData(tempCoords, buffer, markerLimit, categoryIds).then((res) {
       allPOIMarkerCoords = [];
       List<Marker> tempMarkers = [];
+      List tempMarkerNames = [];
 
       var parsed = json.decode(res.body.toString());
+      print(parsed);
       int featureTotal = 0;
       parsed["features"] == null
           ? featureTotal = 0
@@ -136,23 +139,57 @@ class MapStateProvider with ChangeNotifier {
         var lon = parsed["features"][i]["geometry"]["coordinates"][0];
         var lat = parsed["features"][i]["geometry"]["coordinates"][1];
 
-        allPOIMarkerCoords.add([lat, lon]);
+        allPOIMarkerCoords.add([
+          lat,
+          lon,
+          parsed["features"][i]["properties"]["osm_tags"] != null
+              ? parsed["features"][i]["properties"]["osm_tags"]["name"]
+              : "",
+          false
+        ]);
+        // print(parsed["features"][i]["properties"]["osm_tags"]);
+        // tempMarkerNames.add([
+        //   parsed["features"][i]["properties"]["osm_tags"] != null
+        //       ? parsed["features"][i]["properties"]["osm_tags"]["name"]
+        //       : "",
+        //   false
+        // ]);
       }
 
+//conditional rendering required:
+//
+
       allPOIMarkerCoords.forEach((element) {
-        tempMarkers.add(Marker(
-          point: LatLng(element[0], element[1]),
-          width: 100,
-          height: 100,
-          builder: (ctx) => Container(
-            key: const Key('blue'),
-            child: const Icon(
-              Icons.location_on,
-              color: Colors.blue,
-              size: 30.0,
+        print(element);
+        tempMarkers.add(
+          Marker(
+            point: LatLng(element[0], element[1]),
+            width: 100,
+            height: 100,
+            builder: (ctx) => GestureDetector(
+              onTap: () {
+                //here :)
+                // set tern[i] = !tern[i]
+
+                ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
+                  content: Text(element[2]),
+                ));
+              },
+              key: const Key('blue'),
+              child: Column(
+                children: const [
+                  // tern[i] ? Text("test"): null,
+
+                  Icon(
+                    Icons.location_on,
+                    color: Colors.blue,
+                    size: 30.0,
+                  ),
+                ],
+              ),
             ),
           ),
-        ));
+        );
       });
 
       allPOIMarkers = tempMarkers;
