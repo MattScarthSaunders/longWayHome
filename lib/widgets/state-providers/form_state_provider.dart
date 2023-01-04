@@ -18,6 +18,8 @@ class FormStateProvider with ChangeNotifier {
 
   TextEditingController startPointController = TextEditingController();
   TextEditingController endPointController = TextEditingController();
+  TextEditingController routeNameInputController = TextEditingController();
+
 
   // TextEditingController endPointController = TextEditingController(text: '');
 
@@ -106,7 +108,7 @@ class FormStateProvider with ChangeNotifier {
     endIconColor = Colors.black;
     startPointController = TextEditingController(text: '');
     endPointController = TextEditingController(text: '');
-    // pointController = TextEditingController();
+    routeNameInputController = TextEditingController();
     notifyListeners();
   }
 }
