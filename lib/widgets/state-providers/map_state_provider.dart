@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/widgets/api_utils.dart';
@@ -28,6 +29,7 @@ class MapStateProvider with ChangeNotifier {
   bool isPOILoading = false;
   bool isRouteLoading = false;
 
+  List<bool> showMarkerDialogue = [];
   late Marker startMark = Marker(
     point: LatLng(0.0, 0.0),
     width: 100,
@@ -145,16 +147,43 @@ class MapStateProvider with ChangeNotifier {
         var lon = parsed["features"][i]["geometry"]["coordinates"][0];
         var lat = parsed["features"][i]["geometry"]["coordinates"][1];
 
-        allPOIMarkerCoords.add([lat, lon]);
+        allPOIMarkerCoords.add([
+          lat,
+          lon,
+          parsed["features"][i]["properties"]["osm_tags"] != null
+              ? parsed["features"][i]["properties"]["osm_tags"]["name"]
+              : "",
+        ]);
       }
-
-      allPOIMarkerCoords.forEach((element) {
+      for (var i = 0; i < allPOIMarkerCoords.length; i++) {
         tempMarkers.add(Marker(
-          point: LatLng(element[0], element[1]),
+          point: LatLng(allPOIMarkerCoords[i][0], allPOIMarkerCoords[i][1]),
           width: 100,
           height: 100,
-          builder: (ctx) => Container(
-            key: const Key('blue'),
+          builder: (ctx) => GestureDetector(
+            onTap: () => showDialog<String>(
+              context: ctx,
+              builder: (BuildContext context) => AlertDialog(
+                titlePadding: const EdgeInsets.only(
+                    top: 20, left: 20, right: 20, bottom: 0),
+                title: Text(
+                  allPOIMarkerCoords[i][2] == ""
+                      ? "POI Name not Found"
+                      : allPOIMarkerCoords[i][2],
+                  style: const TextStyle(color: Colors.white),
+                ),
+                backgroundColor: const Color(0xff504958),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, 'Close'),
+                    child: const Text(
+                      'Close',
+                      style: TextStyle(color: Color(0xff31AFB9)),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             child: const Icon(
               Icons.location_on,
               color: Colors.blue,
@@ -162,10 +191,9 @@ class MapStateProvider with ChangeNotifier {
             ),
           ),
         ));
-      });
+      }
 
       allPOIMarkers = tempMarkers;
-
       return;
     }).then((res) {
       localPOIMarkers = MarkerLayer(markers: allPOIMarkers);
