@@ -180,21 +180,13 @@ class MapStateProvider with ChangeNotifier {
     List fullRouteCoords = [
       [startCoord[0], startCoord[1]]
     ];
-    List sortedCoords = [];
 
-    print(startCoord);
-    print(allPOIMarkerCoords);
     sortPOIsDistance(allPOIMarkerCoords, [startCoord[1], startCoord[0]])
         .forEach((marker) {
-      sortedCoords.add([marker[0], marker[1]]);
       fullRouteCoords.add([marker[1], marker[0]]);
     });
 
-    print(sortedCoords);
-
     fullRouteCoords.add([endCoord[0], endCoord[1]]);
-    // print("final");
-    // print(fullRouteCoords);
 
     isRouteLoading = true;
 
@@ -259,13 +251,10 @@ class MapStateProvider with ChangeNotifier {
     int distance(coor1, coor2) {
       dynamic x = coor2[0] - coor1[0];
       dynamic y = coor2[1] - coor1[1];
-      // print(sqrt((x * x) + (y * y)) * 10000.toInt());
-      // print(sqrt((x * x) + (y * y)) * 10000);
       return (sqrt((x * x) + (y * y)) * 10000).toInt();
     }
 
     List sortByDistance(coordinates, point) {
-      // sorter(a, b) => distance(a, point) - distance(b, point);
       coordinates
           .sort((a, b) => distance(a, point).compareTo(distance(b, point)));
       return coordinates;
@@ -273,9 +262,6 @@ class MapStateProvider with ChangeNotifier {
 
     return sortByDistance(POIList, startPoint);
   }
-
-// [1,2]
-// [[1,2],[1,2],[1,2]...]
 
   //resets state
   void init() {
