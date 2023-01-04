@@ -23,13 +23,25 @@ class _BottomDrawerWidget extends State<BottomDrawerWidget> {
               style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF31AFB9)),
               onPressed: () {
-                var mapStateSetter = context.read<MapStateProvider>();
-                var pinStateSetter = context.read<FormStateProvider>();
-                mapStateSetter.init();
-                pinStateSetter.init();
-                showMenu();
+                var formState = context.read<FormStateProvider>();
+                if (formState.isVisible) {
+                  if (Navigator.canPop(context)) {
+                    Navigator.pop(context);
+                  }
+                } else {
+                  showMenu();
+                }
+                formState.isVisible = !formState.isVisible;
+                formState.notifyListeners();
               },
-              child: const Text('New Walk'))),
+              child: Consumer<FormStateProvider>(
+                  builder: (context, formStateListener, child) {
+                if (formStateListener.isVisible) {
+                  return const Text("Hide Planner");
+                } else {
+                  return const Text('Plan Walk');
+                }
+              }))),
       Align(
           alignment: Alignment.bottomRight,
           child: ElevatedButton(

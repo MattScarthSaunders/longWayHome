@@ -26,14 +26,38 @@ class AddressFormState extends State<AddressForm> {
                 children: [
                   setFormContent("Start"),
                   setFormContent("End"),
-                  ElevatedButton(
-                    onPressed: () {
-                      _submitForm();
-                      var pinStateSetter = context.read<FormStateProvider>();
-                    },
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF31AFB9)),
-                    child: const Text('Generate Walk'),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 40.0, top: 10.0),
+                        child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF31AFB9)),
+                            onPressed: () {
+                              var mapStateSetter =
+                                  context.read<MapStateProvider>();
+                              var pinStateSetter =
+                                  context.read<FormStateProvider>();
+                              mapStateSetter.init();
+                              pinStateSetter.init();
+                            },
+                            child: const Text('Reset')),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 40.0, top: 10.0),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            _submitForm();
+                            var pinStateSetter =
+                                context.read<FormStateProvider>();
+                          },
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF31AFB9)),
+                          child: const Text('Generate Walk'),
+                        ),
+                      ),
+                    ],
                   )
                 ])));
   }
