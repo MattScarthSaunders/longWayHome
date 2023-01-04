@@ -215,10 +215,10 @@ class MapStateProvider with ChangeNotifier {
       body: json.encode({'routeName': 'York walk', 'routeData': plottedRoute}),
     );
 
-    return jsonDecode(response.body[0]);
+    return jsonDecode(response.body);
   }
 
-  Future<http.Response> getRoutes() async {
+  Future<Map> getRoutes() async {
     final response = await http.get(
       Uri.parse(
           "https://rich-puce-bear-gown.cyclic.app/api/user/63a08560482372cd329d6888/routes"),

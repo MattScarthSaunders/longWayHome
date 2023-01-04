@@ -10,13 +10,12 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _results() async {
-      var walk = await context.read<MapStateProvider>().getRoutes();
-      return walk;
-    }
+    List mapPoints = [];
 
-    var walks = _results();
-    print(walks);
+    var mapStateSetter = context.read<MapStateProvider>();
+    mapStateSetter.getRoutes().then((results) {
+      mapPoints = results["routes"];
+    });
 
     final user = FirebaseAuth.instance.currentUser!;
 
@@ -38,17 +37,35 @@ class ProfilePage extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const SizedBox(height: 40),
+                    // const SizedBox(height: 40),
                     Expanded(
                       child: ListView.builder(
-                        // itemCount: walk.length,
+                        itemCount: mapPoints.length,
                         itemBuilder: (context, index) {
-                          return ListTile(
-                            title: Text("heelo"),
-                            subtitle: Text('This is a subtitle'),
+                          return Card(
+                            child: Column(
+                              children: [
+                                ListTile(
+                                  title: Text(mapPoints[index]["routeName"]),
+                                  subtitle:
+                                      Text(mapPoints[index]["dateCreated"]),
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    TextButton(
+                                        onPressed: () {},
+                                        child: Text("See Route on map"))
+                                  ],
+                                )
+                              ],
+                            ),
                           );
                         },
                       ),
+                    ),
+                    SizedBox(
+                      height: 40,
                     ),
                     const Text(
                       'Signed In as',
