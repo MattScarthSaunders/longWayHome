@@ -7,6 +7,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:google_polyline_algorithm/google_polyline_algorithm.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
+import 'package:http/http.dart' as http;
 
 class MapStateProvider with ChangeNotifier {
   //input
@@ -21,11 +22,14 @@ class MapStateProvider with ChangeNotifier {
   List<LatLng> plottedRoute = [];
   List allPOIMarkerCoords = [];
   List<Marker> allPOIMarkers = [];
+  List mapPoints = [];
+  List mapRouteToSave = [];
 
   //rendering
   bool isInitialRouteLoading = false;
   bool isPOILoading = false;
   bool isRouteLoading = false;
+  bool isRouteListLoading = false;
 
   List<bool> showMarkerDialogue = [];
   late Marker startMark = Marker(
@@ -232,6 +236,8 @@ class MapStateProvider with ChangeNotifier {
         routePoints.add(LatLng(point[0].toDouble(), point[1].toDouble()));
       });
 
+      mapRouteToSave = routePoints;
+
       routePolyLine = PolylineLayer(
         polylineCulling: false,
         polylines: [
@@ -249,6 +255,52 @@ class MapStateProvider with ChangeNotifier {
 
       notifyListeners();
     });
+  }
+
+//this handles generating the saved route polyline
+  void plotSavedRoute(List<dynamic> coords) {
+    init();
+    List<LatLng> latLngList = [];
+
+    for (var dynamicObject in coords) {
+      latLngList.add(LatLng(
+          dynamicObject['coordinates'][1], dynamicObject['coordinates'][0]));
+    }
+    plottedRoute = latLngList;
+    routePolyLine = PolylineLayer(
+      polylineCulling: false,
+      polylines: [
+        Polyline(
+          points: plottedRoute,
+          color: Colors.orange,
+          strokeWidth: 6,
+        ),
+      ],
+    );
+    notifyListeners();
+  }
+
+  void saveRoute(routeName) async {
+    await http.post(
+      Uri.parse(
+          "https://rich-puce-bear-gown.cyclic.app/api/user/63a08560482372cd329d6888/route"),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: json.encode({'routeName': routeName, 'routeData': mapRouteToSave}),
+    );
+  }
+
+  Future<Map> getRoutes() async {
+    final response = await http.get(
+      Uri.parse(
+          "https://rich-puce-bear-gown.cyclic.app/api/user/63a08560482372cd329d6888/routes"),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+    notifyListeners();
+    return jsonDecode(response.body);
   }
 
   //sets start and end point markers on map
