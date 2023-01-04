@@ -55,6 +55,7 @@ class _MainPageState extends State<MainPage> {
                     mapStateListener.endMark
                   ]),
                   mapStateListener.localPOIMarkers,
+                  isLoading(mapStateListener),
                 ]));
           }),
         ],
@@ -95,6 +96,25 @@ class _MainPageState extends State<MainPage> {
       if (mapStateListener.startCoord.isNotEmpty) {
         mapStateSetter.setInitialRoute();
       }
+    }
+  }
+
+  isLoading(mapStateListener) {
+    bool a = mapStateListener.isInitialRouteLoading;
+    bool b = mapStateListener.isPOILoading;
+    bool c = mapStateListener.isRouteLoading;
+    if (a || b || c) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            CircularProgressIndicator(),
+            Text("fetching map data")
+          ],
+        ),
+      );
+    } else {
+      return const Center();
     }
   }
 }
