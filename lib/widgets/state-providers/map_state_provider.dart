@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/widgets/api_utils.dart';
 import 'package:flutter_application_1/widgets/geolocation.dart';
@@ -6,6 +7,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:google_polyline_algorithm/google_polyline_algorithm.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
+import 'package:provider/provider.dart';
 
 class MapStateProvider with ChangeNotifier {
   //input
@@ -178,12 +180,21 @@ class MapStateProvider with ChangeNotifier {
     List fullRouteCoords = [
       [startCoord[0], startCoord[1]]
     ];
+    List sortedCoords = [];
 
-    allPOIMarkerCoords.forEach((marker) {
+    print(startCoord);
+    print(allPOIMarkerCoords);
+    sortPOIsDistance(allPOIMarkerCoords, [startCoord[1], startCoord[0]])
+        .forEach((marker) {
+      sortedCoords.add([marker[0], marker[1]]);
       fullRouteCoords.add([marker[1], marker[0]]);
     });
 
+    print(sortedCoords);
+
     fullRouteCoords.add([endCoord[0], endCoord[1]]);
+    // print("final");
+    // print(fullRouteCoords);
 
     isRouteLoading = true;
 
@@ -243,6 +254,28 @@ class MapStateProvider with ChangeNotifier {
 
     notifyListeners();
   }
+
+  List sortPOIsDistance(POIList, startPoint) {
+    int distance(coor1, coor2) {
+      dynamic x = coor2[0] - coor1[0];
+      dynamic y = coor2[1] - coor1[1];
+      // print(sqrt((x * x) + (y * y)) * 10000.toInt());
+      // print(sqrt((x * x) + (y * y)) * 10000);
+      return (sqrt((x * x) + (y * y)) * 10000).toInt();
+    }
+
+    List sortByDistance(coordinates, point) {
+      // sorter(a, b) => distance(a, point) - distance(b, point);
+      coordinates
+          .sort((a, b) => distance(a, point).compareTo(distance(b, point)));
+      return coordinates;
+    }
+
+    return sortByDistance(POIList, startPoint);
+  }
+
+// [1,2]
+// [[1,2],[1,2],[1,2]...]
 
   //resets state
   void init() {
