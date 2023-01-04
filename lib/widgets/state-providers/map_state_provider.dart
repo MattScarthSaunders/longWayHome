@@ -29,6 +29,7 @@ class MapStateProvider with ChangeNotifier {
   bool isInitialRouteLoading = false;
   bool isPOILoading = false;
   bool isRouteLoading = false;
+  bool isRouteListLoading = false;
 
   List<bool> showMarkerDialogue = [];
   late Marker startMark = Marker(
