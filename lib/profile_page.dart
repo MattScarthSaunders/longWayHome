@@ -15,6 +15,7 @@ class ProfilePage extends StatelessWidget {
     mapStateSetter.isRouteListLoading = true;
     mapStateSetter.getRoutes().then((results) {
       mapStateSetter.mapPoints = results["routes"];
+
       mapStateSetter.isRouteListLoading = false;
     });
 
@@ -22,6 +23,7 @@ class ProfilePage extends StatelessWidget {
 
     _renderSavedRoute(routeCoords) {
       var mapStateSetter = context.read<MapStateProvider>();
+
       mapStateSetter.plotSavedRoute(routeCoords);
     }
 

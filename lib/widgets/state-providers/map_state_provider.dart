@@ -258,25 +258,91 @@ class MapStateProvider with ChangeNotifier {
   }
 
 //this handles generating the saved route polyline
-  void plotSavedRoute(List<dynamic> coords) {
+  void plotSavedRoute(coords) {
     init();
-    List<LatLng> latLngList = [];
+    print(coords["start"].runtimeType);
 
-    for (var dynamicObject in coords) {
-      latLngList.add(LatLng(
-          dynamicObject['coordinates'][1], dynamicObject['coordinates'][0]));
-    }
-    plottedRoute = latLngList;
-    routePolyLine = PolylineLayer(
-      polylineCulling: false,
-      polylines: [
-        Polyline(
-          points: plottedRoute,
-          color: Colors.orange,
-          strokeWidth: 6,
+    allPOIMarkerCoords = coords["POIs"];
+    startCoord = coords["start"];
+    endCoord = coords["end"];
+
+    setRoute();
+
+    List<Marker> tempMarkers = [];
+
+    print(allPOIMarkerCoords);
+
+    for (var i = 0; i < allPOIMarkerCoords.length; i++) {
+      tempMarkers.add(Marker(
+        point: LatLng(allPOIMarkerCoords[i][0], allPOIMarkerCoords[i][1]),
+        width: 100,
+        height: 100,
+        builder: (ctx) => GestureDetector(
+          onTap: () => showDialog<String>(
+            context: ctx,
+            builder: (BuildContext context) => AlertDialog(
+              titlePadding: const EdgeInsets.only(
+                  top: 20, left: 20, right: 20, bottom: 0),
+              title: Text(
+                allPOIMarkerCoords[i][2] == ""
+                    ? "POI Name not Found"
+                    : allPOIMarkerCoords[i][2],
+                style: const TextStyle(color: Colors.white),
+              ),
+              backgroundColor: const Color(0xff504958),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () => Navigator.pop(context, 'Close'),
+                  child: const Text(
+                    'Close',
+                    style: TextStyle(color: Color(0xff31AFB9)),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          child: const Icon(
+            Icons.location_on,
+            color: Colors.blue,
+            size: 30.0,
+          ),
         ),
-      ],
+      ));
+    }
+
+    allPOIMarkers = tempMarkers;
+
+    localPOIMarkers = MarkerLayer(markers: allPOIMarkers);
+    isPOILoading = false;
+
+    startMark = Marker(
+      point: LatLng(startCoord[1], startCoord[0]),
+      width: 100,
+      height: 100,
+      builder: (ctx) => Container(
+        key: const Key('blue'),
+        child: const Icon(
+          Icons.location_on,
+          color: Colors.green,
+          size: 30.0,
+        ),
+      ),
     );
+
+    endMark = Marker(
+      point: LatLng(endCoord[1], endCoord[0]),
+      width: 100,
+      height: 100,
+      builder: (ctx) => Container(
+        key: const Key('blue'),
+        child: const Icon(
+          Icons.location_on,
+          color: Colors.red,
+          size: 30.0,
+        ),
+      ),
+    );
+
     notifyListeners();
   }
 
@@ -287,7 +353,14 @@ class MapStateProvider with ChangeNotifier {
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: json.encode({'routeName': routeName, 'routeData': mapRouteToSave}),
+      body: json.encode({
+        'routeName': routeName,
+        'routeData': {
+          "start": startCoord,
+          "end": endCoord,
+          "POIs": allPOIMarkerCoords
+        }
+      }),
     );
   }
 
