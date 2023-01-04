@@ -37,10 +37,47 @@ class AddressFormState extends State<AddressForm> {
                   ),
                   ElevatedButton(
                       onPressed: () {
-                        _saveWalk();
+                        _routeNameInputDialog(context);
                       },
                       child: Text("Save route")),
                 ])));
+  }
+
+  Future<void> _routeNameInputDialog(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return Consumer<FormStateProvider>(
+              builder: (context, formStateListener, child) {
+            return AlertDialog(
+              title: const Text('Route Name'),
+              content: TextField(
+                onChanged: (value) {},
+                controller: formStateListener.routeNameInputController,
+                decoration: const InputDecoration(hintText: "Name your route"),
+              ),
+              actions: <Widget>[
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFFC7213D)),
+                  child: const Text('Cancel'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF31AFB9)),
+                    child: const Text('Save'),
+                    onPressed: () {
+                      _saveWalk(formStateListener.routeNameInputController.text);
+                    Navigator.pop(context);
+
+                    }),
+              ],
+            );
+          });
+        });
   }
 
   _submitForm() {
@@ -50,9 +87,9 @@ class AddressFormState extends State<AddressForm> {
     }
   }
 
-  _saveWalk() {
+  _saveWalk(routeName) {
     var mapStateSetter = context.read<MapStateProvider>();
-    mapStateSetter.saveRoute();
+    mapStateSetter.saveRoute(routeName);
   }
 
   setFormContent(type) {
