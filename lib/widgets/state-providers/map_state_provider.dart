@@ -205,8 +205,29 @@ class MapStateProvider with ChangeNotifier {
     });
   }
 
+//this handles generating the saved route polyline
+  void plotSavedRoute(List<dynamic> coords) {
+      List<LatLng> latLngList = [];
+
+     for (var dynamicObject in coords) {
+    latLngList.add(LatLng(dynamicObject['coordinates'][1], dynamicObject['coordinates'][0]));
+  }
+    plottedRoute = latLngList;
+    routePolyLine = PolylineLayer(
+      polylineCulling: false,
+      polylines: [
+        Polyline(
+          points: plottedRoute,
+          color: Colors.orange,
+          strokeWidth: 6,
+        ),
+      ],
+    );
+    notifyListeners();
+  }
+
   void saveRoute(routeName) async {
-     await http.post(
+    await http.post(
       Uri.parse(
           "https://rich-puce-bear-gown.cyclic.app/api/user/63a08560482372cd329d6888/route"),
       headers: <String, String>{
@@ -214,7 +235,6 @@ class MapStateProvider with ChangeNotifier {
       },
       body: json.encode({'routeName': routeName, 'routeData': plottedRoute}),
     );
-
   }
 
   Future<Map> getRoutes() async {

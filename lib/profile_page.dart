@@ -19,6 +19,11 @@ class ProfilePage extends StatelessWidget {
 
     final user = FirebaseAuth.instance.currentUser!;
 
+    _renderSavedRoute(routeCoords) {
+      var mapStateSetter = context.read<MapStateProvider>();
+      mapStateSetter.plotSavedRoute(routeCoords);
+    }
+
     return FutureBuilder(
         future: getUser(user.email).then((res) {
           return res.body;
@@ -54,7 +59,11 @@ class ProfilePage extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     TextButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          _renderSavedRoute(
+                                              mapPoints[index]["routeData"]);
+                                          Navigator.pop(context);
+                                        },
                                         child: Text("See Route on map"))
                                   ],
                                 )
