@@ -29,6 +29,7 @@ class MapStateProvider with ChangeNotifier {
   bool isInitialRouteLoading = false;
   bool isPOILoading = false;
   bool isRouteLoading = false;
+  bool isRouteListLoading = false;
 
   List<bool> showMarkerDialogue = [];
   late Marker startMark = Marker(
@@ -253,6 +254,7 @@ class MapStateProvider with ChangeNotifier {
 
 //this handles generating the saved route polyline
   void plotSavedRoute(List<dynamic> coords) {
+    init();
     List<LatLng> latLngList = [];
 
     for (var dynamicObject in coords) {
