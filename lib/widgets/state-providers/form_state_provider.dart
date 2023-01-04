@@ -14,6 +14,8 @@ class FormStateProvider with ChangeNotifier {
   var startIconColor = Colors.black;
   var endIconColor = Colors.black;
 
+  var isVisible = false;
+
   TextEditingController startPointController = TextEditingController();
   TextEditingController endPointController = TextEditingController();
   TextEditingController routeNameInputController = TextEditingController();

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/widgets/api_utils.dart';
 import 'package:flutter_application_1/widgets/geolocation.dart';
@@ -22,8 +23,14 @@ class MapStateProvider with ChangeNotifier {
   List allPOIMarkerCoords = [];
   List<Marker> allPOIMarkers = [];
   List mapPoints = [];
+  List mapRouteToSave = [];
 
   //rendering
+  bool isInitialRouteLoading = false;
+  bool isPOILoading = false;
+  bool isRouteLoading = false;
+
+  List<bool> showMarkerDialogue = [];
   late Marker startMark = Marker(
     point: LatLng(0.0, 0.0),
     width: 100,
@@ -85,6 +92,7 @@ class MapStateProvider with ChangeNotifier {
   //this handles generating an initial route between two points
   void setInitialRoute() {
     List<LatLng> tempRoute = [];
+    isInitialRouteLoading = true;
     //fetch route from api
     fetchInitialRoute(startCoord, endCoord).then((res) {
       final parsedRoute = json.decode(res.body.toString())["features"][0]
@@ -109,6 +117,7 @@ class MapStateProvider with ChangeNotifier {
         ],
       );
       setRoutePOI(100, 10, [130, 220, 330, 620]);
+      isInitialRouteLoading = false;
       notifyListeners();
     });
   }
@@ -116,6 +125,7 @@ class MapStateProvider with ChangeNotifier {
   //this handles retrieving the local POIs
   void setRoutePOI(buffer, markerLimit, categoryIds) {
     List tempCoords = [];
+    isPOILoading = true;
 
     plottedRoute.forEach((latlng) {
       tempCoords.add([latlng.longitude, latlng.latitude]);
@@ -138,16 +148,43 @@ class MapStateProvider with ChangeNotifier {
         var lon = parsed["features"][i]["geometry"]["coordinates"][0];
         var lat = parsed["features"][i]["geometry"]["coordinates"][1];
 
-        allPOIMarkerCoords.add([lat, lon]);
+        allPOIMarkerCoords.add([
+          lat,
+          lon,
+          parsed["features"][i]["properties"]["osm_tags"] != null
+              ? parsed["features"][i]["properties"]["osm_tags"]["name"]
+              : "",
+        ]);
       }
-
-      allPOIMarkerCoords.forEach((element) {
+      for (var i = 0; i < allPOIMarkerCoords.length; i++) {
         tempMarkers.add(Marker(
-          point: LatLng(element[0], element[1]),
+          point: LatLng(allPOIMarkerCoords[i][0], allPOIMarkerCoords[i][1]),
           width: 100,
           height: 100,
-          builder: (ctx) => Container(
-            key: const Key('blue'),
+          builder: (ctx) => GestureDetector(
+            onTap: () => showDialog<String>(
+              context: ctx,
+              builder: (BuildContext context) => AlertDialog(
+                titlePadding: const EdgeInsets.only(
+                    top: 20, left: 20, right: 20, bottom: 0),
+                title: Text(
+                  allPOIMarkerCoords[i][2] == ""
+                      ? "POI Name not Found"
+                      : allPOIMarkerCoords[i][2],
+                  style: const TextStyle(color: Colors.white),
+                ),
+                backgroundColor: const Color(0xff504958),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, 'Close'),
+                    child: const Text(
+                      'Close',
+                      style: TextStyle(color: Color(0xff31AFB9)),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             child: const Icon(
               Icons.location_on,
               color: Colors.blue,
@@ -155,13 +192,14 @@ class MapStateProvider with ChangeNotifier {
             ),
           ),
         ));
-      });
+      }
 
       allPOIMarkers = tempMarkers;
-
       return;
     }).then((res) {
       localPOIMarkers = MarkerLayer(markers: allPOIMarkers);
+      isPOILoading = false;
+
       notifyListeners();
     });
   }
@@ -172,11 +210,14 @@ class MapStateProvider with ChangeNotifier {
       [startCoord[0], startCoord[1]]
     ];
 
-    allPOIMarkerCoords.forEach((marker) {
+    sortPOIsDistance(allPOIMarkerCoords, [startCoord[1], startCoord[0]])
+        .forEach((marker) {
       fullRouteCoords.add([marker[1], marker[0]]);
     });
 
     fullRouteCoords.add([endCoord[0], endCoord[1]]);
+
+    isRouteLoading = true;
 
     //fetch route polyline from api
     fetchRoute(fullRouteCoords).then((res) {
@@ -188,6 +229,8 @@ class MapStateProvider with ChangeNotifier {
       routePolyPoints.forEach((point) {
         routePoints.add(LatLng(point[0].toDouble(), point[1].toDouble()));
       });
+
+      mapRouteToSave = routePoints;
 
       routePolyLine = PolylineLayer(
         polylineCulling: false,
@@ -202,6 +245,8 @@ class MapStateProvider with ChangeNotifier {
 
       return;
     }).then((res) {
+      isRouteLoading = false;
+
       notifyListeners();
     });
   }
@@ -235,7 +280,7 @@ class MapStateProvider with ChangeNotifier {
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: json.encode({'routeName': routeName, 'routeData': plottedRoute}),
+      body: json.encode({'routeName': routeName, 'routeData': mapRouteToSave}),
     );
   }
 
@@ -276,6 +321,22 @@ class MapStateProvider with ChangeNotifier {
     }
 
     notifyListeners();
+  }
+
+  List sortPOIsDistance(POIList, startPoint) {
+    int distance(coor1, coor2) {
+      dynamic x = coor2[0] - coor1[0];
+      dynamic y = coor2[1] - coor1[1];
+      return (sqrt((x * x) + (y * y)) * 10000).toInt();
+    }
+
+    List sortByDistance(coordinates, point) {
+      coordinates
+          .sort((a, b) => distance(a, point).compareTo(distance(b, point)));
+      return coordinates;
+    }
+
+    return sortByDistance(POIList, startPoint);
   }
 
   //resets state
