@@ -113,14 +113,14 @@ class MapStateProvider with ChangeNotifier {
           ),
         ],
       );
-      setRoutePOI(100, 10, [130, 220, 330, 620]);
+      setRoutePOI(120, 15, [130], [224, 226, 230, 232, 240]);
       isInitialRouteLoading = false;
       notifyListeners();
     });
   }
 
   //this handles retrieving the local POIs
-  void setRoutePOI(buffer, markerLimit, categoryIds) {
+  void setRoutePOI(buffer, markerLimit, categoryGroupIds, categoryIds) {
     List tempCoords = [];
     isPOILoading = true;
 
@@ -129,7 +129,9 @@ class MapStateProvider with ChangeNotifier {
     });
 
     //fetch local POI data from api
-    fetchRoutePOIData(tempCoords, buffer, markerLimit, categoryIds).then((res) {
+    fetchRoutePOIData(
+            tempCoords, buffer, markerLimit, categoryGroupIds, categoryIds)
+        .then((res) {
       allPOIMarkerCoords = [];
       List<Marker> tempMarkers = [];
 
@@ -153,6 +155,9 @@ class MapStateProvider with ChangeNotifier {
               : "",
         ]);
       }
+
+      sortPOIsDistance(allPOIMarkerCoords, [startCoord[1], startCoord[0]]);
+
       for (var i = 0; i < allPOIMarkerCoords.length; i++) {
         tempMarkers.add(Marker(
           point: LatLng(allPOIMarkerCoords[i][0], allPOIMarkerCoords[i][1]),

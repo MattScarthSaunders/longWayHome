@@ -8,8 +8,8 @@ fetchInitialRoute(startPoint, endPoint) async {
       'https://api.openrouteservice.org/v2/directions/foot-hiking?api_key=$apiKey&start=${startPoint[0]},${startPoint[1]}&end=${endPoint[0]},${endPoint[1]}'));
 }
 
-fetchRoutePOIData(
-    List coordinates, int buffer, int markerLimit, List categoryIds) async {
+fetchRoutePOIData(List coordinates, int buffer, int markerLimit,
+    List categoryGroupIds, List categoryIds) async {
   const apiKey = '5b3ce3597851110001cf62489513c460675e42199a86c0f6d7133d72';
   return await http.post(
     Uri.parse('https://api.openrouteservice.org/pois'),
@@ -25,7 +25,8 @@ fetchRoutePOIData(
       },
       "limit": markerLimit,
       "filters": {
-        "category_group_ids": categoryIds,
+        "category_group_ids": categoryGroupIds,
+        "category_ids": categoryIds
       },
     }),
   );
@@ -77,10 +78,6 @@ fetchIsochronePOIData(isochroneGeoJson, markerLimit, categoryIds) async {
     body: jsonEncode({
       "request": "pois",
       "geometry": {
-        // "bbox": [
-        //   [8.8034, 53.0756],
-        //   [8.7834, 53.0456]
-        // ],
         "geojson": {
           "type": "Polygon",
           "coordinates": json.decode(isochroneGeoJson.body)["features"][0]
