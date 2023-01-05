@@ -72,11 +72,10 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
-
+  assets: 
+    - assets/transparent_app_logo.png
   # To add assets to your application, add an assets section, like this:
-  assets:
-    - lib/images/coffeeshop_route_tour_icon_header.png
-
+  
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

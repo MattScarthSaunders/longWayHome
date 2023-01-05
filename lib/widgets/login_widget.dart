@@ -35,16 +35,20 @@ class _LoginWidgetState extends State<LoginWidget> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(
-              height: 65,
+            const SizedBox(
+              height: 35,
             ),
-            Text(
+            Image.asset(
+              'assets/transparent_app_logo.png',
+              scale: 1.5,
+            ),
+            const Text(
               'Long Way Home',
               style: TextStyle(
-                  color: Colors.white, fontSize: 54, fontFamily: 'Moon_Dance'),
+                  color: Colors.white, fontSize: 48, fontFamily: 'Moon_Dance'),
             ),
-            SizedBox(
-              height: 150,
+            const SizedBox(
+              height: 30,
             ),
             TextField(
                 controller: emailController,
