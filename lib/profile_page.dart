@@ -45,6 +45,23 @@ class ProfilePage extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Color.fromARGB(255, 121, 34, 23)),
+                        child: const Text(
+                          'Sign Out',
+                        ),
+                        onPressed: () {
+                          context.read<MapStateProvider>().init();
+                          context.read<FormStateProvider>().init();
+                          context.read<FormStateProvider>().init();
+
+                          FirebaseAuth.instance.signOut();
+                          Navigator.of(context).pop();
+                        }),
+                        SizedBox(
+                      height: 40,
+                    ),
                     Expanded(
                       child: Consumer<MapStateProvider>(
                         builder: (context, mapStateProvider, child) {
@@ -102,33 +119,16 @@ class ProfilePage extends StatelessWidget {
                     const SizedBox(height: 40),
                     ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
-                            minimumSize: const Size.fromHeight(50),
+                            minimumSize: const Size(150, 40),
                             backgroundColor: const Color(0xFF31AFB9)),
                         icon: const Icon(Icons.arrow_back, size: 32),
                         label: const Text(
-                          'back to map',
-                          style: TextStyle(fontSize: 24),
+                          'Back to map',
                         ),
                         onPressed: () {
                           Navigator.of(context).pop();
                         }),
-                    ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                            minimumSize: const Size.fromHeight(50),
-                            backgroundColor: const Color(0xFF31AFB9)),
-                        icon: const Icon(Icons.arrow_back, size: 32),
-                        label: const Text(
-                          'Sign Out',
-                          style: TextStyle(fontSize: 24),
-                        ),
-                        onPressed: () {
-                          context.read<MapStateProvider>().init();
-                          context.read<FormStateProvider>().init();
-                          context.read<FormStateProvider>().init();
-
-                          FirebaseAuth.instance.signOut();
-                          Navigator.of(context).pop();
-                        }),
+                    
                   ],
                 ),
               ),

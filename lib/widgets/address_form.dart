@@ -29,33 +29,28 @@ class AddressFormState extends State<AddressForm> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 40.0, top: 10.0),
-                        child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF31AFB9)),
-                            onPressed: () {
-                              var mapStateSetter =
-                                  context.read<MapStateProvider>();
-                              var pinStateSetter =
-                                  context.read<FormStateProvider>();
-                              mapStateSetter.init();
-                              pinStateSetter.init();
-                            },
-                            child: const Text('Reset')),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 40.0, top: 10.0),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            _submitForm();
-                            var pinStateSetter =
-                                context.read<FormStateProvider>();
-                          },
+                      ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF31AFB9)),
-                          child: const Text('Generate Walk'),
-                        ),
+                          onPressed: () {
+                            var mapStateSetter =
+                                context.read<MapStateProvider>();
+                            var pinStateSetter =
+                                context.read<FormStateProvider>();
+                            mapStateSetter.init();
+                            pinStateSetter.init();
+                          },
+                          child: const Text('Reset')),
+                          Spacer(flex: 1),
+                      ElevatedButton(
+                        onPressed: () {
+                          _submitForm();
+                          var pinStateSetter =
+                              context.read<FormStateProvider>();
+                        },
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF31AFB9)),
+                        child: const Text('Generate Walk'),
                       ),
                     ],
                   ),
@@ -63,6 +58,8 @@ class AddressFormState extends State<AddressForm> {
                       onPressed: () {
                         _routeNameInputDialog(context);
                       },
+                      style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF31AFB9)),
                       child: Text("Save route")),
                 ])));
   }
@@ -120,26 +117,15 @@ class AddressFormState extends State<AddressForm> {
     final regex = RegExp(
         r'^([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\s?[0-9][A-Za-z]{2})$');
 
-    // String type = '';
-    // if (!formStateListener.startComplete) {
-    //   type = "Start";
-    // } else {
-    //   type = "End";
-    // }
-
-    // if (formStateListener.startComplete && formStateListener.endComplete) {
-    //   //if form complete, submit and generate route
-    //   return [];
-    // } else {
-    //   //return programmatic form entry sections, i.e start location then end location then....
-
     return Consumer<FormStateProvider>(
         builder: (context, formStateListener, child) {
       return Center(
           child: Row(
         children: [
+          
           Expanded(
-              child: TextFormField(
+              child: 
+              TextFormField(
                   style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
                     labelText: '$type Postcode',
@@ -152,6 +138,26 @@ class AddressFormState extends State<AddressForm> {
                   validator: (value) => value != "" && !regex.hasMatch(value!)
                       ? 'Please enter a valid postal code'
                       : null)),
+                      IconButton(
+            onPressed: () {
+              var pinStateSetter = context.read<FormStateProvider>();
+              if (pinStateSetter.isButton) {
+                pinStateSetter.setButton(false);
+                pinStateSetter.setInput('none');
+              } else if (!pinStateSetter.isButton) {
+                pinStateSetter.setButton(true);
+                pinStateSetter.setInput(type);
+              }
+            },
+            iconSize: 30,
+            icon: Consumer<FormStateProvider>(
+                builder: (context, pinStateListener, child) {
+              return Icon(Icons.location_on,
+                  color: type == "Start"
+                      ? pinStateListener.startIconColor
+                      : pinStateListener.endIconColor);
+            }),
+          ),
           ElevatedButton(
             onPressed: () {
               var mapStateSetter = context.read<MapStateProvider>();
@@ -206,26 +212,7 @@ class AddressFormState extends State<AddressForm> {
                 backgroundColor: const Color(0xFF31AFB9)),
             child: Text('Set $type'),
           ),
-          IconButton(
-            onPressed: () {
-              var pinStateSetter = context.read<FormStateProvider>();
-              if (pinStateSetter.isButton) {
-                pinStateSetter.setButton(false);
-                pinStateSetter.setInput('none');
-              } else if (!pinStateSetter.isButton) {
-                pinStateSetter.setButton(true);
-                pinStateSetter.setInput(type);
-              }
-            },
-            iconSize: 30,
-            icon: Consumer<FormStateProvider>(
-                builder: (context, pinStateListener, child) {
-              return Icon(Icons.location_on,
-                  color: type == "Start"
-                      ? pinStateListener.startIconColor
-                      : pinStateListener.endIconColor);
-            }),
-          ),
+          
         ],
       ));
     });
