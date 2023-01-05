@@ -32,6 +32,7 @@ class MapStateProvider with ChangeNotifier {
   bool isRouteListLoading = false;
 
   List<bool> showMarkerDialogue = [];
+
   late Marker startMark = Marker(
     point: LatLng(0.0, 0.0),
     width: 100,
@@ -419,6 +420,74 @@ class MapStateProvider with ChangeNotifier {
     }
 
     return sortByDistance(POIList, startPoint);
+  }
+
+  void initStartMarker() {
+    startMark = Marker(
+      point: LatLng(0.0, 0.0),
+      width: 100,
+      height: 100,
+      builder: (ctx) => Container(
+        key: const Key('blue'),
+        child: const Icon(
+          Icons.location_on,
+          color: Colors.blue,
+          size: 30.0,
+        ),
+      ),
+    );
+    startCoord = [];
+    plottedRoute = [];
+    allPOIMarkerCoords = [];
+    allPOIMarkers = [];
+    localPOIMarkers = MarkerLayer(markers: []);
+
+    routePolyLine = PolylineLayer(
+      polylineCulling: false,
+      polylines: [
+        Polyline(
+          points: [],
+          color: Colors.blue,
+          strokeWidth: 10,
+        ),
+      ],
+    );
+
+    notifyListeners();
+  }
+
+  void initEndMarker() {
+    endMark = Marker(
+      point: LatLng(0.0, 0.0),
+      width: 100,
+      height: 100,
+      builder: (ctx) => Container(
+        key: const Key('blue'),
+        child: const Icon(
+          Icons.location_on,
+          color: Colors.blue,
+          size: 30.0,
+        ),
+      ),
+    );
+    endCoord = [];
+    plottedRoute = [];
+    allPOIMarkerCoords = [];
+    allPOIMarkers = [];
+    localPOIMarkers = MarkerLayer(markers: []);
+
+    routePolyLine = PolylineLayer(
+      polylineCulling: false,
+      polylines: [
+        Polyline(
+          points: [],
+          color: Colors.blue,
+          strokeWidth: 10,
+        ),
+      ],
+    );
+
+    notifyListeners();
   }
 
   //resets state

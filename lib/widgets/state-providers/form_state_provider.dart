@@ -9,6 +9,9 @@ class FormStateProvider with ChangeNotifier {
   late bool startComplete = false;
   late bool endComplete = false;
 
+  late bool isStartButtonEnabled = true;
+  late bool isEndButtonEnabled = true;
+
   late String selectedInput = '';
 
   var startIconColor = Color(0xFF66717C);
@@ -19,7 +22,6 @@ class FormStateProvider with ChangeNotifier {
   TextEditingController startPointController = TextEditingController();
   TextEditingController endPointController = TextEditingController();
   TextEditingController routeNameInputController = TextEditingController();
-
 
   // TextEditingController endPointController = TextEditingController(text: '');
 
@@ -100,6 +102,8 @@ class FormStateProvider with ChangeNotifier {
 
   //resets state
   init() {
+    isStartButtonEnabled = true;
+    isEndButtonEnabled = true;
     isButton = false;
     startComplete = false;
     endComplete = false;
@@ -108,6 +112,28 @@ class FormStateProvider with ChangeNotifier {
     endIconColor = Color(0xFF66717C);
     startPointController = TextEditingController(text: '');
     endPointController = TextEditingController(text: '');
+    routeNameInputController = TextEditingController();
+    notifyListeners();
+  }
+
+  initEnd() {
+    isEndButtonEnabled = true;
+    isButton = false;
+    endComplete = false;
+    selectedInput = '';
+    endIconColor = Color(0xFF66717C);
+    endPointController = TextEditingController(text: '');
+    routeNameInputController = TextEditingController();
+    notifyListeners();
+  }
+
+  initStart() {
+    isStartButtonEnabled = true;
+    isButton = false;
+    startComplete = false;
+    selectedInput = '';
+    startIconColor = Color(0xFF66717C);
+    startPointController = TextEditingController(text: '');
     routeNameInputController = TextEditingController();
     notifyListeners();
   }

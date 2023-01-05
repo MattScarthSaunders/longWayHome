@@ -86,6 +86,10 @@ class _MainPageState extends State<MainPage> {
       pinStateSetter.setInput("none");
       // pinStateSetter.getPostcode(point);
       mapStateSetter.setMarkerLocation(point, "Start");
+
+      pinStateSetter.isStartButtonEnabled = false;
+      pinStateSetter.startPointController.text = "Pin Marker";
+
       mapStateSetter.setCoords(point, "Start");
       if (mapStateListener.endCoord.isNotEmpty) {
         mapStateSetter.setInitialRoute();
@@ -95,6 +99,10 @@ class _MainPageState extends State<MainPage> {
       pinStateSetter.setInput("none");
       // pinStateSetter.getPostcode(point);
       mapStateSetter.setMarkerLocation(point, "End");
+
+      pinStateSetter.isEndButtonEnabled = false;
+      pinStateSetter.endPointController.text = "Pin Marker";
+
       mapStateSetter.setCoords(point, "End");
       if (mapStateListener.startCoord.isNotEmpty) {
         mapStateSetter.setInitialRoute();

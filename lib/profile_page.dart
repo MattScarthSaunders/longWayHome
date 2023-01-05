@@ -68,8 +68,22 @@ class ProfilePage extends StatelessWidget {
                                   child: Column(
                                     children: [
                                       ListTile(
-                                        title: Text(mapStateSetter
-                                            .mapPoints[index]["routeName"]),
+                                        title: Row(
+                                          children: [
+                                            Text(mapStateSetter.mapPoints[index]
+                                                ["routeName"]),
+                                            Spacer(),
+                                            IconButton(
+                                                onPressed: () {
+                                                  _confirmDelete(
+                                                      context, index);
+                                                },
+                                                icon: Icon(
+                                                  Icons.close,
+                                                  color: Colors.red,
+                                                )),
+                                          ],
+                                        ),
                                         subtitle: Text(mapStateSetter
                                             .mapPoints[index]["dateCreated"]),
                                       ),
@@ -145,4 +159,49 @@ class ProfilePage extends StatelessWidget {
           }
         }));
   }
+}
+
+Future<void> _confirmDelete(BuildContext context, index) async {
+  return showDialog(
+      context: context,
+      builder: (context) {
+        return Consumer<FormStateProvider>(
+            builder: (context, formStateListener, child) {
+          return AlertDialog(
+            title: const Text('Delete Route from Profile?'),
+            // content: TextField(
+            //   onChanged: (value) {},
+            //   controller: formStateListener.routeNameInputController,
+            //   decoration: const InputDecoration(hintText: "Name your route"),
+            // ),
+            actions: <Widget>[
+              Row(
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFFC7213D)),
+                    child: const Text('Cancel'),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF31AFB9)),
+                      child: const Text('Confirm'),
+                      onPressed: () {
+                        var mapStateSetter = context.read<MapStateProvider>();
+                        var route_Id = mapStateSetter.mapPoints[index]["_id"];
+                        // print(mapStateSetter.mapPoints[index]["_id"]);
+                        // deleteRoute(
+                        //     "63a08560482372cd329d6888", route_Id, "anything");
+                        // _saveWalk(formStateListener.routeNameInputController.text);
+                        Navigator.pop(context);
+                      }),
+                ],
+              ),
+            ],
+          );
+        });
+      });
 }

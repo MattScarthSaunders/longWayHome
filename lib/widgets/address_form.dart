@@ -24,13 +24,15 @@ class AddressFormState extends State<AddressForm> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  Text("Place a pin or enter a postcode:",
+                      style: TextStyle(color: Colors.white)),
                   setFormContent("Start"),
                   SizedBox(
                     height: 10,
                   ),
                   setFormContent("End"),
                   SizedBox(
-                    height: 35,
+                    height: 25,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -142,31 +144,60 @@ class AddressFormState extends State<AddressForm> {
       return Center(
           child: Row(
         children: [
-          IconButton(
-            padding: EdgeInsets.only(right: 10),
-            constraints: BoxConstraints(),
-            onPressed: () {
-              var pinStateSetter = context.read<FormStateProvider>();
-              if (pinStateSetter.isButton) {
-                pinStateSetter.setButton(false);
-                pinStateSetter.setInput('none');
-              } else if (!pinStateSetter.isButton) {
-                pinStateSetter.setButton(true);
-                pinStateSetter.setInput(type);
-              }
-            },
-            iconSize: 30,
-            icon: Consumer<FormStateProvider>(
-                builder: (context, pinStateListener, child) {
-              return Icon(Icons.location_on,
-                  color: type == "Start"
-                      ? pinStateListener.startIconColor
-                      : pinStateListener.endIconColor);
-            }),
+          Visibility(
+            visible: formStateListener.isStartButtonEnabled == false &&
+                    type == "Start" ||
+                formStateListener.isEndButtonEnabled == false && type == "End",
+            child: IconButton(
+                onPressed: () {
+                  if (type == "Start") {
+                    formStateListener.initStart();
+                    var mapStateSetter = context.read<MapStateProvider>();
+                    mapStateSetter.initStartMarker();
+                  }
+                  if (type == "End") {
+                    formStateListener.initEnd();
+                    var mapStateSetter = context.read<MapStateProvider>();
+                    mapStateSetter.initEndMarker();
+                  }
+                },
+                icon: Icon(
+                  Icons.close,
+                  color: Colors.red,
+                )),
+          ),
+          Visibility(
+            visible: formStateListener.isStartButtonEnabled == true &&
+                    type == "Start" ||
+                formStateListener.isEndButtonEnabled == true && type == "End",
+            child: IconButton(
+              onPressed: () {
+                var pinStateSetter = context.read<FormStateProvider>();
+                if (pinStateSetter.isButton) {
+                  pinStateSetter.setButton(false);
+                  pinStateSetter.setInput('none');
+                } else if (!pinStateSetter.isButton) {
+                  pinStateSetter.setButton(true);
+                  pinStateSetter.setInput(type);
+                }
+              },
+              iconSize: 30,
+              icon: Consumer<FormStateProvider>(
+                  builder: (context, pinStateListener, child) {
+                return Icon(Icons.location_on,
+                    color: type == "Start"
+                        ? pinStateListener.startIconColor
+                        : pinStateListener.endIconColor);
+              }),
+            ),
           ),
           Expanded(
               // flex: 5,
               child: TextFormField(
+                  enabled: formStateListener.isStartButtonEnabled == true &&
+                          type == "Start" ||
+                      formStateListener.isEndButtonEnabled == true &&
+                          type == "End",
                   style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
                     labelText: '$type Postcode',
@@ -176,40 +207,53 @@ class AddressFormState extends State<AddressForm> {
                       ? formStateListener.startPointController
                       : formStateListener.endPointController,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) => value != "" && !regex.hasMatch(value!)
+                  validator: (value) => value != "" &&
+                          value != "Pin Marker" &&
+                          !regex.hasMatch(value!)
                       ? 'Please enter a valid postal code'
                       : null)),
-
-          SizedBox(width: 25,),
+          SizedBox(
+            width: 25,
+          ),
           ElevatedButton(
-            onPressed: () {
-              var mapStateSetter = context.read<MapStateProvider>();
-              var pinStateSetter = context.read<FormStateProvider>();
+            onPressed: formStateListener.isStartButtonEnabled == false &&
+                        type == "Start" ||
+                    formStateListener.isEndButtonEnabled == false &&
+                        type == "End"
+                ? null
+                : () {
+                    var mapStateSetter = context.read<MapStateProvider>();
+                    var pinStateSetter = context.read<FormStateProvider>();
 
-              var pointController = type == "Start"
-                  ? formStateListener.startPointController
-                  : formStateListener.endPointController;
+                    var pointController = type == "Start"
+                        ? formStateListener.startPointController
+                        : formStateListener.endPointController;
 
-              if (regex.hasMatch(pointController.text)) {
-                pinStateSetter.getCoords(pointController.text).then((res) {
-                  mapStateSetter.setMarkerLocation(res, type);
-                  type == "Start"
-                      ? mapStateSetter.startCoord = [
-                          res.longitude,
-                          res.latitude
-                        ]
-                      : mapStateSetter.endCoord = [res.longitude, res.latitude];
-                  pinStateSetter.formSectionComplete(type);
+                    if (regex.hasMatch(pointController.text)) {
+                      pinStateSetter
+                          .getCoords(pointController.text)
+                          .then((res) {
+                        mapStateSetter.setMarkerLocation(res, type);
+                        type == "Start"
+                            ? mapStateSetter.startCoord = [
+                                res.longitude,
+                                res.latitude
+                              ]
+                            : mapStateSetter.endCoord = [
+                                res.longitude,
+                                res.latitude
+                              ];
+                        pinStateSetter.formSectionComplete(type);
 
-                  if (mapStateSetter.endCoord.isNotEmpty &&
-                      mapStateSetter.startCoord.isNotEmpty) {
-                    mapStateSetter.setInitialRoute();
-                  }
-                });
-                pinStateSetter.setButton(false);
-                pinStateSetter.setInput('none');
-              }
-            },
+                        if (mapStateSetter.endCoord.isNotEmpty &&
+                            mapStateSetter.startCoord.isNotEmpty) {
+                          mapStateSetter.setInitialRoute();
+                        }
+                      });
+                      pinStateSetter.setButton(false);
+                      pinStateSetter.setInput('none');
+                    }
+                  },
             style: ElevatedButton.styleFrom(
               backgroundColor: Color(0xff3D9198),
               fixedSize: const Size(80, 30),

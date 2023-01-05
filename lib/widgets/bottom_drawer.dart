@@ -17,12 +17,14 @@ class _BottomDrawerWidget extends State<BottomDrawerWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 370,
+      width: 340,
       padding: EdgeInsets.only(left: 7, right: 7),
-      child: Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.center, children: [
-        Align(
-            
-            child: SizedBox(
+      child: Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Align(
+                child: SizedBox(
               height: 40,
               child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -48,9 +50,9 @@ class _BottomDrawerWidget extends State<BottomDrawerWidget> {
                     }
                   })),
             )),
-        Spacer(flex: 1),
-        Align(
-            child: SizedBox(
+            Spacer(),
+            Align(
+                child: SizedBox(
               height: 40,
               child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -61,7 +63,7 @@ class _BottomDrawerWidget extends State<BottomDrawerWidget> {
                   },
                   child: const Text('Profile')),
             ))
-      ]),
+          ]),
     );
   }
 
@@ -77,24 +79,24 @@ class _BottomDrawerWidget extends State<BottomDrawerWidget> {
                   EdgeInsets.only(bottom: mediaQueryData.viewInsets.bottom),
               child: Container(
                 decoration: const BoxDecoration(
-              color: Color(0xff232f34),
+                  color: Color(0xff232f34),
                 ),
                 child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: <Widget>[
-                SizedBox(
-                    height: (drawerHeight).toDouble(),
-                    child: Stack(
-                      children: <Widget>[
-                        Positioned(
-                          child: ListView(children: const [
-                            AddressForm(),
-                          ]),
-                        )
-                      ],
-                    )),
-              ],
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    SizedBox(
+                        height: (drawerHeight).toDouble(),
+                        child: Stack(
+                          children: <Widget>[
+                            Positioned(
+                              child: ListView(children: const [
+                                AddressForm(),
+                              ]),
+                            )
+                          ],
+                        )),
+                  ],
                 ),
               ));
         });
