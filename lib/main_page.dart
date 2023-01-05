@@ -62,10 +62,13 @@ class _MainPageState extends State<MainPage> {
       ),
       bottomNavigationBar: BottomAppBar(
         elevation: 0,
-        color: const Color(0xff344955),
         child: Container(
+          decoration: BoxDecoration(
+              color: Color(0xff222E34),
+              border:
+                  Border(top: BorderSide(color: Color(0xff255777), width: 3))),
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          height: 56.0,
+          height: 65.0,
           child: Row(
             children: const [BottomDrawerWidget()],
           ),

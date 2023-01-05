@@ -31,36 +31,23 @@ class MyApp extends StatelessWidget {
         child: ElevatedButtonTheme(
           data: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                fixedSize: const Size(120, 30),
+                backgroundColor: const Color(0xff3D9198),
+                fixedSize: const Size(130, 30),
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15)),
-                side: const BorderSide(color:  Color.fromARGB(255, 136, 138, 135), width: 4),
+                    borderRadius: BorderRadius.circular(7)),
+                side: const BorderSide(color:  Color.fromARGB(255, 0, 0, 0), width: 1),
                 padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
                 textStyle: const TextStyle(
-                  fontSize: 16,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
                 )),
-            // style: ButtonStyle(
-            // //   minimumSize: MaterialStateProperty.resolveWith<Size>(
-            // // (states) =>
-            //   side: MaterialStateProperty.resolveWith<BorderSide>(
-            // (states) => BorderSide(color: Color.fromARGB(255, 189, 224, 33), width: 4)),
-            //   backgroundColor: MaterialStateProperty.resolveWith<Color>(
-            // (states) => Colors.white),
-            //   shape: MaterialStateProperty.resolveWith<OutlinedBorder>(
-            //     (_) {
-            //       return RoundedRectangleBorder(borderRadius: BorderRadius.circular(20));
-            //     }),
-            //   textStyle: MaterialStateProperty.resolveWith<TextStyle>(
-            //     (states) => TextStyle(color: Colors.red)),
-            // ),
           ),
           child: MaterialApp(
               scaffoldMessengerKey: messengerKey,
               navigatorKey: navigatorKey,
               theme: ThemeData(
                   scaffoldBackgroundColor:
-                      const Color.fromARGB(255, 56, 47, 66)),
+                      Color(0xff222E34)),
               home: Scaffold(
                   body: StreamBuilder<User?>(
                 stream: FirebaseAuth.instance.authStateChanges(),

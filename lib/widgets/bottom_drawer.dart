@@ -18,17 +18,15 @@ class _BottomDrawerWidget extends State<BottomDrawerWidget> {
   Widget build(BuildContext context) {
     return Container(
       width: 370,
-      margin: EdgeInsets.only(bottom: 7),
-      padding: EdgeInsets.only(left: 10, right: 10),
-      child: Row(mainAxisSize: MainAxisSize.min, children: [
+      padding: EdgeInsets.only(left: 7, right: 7),
+      child: Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.center, children: [
         Align(
-            alignment: Alignment.bottomCenter,
+            
             child: SizedBox(
-              width: 120,
               height: 40,
               child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF31AFB9)),
+                      backgroundColor: const Color(0xff3D9198)),
                   onPressed: () {
                     var formState = context.read<FormStateProvider>();
                     if (formState.isVisible) {
@@ -52,13 +50,11 @@ class _BottomDrawerWidget extends State<BottomDrawerWidget> {
             )),
         Spacer(flex: 1),
         Align(
-            alignment: Alignment.bottomRight,
             child: SizedBox(
-              width: 120,
               height: 40,
               child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF31AFB9)),
+                      backgroundColor: const Color(0xff3D9198)),
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => const ProfilePage()));
@@ -79,29 +75,28 @@ class _BottomDrawerWidget extends State<BottomDrawerWidget> {
           return Padding(
               padding:
                   EdgeInsets.only(bottom: mediaQueryData.viewInsets.bottom),
-              child: SingleChildScrollView(
-                  child: Container(
+              child: Container(
                 decoration: const BoxDecoration(
-                  color: Color(0xff232f34),
+              color: Color(0xff232f34),
                 ),
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: <Widget>[
-                    SizedBox(
-                        height: (drawerHeight).toDouble(),
-                        child: Stack(
-                          children: <Widget>[
-                            Positioned(
-                              child: ListView(children: const [
-                                AddressForm(),
-                              ]),
-                            )
-                          ],
-                        )),
-                  ],
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                SizedBox(
+                    height: (drawerHeight).toDouble(),
+                    child: Stack(
+                      children: <Widget>[
+                        Positioned(
+                          child: ListView(children: const [
+                            AddressForm(),
+                          ]),
+                        )
+                      ],
+                    )),
+              ],
                 ),
-              )));
+              ));
         });
   }
 }

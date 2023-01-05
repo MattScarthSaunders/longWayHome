@@ -41,7 +41,7 @@ class _CurrentPOSMarkerState extends State<CurrentPOSMarker> {
             key: const Key('blue'),
             child: const Icon(
               Icons.gps_fixed_outlined,
-              color: Color(0xff31AFB9),
+              color: Color(0xff3D9198),
               size: 30.0,
             ),
           ),

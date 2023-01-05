@@ -41,7 +41,19 @@ class _SignUpWidgetState extends State<SignUpWidget> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 40),
+                SizedBox(
+                  height: 65,
+                ),
+                Text(
+                  'Long Way Home',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 54,
+                      fontFamily: 'Moon_Dance'),
+                ),
+                SizedBox(
+                  height: 150,
+                ),
                 TextFormField(
                   controller: emailController,
                   cursorColor: Colors.white,
@@ -74,7 +86,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                 ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
                         minimumSize: const Size.fromHeight(50),
-                        backgroundColor: const Color(0xFF31AFB9)),
+                        backgroundColor: const Color(0xff3D9198)),
                     icon: const Icon(Icons.lock_open, size: 32),
                     label: const Text(
                       'Sign Up',

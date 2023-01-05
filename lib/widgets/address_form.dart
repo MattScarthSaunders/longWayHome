@@ -17,7 +17,7 @@ class AddressFormState extends State<AddressForm> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
         child: Form(
             key: _formKey,
             child: Column(
@@ -25,13 +25,24 @@ class AddressFormState extends State<AddressForm> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   setFormContent("Start"),
+                  SizedBox(
+                    height: 10,
+                  ),
                   setFormContent("End"),
+                  SizedBox(
+                    height: 35,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      Spacer(
+                        flex: 1,
+                      ),
                       ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF31AFB9)),
+                            backgroundColor: const Color(0xff3D9198),
+                            fixedSize: const Size(80, 30),
+                          ),
                           onPressed: () {
                             var mapStateSetter =
                                 context.read<MapStateProvider>();
@@ -40,8 +51,10 @@ class AddressFormState extends State<AddressForm> {
                             mapStateSetter.init();
                             pinStateSetter.init();
                           },
-                          child: const Text('Reset')),
-                          Spacer(flex: 1),
+                          child: const Text('Clear')),
+                      Spacer(
+                        flex: 1,
+                      ),
                       ElevatedButton(
                         onPressed: () {
                           _submitForm();
@@ -49,18 +62,25 @@ class AddressFormState extends State<AddressForm> {
                               context.read<FormStateProvider>();
                         },
                         style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF31AFB9)),
-                        child: const Text('Generate Walk'),
+                            backgroundColor: const Color(0xff3D9198)),
+                        child: const Text('Plot Route'),
+                      ),
+                      Spacer(
+                        flex: 1,
+                      ),
+                      ElevatedButton(
+                          onPressed: () {
+                            _routeNameInputDialog(context);
+                          },
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xff3D9198),
+                              fixedSize: const Size(80, 30)),
+                          child: Text("Save")),
+                      Spacer(
+                        flex: 1,
                       ),
                     ],
                   ),
-                  ElevatedButton(
-                      onPressed: () {
-                        _routeNameInputDialog(context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF31AFB9)),
-                      child: Text("Save route")),
                 ])));
   }
 
@@ -88,7 +108,7 @@ class AddressFormState extends State<AddressForm> {
                 ),
                 ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF31AFB9)),
+                        backgroundColor: const Color(0xff3D9198)),
                     child: const Text('Save'),
                     onPressed: () {
                       _saveWalk(
@@ -122,23 +142,9 @@ class AddressFormState extends State<AddressForm> {
       return Center(
           child: Row(
         children: [
-          
-          Expanded(
-              child: 
-              TextFormField(
-                  style: const TextStyle(color: Colors.white),
-                  decoration: InputDecoration(
-                    labelText: '$type Postcode',
-                    labelStyle: TextStyle(color: Colors.white),
-                  ),
-                  controller: type == "Start"
-                      ? formStateListener.startPointController
-                      : formStateListener.endPointController,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) => value != "" && !regex.hasMatch(value!)
-                      ? 'Please enter a valid postal code'
-                      : null)),
-                      IconButton(
+          IconButton(
+            padding: EdgeInsets.only(right: 10),
+            constraints: BoxConstraints(),
             onPressed: () {
               var pinStateSetter = context.read<FormStateProvider>();
               if (pinStateSetter.isButton) {
@@ -158,23 +164,27 @@ class AddressFormState extends State<AddressForm> {
                       : pinStateListener.endIconColor);
             }),
           ),
+          Expanded(
+              // flex: 5,
+              child: TextFormField(
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    labelText: '$type Postcode',
+                    labelStyle: TextStyle(color: Colors.white),
+                  ),
+                  controller: type == "Start"
+                      ? formStateListener.startPointController
+                      : formStateListener.endPointController,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) => value != "" && !regex.hasMatch(value!)
+                      ? 'Please enter a valid postal code'
+                      : null)),
+
+          SizedBox(width: 25,),
           ElevatedButton(
             onPressed: () {
               var mapStateSetter = context.read<MapStateProvider>();
               var pinStateSetter = context.read<FormStateProvider>();
-
-              // if (type == "Start") {
-              //   if (mapStateSetter.startCoord.isNotEmpty) {
-              //     pinStateSetter.formSectionComplete(type);
-              //     pinStateSetter.startPointController = TextEditingController();
-              //   }
-              // } else if (type == "End") {
-              //   if (mapStateSetter.endCoord.isNotEmpty) {
-              //     pinStateSetter.formSectionComplete(type);
-              //     pinStateSetter.endPointController = TextEditingController();
-              //     mapStateSetter.setInitialRoute();
-              //   }
-              // }
 
               var pointController = type == "Start"
                   ? formStateListener.startPointController
@@ -191,28 +201,24 @@ class AddressFormState extends State<AddressForm> {
                       : mapStateSetter.endCoord = [res.longitude, res.latitude];
                   pinStateSetter.formSectionComplete(type);
 
-                  // pinStateSetter.pointController = TextEditingController();
-                  // if (type == "End") {
-                  //   mapStateSetter.setInitialRoute();
-                  // }
                   if (mapStateSetter.endCoord.isNotEmpty &&
                       mapStateSetter.startCoord.isNotEmpty) {
-                    // print("test");
                     mapStateSetter.setInitialRoute();
                   }
                 });
                 pinStateSetter.setButton(false);
                 pinStateSetter.setInput('none');
-                // print(mapStateSetter.endCoord);
-                // print(mapStateSetter.startCoord);
-
               }
             },
             style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF31AFB9)),
+              backgroundColor: Color(0xff3D9198),
+              fixedSize: const Size(80, 30),
+            ),
             child: Text('Set $type'),
           ),
-          
+          SizedBox(
+            width: 20,
+          ),
         ],
       ));
     });
