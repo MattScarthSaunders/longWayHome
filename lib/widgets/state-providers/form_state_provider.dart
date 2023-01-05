@@ -11,8 +11,8 @@ class FormStateProvider with ChangeNotifier {
 
   late String selectedInput = '';
 
-  var startIconColor = Colors.black;
-  var endIconColor = Colors.black;
+  var startIconColor = Color(0xFF66717C);
+  var endIconColor = Color(0xFF66717C);
 
   var isVisible = false;
 
@@ -34,13 +34,13 @@ class FormStateProvider with ChangeNotifier {
     selectedInput = type;
     if (type == "Start") {
       startIconColor = Colors.blue;
-      endIconColor = Colors.black;
+      endIconColor = Color(0xFF66717C);
     } else if (type == "End") {
-      startIconColor = Colors.black;
+      startIconColor = Color(0xFF66717C);
       endIconColor = Colors.blue;
     } else {
-      startIconColor = Colors.black;
-      endIconColor = Colors.black;
+      startIconColor = Color(0xFF66717C);
+      endIconColor = Color(0xFF66717C);
     }
 
     notifyListeners();
@@ -104,8 +104,8 @@ class FormStateProvider with ChangeNotifier {
     startComplete = false;
     endComplete = false;
     selectedInput = '';
-    startIconColor = Colors.black;
-    endIconColor = Colors.black;
+    startIconColor = Color(0xFF66717C);
+    endIconColor = Color(0xFF66717C);
     startPointController = TextEditingController(text: '');
     endPointController = TextEditingController(text: '');
     routeNameInputController = TextEditingController();

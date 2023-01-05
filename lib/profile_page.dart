@@ -37,14 +37,23 @@ class ProfilePage extends StatelessWidget {
             //refer to data as below to render profile information
             return Scaffold(
               appBar: AppBar(
-                title: const Text('Home'),
-                backgroundColor: const Color(0xff31AFB9),
+                title: const Text('Profile'),
+                backgroundColor: const Color(0xff3D9198),
               ),
               body: Padding(
                 padding: const EdgeInsets.all(32),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    Text(
+                      'Saved Routes',
+                      style: TextStyle(
+                          fontSize: 26,
+                          color: Color.fromARGB(255, 255, 255, 255)),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
                     Expanded(
                       child: Consumer<MapStateProvider>(
                         builder: (context, mapStateProvider, child) {
@@ -92,7 +101,9 @@ class ProfilePage extends StatelessWidget {
                     ),
                     const Text(
                       'Signed In as',
-                      style: TextStyle(fontSize: 16, color: Color(0xffCB8D71)),
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: Color.fromARGB(255, 255, 255, 255)),
                     ),
                     const SizedBox(height: 8),
                     Text(
@@ -100,26 +111,22 @@ class ProfilePage extends StatelessWidget {
                       style: const TextStyle(fontSize: 20, color: Colors.blue),
                     ),
                     const SizedBox(height: 40),
-                    ElevatedButton.icon(
+                    // ElevatedButton.icon(
+                    //     style: ElevatedButton.styleFrom(
+                    //         minimumSize: const Size(150, 40),
+                    //         backgroundColor: const Color(0xff3D9198)),
+                    //     icon: const Icon(Icons.arrow_back, size: 32),
+                    //     label: const Text(
+                    //       'Back to map',
+                    //     ),
+                    //     onPressed: () {
+                    //       Navigator.of(context).pop();
+                    //     }),
+                    ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                            minimumSize: const Size.fromHeight(50),
-                            backgroundColor: const Color(0xFF31AFB9)),
-                        icon: const Icon(Icons.arrow_back, size: 32),
-                        label: const Text(
-                          'back to map',
-                          style: TextStyle(fontSize: 24),
-                        ),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        }),
-                    ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                            minimumSize: const Size.fromHeight(50),
-                            backgroundColor: const Color(0xFF31AFB9)),
-                        icon: const Icon(Icons.arrow_back, size: 32),
-                        label: const Text(
+                            backgroundColor: Color.fromARGB(255, 121, 34, 23)),
+                        child: const Text(
                           'Sign Out',
-                          style: TextStyle(fontSize: 24),
                         ),
                         onPressed: () {
                           context.read<MapStateProvider>().init();

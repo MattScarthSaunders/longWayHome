@@ -22,7 +22,7 @@ class MapButtons extends StatelessWidget {
                   mapStateListener.mapController.center,
                   mapStateListener.mapController.zoom - 1);
             },
-            backgroundColor: const Color(0xff31AFB9),
+            backgroundColor: const Color(0xff3D9198),
             child: const Icon(Icons.zoom_out),
           ),
         ),
@@ -36,7 +36,7 @@ class MapButtons extends StatelessWidget {
                   mapStateListener.mapController.center,
                   mapStateListener.mapController.zoom + 1);
             },
-            backgroundColor: const Color(0xff31AFB9),
+            backgroundColor: const Color(0xff3D9198),
             child: const Icon(Icons.zoom_in),
           ),
         ),
@@ -53,7 +53,7 @@ class MapButtons extends StatelessWidget {
                         locationStateListener.lat, locationStateListener.lng),
                     15);
               },
-              backgroundColor: const Color(0xff31AFB9),
+              backgroundColor: const Color(0xff3D9198),
               child: const Icon(Icons.gps_fixed_outlined),
             );
           }),

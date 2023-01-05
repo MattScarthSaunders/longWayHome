@@ -16,43 +16,53 @@ class BottomDrawerWidget extends StatefulWidget {
 class _BottomDrawerWidget extends State<BottomDrawerWidget> {
   @override
   Widget build(BuildContext context) {
-    return Row(children: [
-      Align(
-          alignment: Alignment.bottomCenter,
-          child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF31AFB9)),
-              onPressed: () {
-                var formState = context.read<FormStateProvider>();
-                if (formState.isVisible) {
-                  if (Navigator.canPop(context)) {
-                    Navigator.pop(context);
-                  }
-                } else {
-                  showMenu();
-                }
-                formState.isVisible = !formState.isVisible;
-                formState.notifyListeners();
-              },
-              child: Consumer<FormStateProvider>(
-                  builder: (context, formStateListener, child) {
-                if (formStateListener.isVisible) {
-                  return const Text("Hide Planner");
-                } else {
-                  return const Text('Plan Walk');
-                }
-              }))),
-      Align(
-          alignment: Alignment.bottomRight,
-          child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF31AFB9)),
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const ProfilePage()));
-              },
-              child: const Text('Profile')))
-    ]);
+    return Container(
+      width: 370,
+      padding: EdgeInsets.only(left: 7, right: 7),
+      child: Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.center, children: [
+        Align(
+            
+            child: SizedBox(
+              height: 40,
+              child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xff3D9198)),
+                  onPressed: () {
+                    var formState = context.read<FormStateProvider>();
+                    if (formState.isVisible) {
+                      if (Navigator.canPop(context)) {
+                        Navigator.pop(context);
+                      }
+                    } else {
+                      showMenu();
+                    }
+                    formState.isVisible = !formState.isVisible;
+                    formState.notifyListeners();
+                  },
+                  child: Consumer<FormStateProvider>(
+                      builder: (context, formStateListener, child) {
+                    if (formStateListener.isVisible) {
+                      return const Text("Hide Planner");
+                    } else {
+                      return const Text('Plan Walk');
+                    }
+                  })),
+            )),
+        Spacer(flex: 1),
+        Align(
+            child: SizedBox(
+              height: 40,
+              child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xff3D9198)),
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const ProfilePage()));
+                  },
+                  child: const Text('Profile')),
+            ))
+      ]),
+    );
   }
 
   showMenu() {
@@ -65,29 +75,28 @@ class _BottomDrawerWidget extends State<BottomDrawerWidget> {
           return Padding(
               padding:
                   EdgeInsets.only(bottom: mediaQueryData.viewInsets.bottom),
-              child: SingleChildScrollView(
-                  child: Container(
+              child: Container(
                 decoration: const BoxDecoration(
-                  color: Color(0xff232f34),
+              color: Color(0xff232f34),
                 ),
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: <Widget>[
-                    SizedBox(
-                        height: (drawerHeight).toDouble(),
-                        child: Stack(
-                          children: <Widget>[
-                            Positioned(
-                              child: ListView(children: const [
-                                AddressForm(),
-                              ]),
-                            )
-                          ],
-                        )),
-                  ],
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                SizedBox(
+                    height: (drawerHeight).toDouble(),
+                    child: Stack(
+                      children: <Widget>[
+                        Positioned(
+                          child: ListView(children: const [
+                            AddressForm(),
+                          ]),
+                        )
+                      ],
+                    )),
+              ],
                 ),
-              )));
+              ));
         });
   }
 }

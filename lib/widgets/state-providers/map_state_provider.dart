@@ -179,13 +179,13 @@ class MapStateProvider with ChangeNotifier {
                       : allPOIMarkerCoords[i][2],
                   style: const TextStyle(color: Colors.white),
                 ),
-                backgroundColor: const Color(0xff504958),
+                backgroundColor: const Color(0xff222E34),
                 actions: <Widget>[
                   TextButton(
                     onPressed: () => Navigator.pop(context, 'Close'),
                     child: const Text(
                       'Close',
-                      style: TextStyle(color: Color(0xff31AFB9)),
+                      style: TextStyle(color: Color(0xff3D9198)),
                     ),
                   ),
                 ],
@@ -242,9 +242,11 @@ class MapStateProvider with ChangeNotifier {
         polylineCulling: false,
         polylines: [
           Polyline(
+            borderStrokeWidth: 2,
+            borderColor: Color.fromARGB(255, 12, 53, 129),
             points: routePoints,
-            color: Colors.orange,
-            strokeWidth: 6,
+            color: Color.fromARGB(255, 96, 167, 224),
+            strokeWidth: 5,
           ),
         ],
       );
@@ -289,13 +291,13 @@ class MapStateProvider with ChangeNotifier {
                     : allPOIMarkerCoords[i][2],
                 style: const TextStyle(color: Colors.white),
               ),
-              backgroundColor: const Color(0xff504958),
+              backgroundColor: Color(0xFF222E34),
               actions: <Widget>[
                 TextButton(
                   onPressed: () => Navigator.pop(context, 'Close'),
                   child: const Text(
                     'Close',
-                    style: TextStyle(color: Color(0xff31AFB9)),
+                    style: TextStyle(color: Color(0xff3D9198)),
                   ),
                 ),
               ],
