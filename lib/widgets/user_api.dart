@@ -18,6 +18,17 @@ getUser(userEmail) async {
       "https://rich-puce-bear-gown.cyclic.app/api/user/email/${userEmail}"));
 }
 
+getRoutes() async {
+  final response = await http.get(
+    Uri.parse(
+        "https://rich-puce-bear-gown.cyclic.app/api/user/63a08560482372cd329d6888/routes"),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+  );
+  return jsonDecode(response.body);
+}
+
 postNewRoute(userID, routeName, routeData) async {
   return await http.post(
       Uri.parse(

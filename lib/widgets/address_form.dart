@@ -24,20 +24,20 @@ class AddressFormState extends State<AddressForm> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text("Place a pin or enter a postcode:",
+                  const Text("Place a pin or enter a postcode:",
                       style: TextStyle(color: Colors.white)),
                   setFormContent("Start"),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   setFormContent("End"),
-                  SizedBox(
+                  const SizedBox(
                     height: 25,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Spacer(
+                      const Spacer(
                         flex: 1,
                       ),
                       ElevatedButton(
@@ -54,31 +54,29 @@ class AddressFormState extends State<AddressForm> {
                             pinStateSetter.init();
                           },
                           child: const Text('Clear')),
-                      Spacer(
+                      const Spacer(
                         flex: 1,
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          _submitForm();
-                          var pinStateSetter =
-                              context.read<FormStateProvider>();
+                          submitForm();
                         },
                         style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xff3D9198)),
                         child: const Text('Plot Route'),
                       ),
-                      Spacer(
+                      const Spacer(
                         flex: 1,
                       ),
                       ElevatedButton(
                           onPressed: () {
-                            _routeNameInputDialog(context);
+                            routeNameInputDialog(context);
                           },
                           style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xff3D9198),
                               fixedSize: const Size(80, 30)),
-                          child: Text("Save")),
-                      Spacer(
+                          child: const Text("Save")),
+                      const Spacer(
                         flex: 1,
                       ),
                     ],
@@ -86,7 +84,7 @@ class AddressFormState extends State<AddressForm> {
                 ])));
   }
 
-  Future<void> _routeNameInputDialog(BuildContext context) async {
+  routeNameInputDialog(BuildContext context) {
     return showDialog(
         context: context,
         builder: (context) {
@@ -102,7 +100,7 @@ class AddressFormState extends State<AddressForm> {
               actions: <Widget>[
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFC7213D)),
+                      backgroundColor: const Color(0xFFC7213D)),
                   child: const Text('Cancel'),
                   onPressed: () {
                     Navigator.pop(context);
@@ -113,8 +111,7 @@ class AddressFormState extends State<AddressForm> {
                         backgroundColor: const Color(0xff3D9198)),
                     child: const Text('Save'),
                     onPressed: () {
-                      _saveWalk(
-                          formStateListener.routeNameInputController.text);
+                      saveWalk(formStateListener.routeNameInputController.text);
                       Navigator.pop(context);
                     }),
               ],
@@ -123,14 +120,14 @@ class AddressFormState extends State<AddressForm> {
         });
   }
 
-  _submitForm() {
+  submitForm() {
     if (_formKey.currentState!.validate()) {
       var mapStateSetter = context.read<MapStateProvider>();
       mapStateSetter.setRoute();
     }
   }
 
-  _saveWalk(routeName) {
+  saveWalk(routeName) {
     var mapStateSetter = context.read<MapStateProvider>();
     mapStateSetter.saveRoute(routeName);
   }
@@ -161,7 +158,7 @@ class AddressFormState extends State<AddressForm> {
                     mapStateSetter.initEndMarker();
                   }
                 },
-                icon: Icon(
+                icon: const Icon(
                   Icons.close,
                   color: Colors.red,
                 )),
@@ -173,10 +170,10 @@ class AddressFormState extends State<AddressForm> {
             child: IconButton(
               onPressed: () {
                 var pinStateSetter = context.read<FormStateProvider>();
-                if (pinStateSetter.isButton) {
+                if (pinStateSetter.isButtonSelected) {
                   pinStateSetter.setButton(false);
                   pinStateSetter.setInput('none');
-                } else if (!pinStateSetter.isButton) {
+                } else if (!pinStateSetter.isButtonSelected) {
                   pinStateSetter.setButton(true);
                   pinStateSetter.setInput(type);
                 }
@@ -201,7 +198,7 @@ class AddressFormState extends State<AddressForm> {
                   style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
                     labelText: '$type Postcode',
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: const TextStyle(color: Colors.white),
                   ),
                   controller: type == "Start"
                       ? formStateListener.startPointController
@@ -212,7 +209,7 @@ class AddressFormState extends State<AddressForm> {
                           !regex.hasMatch(value!)
                       ? 'Please enter a valid postal code'
                       : null)),
-          SizedBox(
+          const SizedBox(
             width: 25,
           ),
           ElevatedButton(
@@ -243,7 +240,6 @@ class AddressFormState extends State<AddressForm> {
                                 res.longitude,
                                 res.latitude
                               ];
-                        pinStateSetter.formSectionComplete(type);
 
                         if (mapStateSetter.endCoord.isNotEmpty &&
                             mapStateSetter.startCoord.isNotEmpty) {
@@ -255,12 +251,12 @@ class AddressFormState extends State<AddressForm> {
                     }
                   },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Color(0xff3D9198),
+              backgroundColor: const Color(0xff3D9198),
               fixedSize: const Size(80, 30),
             ),
             child: Text('Set $type'),
           ),
-          SizedBox(
+          const SizedBox(
             width: 20,
           ),
         ],

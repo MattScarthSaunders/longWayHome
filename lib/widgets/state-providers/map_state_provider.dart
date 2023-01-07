@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/widgets/api_utils.dart';
 import 'package:flutter_application_1/widgets/geolocation.dart';
+import 'package:flutter_application_1/widgets/utils.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:google_polyline_algorithm/google_polyline_algorithm.dart';
 import 'package:latlong2/latlong.dart';
@@ -22,14 +23,12 @@ class MapStateProvider with ChangeNotifier {
   List<LatLng> plottedRoute = [];
   List allPOIMarkerCoords = [];
   List<Marker> allPOIMarkers = [];
-  List mapPoints = [];
   List mapRouteToSave = [];
 
   //rendering
   bool isInitialRouteLoading = false;
   bool isPOILoading = false;
   bool isRouteLoading = false;
-  bool isRouteListLoading = false;
 
   List<bool> showMarkerDialogue = [];
 
@@ -164,41 +163,7 @@ class MapStateProvider with ChangeNotifier {
       sortPOIsDistance(allPOIMarkerCoords, [startCoord[1], startCoord[0]]);
 
       for (var i = 0; i < allPOIMarkerCoords.length; i++) {
-        tempMarkers.add(Marker(
-          point: LatLng(allPOIMarkerCoords[i][0], allPOIMarkerCoords[i][1]),
-          width: 100,
-          height: 100,
-          builder: (ctx) => GestureDetector(
-            onTap: () => showDialog<String>(
-              context: ctx,
-              builder: (BuildContext context) => AlertDialog(
-                titlePadding: const EdgeInsets.only(
-                    top: 20, left: 20, right: 20, bottom: 0),
-                title: Text(
-                  allPOIMarkerCoords[i][2] == ""
-                      ? "POI Name not Found"
-                      : allPOIMarkerCoords[i][2],
-                  style: const TextStyle(color: Colors.white),
-                ),
-                backgroundColor: const Color(0xff222E34),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () => Navigator.pop(context, 'Close'),
-                    child: const Text(
-                      'Close',
-                      style: TextStyle(color: Color(0xff3D9198)),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            child: const Icon(
-              Icons.location_on,
-              color: Colors.blue,
-              size: 30.0,
-            ),
-          ),
-        ));
+        tempMarkers.add(Utils.buildPOIMarker(allPOIMarkerCoords[i]));
       }
 
       allPOIMarkers = tempMarkers;
@@ -244,9 +209,9 @@ class MapStateProvider with ChangeNotifier {
         polylines: [
           Polyline(
             borderStrokeWidth: 2,
-            borderColor: Color.fromARGB(255, 12, 53, 129),
+            borderColor: const Color.fromARGB(255, 12, 53, 129),
             points: routePoints,
-            color: Color.fromARGB(255, 96, 167, 224),
+            color: const Color.fromARGB(255, 96, 167, 224),
             strokeWidth: 5,
           ),
         ],
@@ -263,7 +228,6 @@ class MapStateProvider with ChangeNotifier {
 //this handles generating the saved route polyline
   void plotSavedRoute(coords) {
     init();
-    print(coords["start"].runtimeType);
 
     allPOIMarkerCoords = coords["POIs"];
     startCoord = coords["start"];
@@ -276,41 +240,7 @@ class MapStateProvider with ChangeNotifier {
     print(allPOIMarkerCoords);
 
     for (var i = 0; i < allPOIMarkerCoords.length; i++) {
-      tempMarkers.add(Marker(
-        point: LatLng(allPOIMarkerCoords[i][0], allPOIMarkerCoords[i][1]),
-        width: 100,
-        height: 100,
-        builder: (ctx) => GestureDetector(
-          onTap: () => showDialog<String>(
-            context: ctx,
-            builder: (BuildContext context) => AlertDialog(
-              titlePadding: const EdgeInsets.only(
-                  top: 20, left: 20, right: 20, bottom: 0),
-              title: Text(
-                allPOIMarkerCoords[i][2] == ""
-                    ? "POI Name not Found"
-                    : allPOIMarkerCoords[i][2],
-                style: const TextStyle(color: Colors.white),
-              ),
-              backgroundColor: Color(0xFF222E34),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () => Navigator.pop(context, 'Close'),
-                  child: const Text(
-                    'Close',
-                    style: TextStyle(color: Color(0xff3D9198)),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          child: const Icon(
-            Icons.location_on,
-            color: Colors.blue,
-            size: 30.0,
-          ),
-        ),
-      ));
+      tempMarkers.add(Utils.buildPOIMarker(allPOIMarkerCoords[i]));
     }
 
     allPOIMarkers = tempMarkers;
@@ -323,7 +253,7 @@ class MapStateProvider with ChangeNotifier {
       width: 100,
       height: 100,
       builder: (ctx) => Container(
-        key: const Key('blue'),
+        key: const Key('start'),
         child: const Icon(
           Icons.location_on,
           color: Colors.green,
@@ -337,7 +267,7 @@ class MapStateProvider with ChangeNotifier {
       width: 100,
       height: 100,
       builder: (ctx) => Container(
-        key: const Key('blue'),
+        key: const Key('end'),
         child: const Icon(
           Icons.location_on,
           color: Colors.red,
@@ -365,18 +295,6 @@ class MapStateProvider with ChangeNotifier {
         }
       }),
     );
-  }
-
-  Future<Map> getRoutes() async {
-    final response = await http.get(
-      Uri.parse(
-          "https://rich-puce-bear-gown.cyclic.app/api/user/63a08560482372cd329d6888/routes"),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    );
-    notifyListeners();
-    return jsonDecode(response.body);
   }
 
   //sets start and end point markers on map
@@ -440,7 +358,7 @@ class MapStateProvider with ChangeNotifier {
     plottedRoute = [];
     allPOIMarkerCoords = [];
     allPOIMarkers = [];
-    localPOIMarkers = MarkerLayer(markers: []);
+    localPOIMarkers = const MarkerLayer(markers: []);
 
     routePolyLine = PolylineLayer(
       polylineCulling: false,
@@ -474,7 +392,7 @@ class MapStateProvider with ChangeNotifier {
     plottedRoute = [];
     allPOIMarkerCoords = [];
     allPOIMarkers = [];
-    localPOIMarkers = MarkerLayer(markers: []);
+    localPOIMarkers = const MarkerLayer(markers: []);
 
     routePolyLine = PolylineLayer(
       polylineCulling: false,
@@ -537,7 +455,7 @@ class MapStateProvider with ChangeNotifier {
         ),
       ],
     );
-    localPOIMarkers = MarkerLayer(markers: []);
+    localPOIMarkers = const MarkerLayer(markers: []);
     notifyListeners();
   }
 }

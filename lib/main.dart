@@ -6,6 +6,7 @@ import 'package:flutter_application_1/main_page.dart';
 import 'package:flutter_application_1/widgets/state-providers/form_state_provider.dart';
 import 'package:flutter_application_1/widgets/state-providers/location_state_provider.dart';
 import 'package:flutter_application_1/widgets/state-providers/map_state_provider.dart';
+import 'package:flutter_application_1/widgets/state-providers/profile_state_provider.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (context) => FormStateProvider()),
           ChangeNotifierProvider(create: (context) => MapStateProvider()),
           ChangeNotifierProvider(create: (context) => LocationStateProvider()),
+          ChangeNotifierProvider(create: (context) => ProfileStateProvider()),
         ],
         child: ElevatedButtonTheme(
           data: ElevatedButtonThemeData(
@@ -35,7 +37,8 @@ class MyApp extends StatelessWidget {
                 fixedSize: const Size(130, 30),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(7)),
-                side: const BorderSide(color:  Color.fromARGB(255, 0, 0, 0), width: 1),
+                side: const BorderSide(
+                    color: Color.fromARGB(255, 0, 0, 0), width: 1),
                 padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
                 textStyle: const TextStyle(
                   fontSize: 18,
@@ -45,9 +48,7 @@ class MyApp extends StatelessWidget {
           child: MaterialApp(
               scaffoldMessengerKey: messengerKey,
               navigatorKey: navigatorKey,
-              theme: ThemeData(
-                  scaffoldBackgroundColor:
-                      Color(0xff222E34)),
+              theme: ThemeData(scaffoldBackgroundColor: Color(0xff222E34)),
               home: Scaffold(
                   body: StreamBuilder<User?>(
                 stream: FirebaseAuth.instance.authStateChanges(),
