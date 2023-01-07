@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/main.dart';
+import 'package:flutter_application_1/widgets/state-providers/profile_state_provider.dart';
+import 'package:flutter_application_1/widgets/user_api.dart';
 import 'package:flutter_application_1/widgets/utils.dart';
 
 class LoginWidget extends StatefulWidget {
@@ -78,7 +82,9 @@ class _LoginWidgetState extends State<LoginWidget> {
                   'Log In',
                   style: TextStyle(fontSize: 24),
                 ),
-                onPressed: signIn),
+                onPressed: () {
+                  signIn(context);
+                }),
             Container(
               padding: const EdgeInsets.all(35),
               child: RichText(
@@ -100,7 +106,7 @@ class _LoginWidgetState extends State<LoginWidget> {
         ),
       );
 
-  Future signIn() async {
+  Future signIn(context) async {
     //sets a loading wheel
     showDialog(
         context: context,
