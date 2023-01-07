@@ -35,6 +35,10 @@ class FormStateProvider with ChangeNotifier {
     return _isEndButtonEnabled;
   }
 
+  getRouteInputController() {
+    return _routeNameInputController;
+  }
+
   getRouteName() {
     return _routeNameInputController.text;
   }

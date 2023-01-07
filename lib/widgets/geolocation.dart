@@ -25,9 +25,6 @@ class _CurrentPOSMarkerState extends State<CurrentPOSMarker> {
 
     return Consumer<LocationStateProvider>(
         builder: (context, locationstate, child) {
-      var mapState = context.read<MapStateProvider>();
-      mapState.userCoord = locationstate.getLngLat();
-
       return MarkerLayer(markers: [
         Marker(
           width: 80,

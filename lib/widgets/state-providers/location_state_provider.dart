@@ -19,16 +19,17 @@ class LocationStateProvider with ChangeNotifier {
   }
 
   getLatLng() {
-    return [_lat, _lng];
+    return LatLng(_lat, _lng);
   }
 
   getLngLat() {
-    return LatLng(_lng, _lat);
+    return [_lng, _lat];
   }
 
   init() {
     _lat = 0.0;
     _lng = 0.0;
     _location = Location();
+    notifyListeners();
   }
 }

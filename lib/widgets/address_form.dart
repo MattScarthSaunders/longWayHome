@@ -96,7 +96,7 @@ class AddressFormState extends State<AddressForm> {
               title: const Text('Route Name'),
               content: TextField(
                 onChanged: (value) {},
-                controller: formStateListener.getRouteName(),
+                controller: formStateListener.getRouteInputController(),
                 decoration: const InputDecoration(hintText: "Name your route"),
               ),
               actions: <Widget>[
@@ -118,11 +118,9 @@ class AddressFormState extends State<AddressForm> {
                       String userID =
                           context.read<ProfileStateProvider>().getUserID();
                       var mapState = context.read<MapStateProvider>();
-                      postNewRoute(userID, routeName, mapState.startCoord,
-                              mapState.endCoord, mapState.allPOIMarkerCoords)
-                          .then((res) {
-                        print('posted ${res.body}');
-                      });
+                      postNewRoute(userID, routeName, mapState.getStartCoords(),
+                          mapState.getEndCoords(), mapState.getPOICoords());
+
                       Navigator.pop(context);
                     }),
               ],
@@ -148,10 +146,9 @@ class AddressFormState extends State<AddressForm> {
           child: Row(
         children: [
           Visibility(
-            visible: formStateListener.getStartButtonStatus() == false &&
-                    type == "Start" ||
-                formStateListener.getEndButtonStatus() == false &&
-                    type == "End",
+            visible:
+                !formStateListener.getStartButtonStatus() && type == "Start" ||
+                    !formStateListener.getEndButtonStatus() && type == "End",
             child: IconButton(
                 onPressed: () {
                   if (type == "Start") {
@@ -235,14 +232,14 @@ class AddressFormState extends State<AddressForm> {
                       pinState.getCoords(pointController.text).then((res) {
                         mapState.setMarkerLocation(res, type);
                         type == "Start"
-                            ? mapState.startCoord = [
-                                res.longitude,
-                                res.latitude
-                              ]
-                            : mapState.endCoord = [res.longitude, res.latitude];
-
-                        if (mapState.endCoord.isNotEmpty &&
-                            mapState.startCoord.isNotEmpty) {
+                            ? mapState
+                                .setStartCoords([res.longitude, res.latitude])
+                            : mapState
+                                .setEndCoords([res.longitude, res.latitude]);
+                        print("do we get coords?");
+                        if (mapState.getEndCoords().isNotEmpty &&
+                            mapState.getStartCoords().isNotEmpty) {
+                          print("in here");
                           mapState.setInitialRoute();
                         }
                       });

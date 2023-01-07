@@ -52,7 +52,7 @@ class _MainPageState extends State<MainPage> {
               builder: (context, mapStateListener, pinStateListener, child) {
             return Flexible(
                 child: FlutterMap(
-                    mapController: mapStateListener.mapController,
+                    mapController: mapStateListener.getMapController(),
                     options: MapOptions(
                       center: LatLng(0.0, 0.0),
                       zoom: 15,
@@ -68,13 +68,13 @@ class _MainPageState extends State<MainPage> {
                         "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                     userAgentPackageName: 'dev.fleaflet.flutter_map.example',
                   ),
-                  mapStateListener.routePolyLine,
+                  mapStateListener.getPolyLine(),
                   const CurrentPOSMarker(),
                   MarkerLayer(markers: [
-                    mapStateListener.startMark,
-                    mapStateListener.endMark
+                    mapStateListener.getStartMarker(),
+                    mapStateListener.getEndMarker()
                   ]),
-                  mapStateListener.localPOIMarkers,
+                  mapStateListener.getLocalPOIs(),
                   isLoading(mapStateListener),
                 ]));
           }),
@@ -105,17 +105,17 @@ class _MainPageState extends State<MainPage> {
     mapStateSetter.setMarkerLocation(point, type);
     mapStateSetter.setCoords(point, type);
 
-    if (type == "Start" && mapStateListener.endCoord.isNotEmpty) {
+    if (type == "Start" && mapStateListener.getEndCoords().isNotEmpty) {
       mapStateSetter.setInitialRoute();
-    } else if (type == "End" && mapStateListener.startCoord.isNotEmpty) {
+    } else if (type == "End" && mapStateListener.getStartCoords().isNotEmpty) {
       mapStateSetter.setInitialRoute();
     }
   }
 
   isLoading(mapStateListener) {
-    bool a = mapStateListener.isInitialRouteLoading;
-    bool b = mapStateListener.isPOILoading;
-    bool c = mapStateListener.isRouteLoading;
+    bool a = mapStateListener.getInitialRouteStatus();
+    bool b = mapStateListener.getPOIStatus();
+    bool c = mapStateListener.getRouteStatus();
     if (a || b || c) {
       return Center(
         child: Column(
