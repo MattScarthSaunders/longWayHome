@@ -289,7 +289,7 @@ class MapStateProvider with ChangeNotifier {
 
 //this handles generating the saved route polyline
   void plotSavedRoute(coords) {
-    init();
+    initAll();
 
     _allPOIMarkerCoords = coords["POIs"];
     _startCoord = coords["start"];
@@ -298,8 +298,6 @@ class MapStateProvider with ChangeNotifier {
     setRoute();
 
     List<Marker> tempMarkers = [];
-
-    print(_allPOIMarkerCoords);
 
     for (var i = 0; i < _allPOIMarkerCoords.length; i++) {
       tempMarkers.add(Utils.buildPOIMarker(_allPOIMarkerCoords[i]));
@@ -384,8 +382,8 @@ class MapStateProvider with ChangeNotifier {
     return sortByDistance(POIList, startPoint);
   }
 
-  void initStartMarker() {
-    _startMark = Marker(
+  void initMarker(type) {
+    Marker newMark = Marker(
       point: LatLng(0.0, 0.0),
       width: 100,
       height: 100,
@@ -398,46 +396,16 @@ class MapStateProvider with ChangeNotifier {
         ),
       ),
     );
-    _startCoord = [];
-    _plottedRoute = [];
-    _allPOIMarkerCoords = [];
-    _allPOIMarkers = [];
-    _localPOIMarkers = const MarkerLayer(markers: []);
-
-    _routePolyLine = PolylineLayer(
-      polylineCulling: false,
-      polylines: [
-        Polyline(
-          points: [],
-          color: Colors.blue,
-          strokeWidth: 10,
-        ),
-      ],
-    );
-
-    notifyListeners();
+    if (type == "Start") {
+      _startCoord = [];
+      _startMark = newMark;
+    } else if (type == "End") {
+      _endCoord = [];
+      _endMark = newMark;
+    }
   }
 
-  void initEndMarker() {
-    _endMark = Marker(
-      point: LatLng(0.0, 0.0),
-      width: 100,
-      height: 100,
-      builder: (ctx) => Container(
-        key: const Key('blue'),
-        child: const Icon(
-          Icons.location_on,
-          color: Colors.blue,
-          size: 30.0,
-        ),
-      ),
-    );
-    _endCoord = [];
-    _plottedRoute = [];
-    _allPOIMarkerCoords = [];
-    _allPOIMarkers = [];
-    _localPOIMarkers = const MarkerLayer(markers: []);
-
+  void initPoly() {
     _routePolyLine = PolylineLayer(
       polylineCulling: false,
       polylines: [
@@ -448,58 +416,28 @@ class MapStateProvider with ChangeNotifier {
         ),
       ],
     );
+  }
 
+  void initInitial() {
+    _plottedRoute = [];
+    _allPOIMarkerCoords = [];
+    _allPOIMarkers = [];
+    _localPOIMarkers = const MarkerLayer(markers: []);
+  }
+
+  void initInitialise() {
+    initInitial();
+    initPoly();
     notifyListeners();
   }
 
   //resets state
-  void init() {
-    //input
+  void initAll() {
     _startCoord = [];
     _endCoord = [];
-
-    //coords
-    _plottedRoute = [];
-    _allPOIMarkerCoords = [];
-    _allPOIMarkers = [];
-
-    _startMark = Marker(
-      point: LatLng(0.0, 0.0),
-      width: 100,
-      height: 100,
-      builder: (ctx) => Container(
-        key: const Key('blue'),
-        child: const Icon(
-          Icons.location_on,
-          color: Colors.blue,
-          size: 30.0,
-        ),
-      ),
-    );
-    _endMark = Marker(
-      point: LatLng(0.0, 0.0),
-      width: 100,
-      height: 100,
-      builder: (ctx) => Container(
-        key: const Key('blue'),
-        child: const Icon(
-          Icons.location_on,
-          color: Colors.blue,
-          size: 30.0,
-        ),
-      ),
-    );
-    _routePolyLine = PolylineLayer(
-      polylineCulling: false,
-      polylines: [
-        Polyline(
-          points: [],
-          color: Colors.blue,
-          strokeWidth: 10,
-        ),
-      ],
-    );
-    _localPOIMarkers = const MarkerLayer(markers: []);
+    initMarker("Start");
+    initMarker("End");
+    initInitialise();
     notifyListeners();
   }
 }

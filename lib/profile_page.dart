@@ -115,7 +115,7 @@ class ProfilePage extends StatelessWidget {
                   'Sign Out',
                 ),
                 onPressed: () {
-                  context.read<MapStateProvider>().init();
+                  context.read<MapStateProvider>().initAll();
                   context.read<FormStateProvider>().init();
                   context.read<ProfileStateProvider>().init();
                   context.read<LocationStateProvider>().init();

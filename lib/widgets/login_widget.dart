@@ -1,11 +1,7 @@
-import 'dart:convert';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/main.dart';
-import 'package:flutter_application_1/widgets/state-providers/profile_state_provider.dart';
-import 'package:flutter_application_1/widgets/user_api.dart';
 import 'package:flutter_application_1/widgets/utils.dart';
 
 class LoginWidget extends StatefulWidget {
