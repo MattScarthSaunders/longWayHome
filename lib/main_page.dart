@@ -49,16 +49,15 @@ class _MainPageState extends State<MainPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Consumer2<MapStateProvider, FormStateProvider>(
-              builder: (context, mapStateListener, pinStateListener, child) {
+              builder: (context, mapStateGetter, formStateGetter, child) {
             return Flexible(
                 child: FlutterMap(
-                    mapController: mapStateListener.getMapController(),
+                    mapController: mapStateGetter.getMapController(),
                     options: MapOptions(
                       center: LatLng(0.0, 0.0),
                       zoom: 15,
                       onTap: (tapPosition, point) {
-                        setFormMarkers(
-                            pinStateListener, mapStateListener, point);
+                        setFormMarkers(formStateGetter, mapStateGetter, point);
                       },
                     ),
                     nonRotatedChildren: const [],
@@ -68,14 +67,14 @@ class _MainPageState extends State<MainPage> {
                         "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                     userAgentPackageName: 'dev.fleaflet.flutter_map.example',
                   ),
-                  mapStateListener.getPolyLine(),
+                  mapStateGetter.getPolyLine(),
                   const CurrentPOSMarker(),
                   MarkerLayer(markers: [
-                    mapStateListener.getStartMarker(),
-                    mapStateListener.getEndMarker()
+                    mapStateGetter.getStartMarker(),
+                    mapStateGetter.getEndMarker()
                   ]),
-                  mapStateListener.getLocalPOIs(),
-                  isLoading(mapStateListener),
+                  mapStateGetter.getLocalPOIs(),
+                  isLoading(mapStateGetter),
                 ]));
           }),
         ],
@@ -83,7 +82,7 @@ class _MainPageState extends State<MainPage> {
       bottomNavigationBar: BottomAppBar(
         elevation: 0,
         child: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               color: Color(0xff222E34),
               border:
                   Border(top: BorderSide(color: Color(0xff255777), width: 3))),
@@ -97,25 +96,25 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  setFormMarkers(pinStateListener, mapStateListener, point) {
-    var pinStateSetter = context.read<FormStateProvider>();
-    var mapStateSetter = context.read<MapStateProvider>();
-    String type = pinStateListener.getSelectedInput();
-    pinStateSetter.disableInput(type);
-    mapStateSetter.setMarkerLocation(point, type);
-    mapStateSetter.setCoords(point, type);
+  setFormMarkers(formStateGetter, mapStateGetter, point) {
+    var formState = context.read<FormStateProvider>();
+    var mapState = context.read<MapStateProvider>();
+    String type = formStateGetter.getSelectedInput();
+    formState.disableInput(type);
+    mapState.setMarkerLocation(point, type);
+    mapState.setCoords(point, type);
 
-    if (type == "Start" && mapStateListener.getEndCoords().isNotEmpty) {
-      mapStateSetter.setInitialRoute();
-    } else if (type == "End" && mapStateListener.getStartCoords().isNotEmpty) {
-      mapStateSetter.setInitialRoute();
+    if (type == "Start" && mapStateGetter.getEndCoords().isNotEmpty) {
+      mapState.setInitialRoute();
+    } else if (type == "End" && mapStateGetter.getStartCoords().isNotEmpty) {
+      mapState.setInitialRoute();
     }
   }
 
-  isLoading(mapStateListener) {
-    bool a = mapStateListener.getInitialRouteStatus();
-    bool b = mapStateListener.getPOIStatus();
-    bool c = mapStateListener.getRouteStatus();
+  isLoading(mapState) {
+    bool a = mapState.getInitialRouteStatus();
+    bool b = mapState.getPOIStatus();
+    bool c = mapState.getRouteStatus();
     if (a || b || c) {
       return Center(
         child: Column(
