@@ -279,23 +279,23 @@ class MapStateProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void saveRoute(routeName) async {
-    await http.post(
-      Uri.parse(
-          "https://rich-puce-bear-gown.cyclic.app/api/user/63a08560482372cd329d6888/route"),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: json.encode({
-        'routeName': routeName,
-        'routeData': {
-          "start": startCoord,
-          "end": endCoord,
-          "POIs": allPOIMarkerCoords
-        }
-      }),
-    );
-  }
+  // void saveRoute(routeName, userID) async {
+  //   await http.post(
+  //     Uri.parse(
+  //         "https://rich-puce-bear-gown.cyclic.app/api/user/63a08560482372cd329d6888/route"),
+  //     headers: <String, String>{
+  //       'Content-Type': 'application/json; charset=UTF-8',
+  //     },
+  //     body: json.encode({
+  //       'routeName': routeName,
+  //       'routeData': {
+  //         "start": startCoord,
+  //         "end": endCoord,
+  //         "POIs": allPOIMarkerCoords
+  //       }
+  //     }),
+  //   );
+  // }
 
   //sets start and end point markers on map
   void setMarkerLocation(point, type) {

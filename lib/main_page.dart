@@ -1,8 +1,15 @@
+import 'dart:convert';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/widgets/bottom_drawer.dart';
 import 'package:flutter_application_1/widgets/state-providers/form_state_provider.dart';
 import 'package:flutter_application_1/widgets/state-providers/map_state_provider.dart';
 import 'package:flutter_application_1/widgets/map_buttons_widget.dart';
+import 'package:flutter_application_1/widgets/user_api.dart';
+
+import 'package:flutter_application_1/widgets/state-providers/profile_state_provider.dart';
+import 'package:flutter_application_1/widgets/utils.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart';
@@ -21,7 +28,21 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     var mapStateSetter = context.read<MapStateProvider>();
+    var profileState = context.read<ProfileStateProvider>();
     mapStateSetter.setInitialPosition();
+
+    if (!profileState.getUserDataStatus()) {
+      final user = FirebaseAuth.instance.currentUser!;
+      print("just once");
+      getUser(user.email).then((res) {
+        var userData = json.decode(res.body);
+        profileState.setUserID(userData["user"]["_id"]);
+        profileState.setUserDataStatus(true);
+      }).catchError((e) {
+        Utils.showSnackBar("Could not retrieve user data");
+        FirebaseAuth.instance.signOut();
+      });
+    }
 
     return Scaffold(
       floatingActionButton: const MapButtons(),

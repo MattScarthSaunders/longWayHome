@@ -15,37 +15,35 @@ postUser(userEmail) async {
 
 getUser(userEmail) async {
   return await http.get(Uri.parse(
-      "https://rich-puce-bear-gown.cyclic.app/api/user/email/${userEmail}"));
+      "https://rich-puce-bear-gown.cyclic.app/api/user/email/$userEmail"));
 }
 
-getRoutes() async {
-  final response = await http.get(
-    Uri.parse(
-        "https://rich-puce-bear-gown.cyclic.app/api/user/63a08560482372cd329d6888/routes"),
+getRoutes(userID) async {
+  return await http.get(
+    Uri.parse("https://rich-puce-bear-gown.cyclic.app/api/user/$userID/routes"),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },
   );
-  return jsonDecode(response.body);
 }
 
-postNewRoute(userID, routeName, routeData) async {
+postNewRoute(userID, routeName, startCoord, endCoord, poiCoords) async {
   return await http.post(
       Uri.parse(
-          "https://rich-puce-bear-gown.cyclic.app/api/user/${userID}/route"),
+          "https://rich-puce-bear-gown.cyclic.app/api/user/$userID/route"),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode({
         "routeName": routeName,
-        "routeData": routeData,
+        'routeData': {"start": startCoord, "end": endCoord, "POIs": poiCoords}
       }));
 }
 
 patchRoute(userID, routeID, routeName) async {
   return await http.patch(
       Uri.parse(
-          "https://rich-puce-bear-gown.cyclic.app/api/user/${userID}/routes/${routeID}"),
+          "https://rich-puce-bear-gown.cyclic.app/api/user/$userID/routes/$routeID"),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -56,5 +54,5 @@ patchRoute(userID, routeID, routeName) async {
 
 deleteRoute(userID, routeID, routeName) async {
   return await http.delete(Uri.parse(
-      "https://rich-puce-bear-gown.cyclic.app/api/user/${userID}/routes/${routeID}"));
+      "https://rich-puce-bear-gown.cyclic.app/api/user/$userID/routes/$routeID"));
 }

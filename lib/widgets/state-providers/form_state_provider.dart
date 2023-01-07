@@ -23,6 +23,10 @@ class FormStateProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  getRouteName() {
+    return routeNameInputController.text;
+  }
+
   //sets current form input type
   setInput(type) {
     selectedInput = type;

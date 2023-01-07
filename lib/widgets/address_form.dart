@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/widgets/state-providers/form_state_provider.dart';
 import 'package:flutter_application_1/widgets/state-providers/map_state_provider.dart';
+import 'package:flutter_application_1/widgets/state-providers/profile_state_provider.dart';
+import 'package:flutter_application_1/widgets/user_api.dart';
 import 'package:provider/provider.dart';
 
 class AddressForm extends StatefulWidget {
@@ -111,7 +113,16 @@ class AddressFormState extends State<AddressForm> {
                         backgroundColor: const Color(0xff3D9198)),
                     child: const Text('Save'),
                     onPressed: () {
-                      saveWalk(formStateListener.routeNameInputController.text);
+                      var routeName =
+                          context.read<FormStateProvider>().getRouteName();
+                      String userID =
+                          context.read<ProfileStateProvider>().getUserID();
+                      var mapState = context.read<MapStateProvider>();
+                      postNewRoute(userID, routeName, mapState.startCoord,
+                              mapState.endCoord, mapState.allPOIMarkerCoords)
+                          .then((res) {
+                        print('posted ${res.body}');
+                      });
                       Navigator.pop(context);
                     }),
               ],
@@ -127,10 +138,10 @@ class AddressFormState extends State<AddressForm> {
     }
   }
 
-  saveWalk(routeName) {
-    var mapStateSetter = context.read<MapStateProvider>();
-    mapStateSetter.saveRoute(routeName);
-  }
+  // saveWalk(routeName) {
+  //   var mapStateSetter = context.read<MapStateProvider>();
+  //   mapStateSetter.saveRoute(routeName);
+  // }
 
   setFormContent(type) {
     final regex = RegExp(
