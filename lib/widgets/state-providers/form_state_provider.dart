@@ -2,46 +2,65 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 
 class FormStateProvider with ChangeNotifier {
-  late bool isButtonSelected = false;
-  late bool isStartButtonEnabled = true;
-  late bool isEndButtonEnabled = true;
+  late bool _isButtonSelected = false;
+  late bool _isStartButtonEnabled = true;
+  late bool _isEndButtonEnabled = true;
 
-  late String selectedInput = '';
+  late String _selectedInput = '';
 
-  var startIconColor = const Color(0xFF66717C);
-  var endIconColor = const Color(0xFF66717C);
+  Color _startIconColor = const Color(0xFF66717C);
+  Color _endIconColor = const Color(0xFF66717C);
 
-  var isVisible = false;
+  bool _isVisible = false;
 
-  TextEditingController startPointController = TextEditingController();
-  TextEditingController endPointController = TextEditingController();
-  TextEditingController routeNameInputController = TextEditingController();
+  TextEditingController _startPointController = TextEditingController();
+  TextEditingController _endPointController = TextEditingController();
+  TextEditingController _routeNameInputController = TextEditingController();
 
 //sets when a button has been pressed? idk? It all breaks if I remove this.
-  void setButton(bool value) {
-    isButtonSelected = value;
+  void setButtonSelected(bool value) {
+    _isButtonSelected = value;
     notifyListeners();
+  }
+
+  getButtonSelected() {
+    return _isButtonSelected;
+  }
+
+  getStartButtonStatus() {
+    return _isStartButtonEnabled;
+  }
+
+  getEndButtonStatus() {
+    return _isEndButtonEnabled;
   }
 
   getRouteName() {
-    return routeNameInputController.text;
+    return _routeNameInputController.text;
   }
 
-  //sets current form input type
-  setInput(type) {
-    selectedInput = type;
-    if (type == "Start") {
-      startIconColor = Colors.blue;
-      endIconColor = const Color(0xFF66717C);
-    } else if (type == "End") {
-      startIconColor = const Color(0xFF66717C);
-      endIconColor = Colors.blue;
-    } else {
-      startIconColor = const Color(0xFF66717C);
-      endIconColor = const Color(0xFF66717C);
-    }
+  getStartPointInput() {
+    return _startPointController;
+  }
 
-    notifyListeners();
+  getEndPointInput() {
+    return _endPointController;
+  }
+
+  getVisibility() {
+    return _isVisible;
+  }
+
+  getStartIconColor() {
+    return _startIconColor;
+  }
+
+  getEndIconColor() {
+    return _endIconColor;
+  }
+
+  getSelectedInput() {
+    return _selectedInput;
   }
 
   //gets coords from postcode
@@ -50,37 +69,73 @@ class FormStateProvider with ChangeNotifier {
     return locations[0];
   }
 
+  setVisibility(visibility) {
+    _isVisible = visibility;
+    notifyListeners();
+  }
+
+  //sets current form input type
+  setInput(type) {
+    _selectedInput = type;
+    if (type == "Start") {
+      _startIconColor = Colors.blue;
+      _endIconColor = const Color(0xFF66717C);
+    } else if (type == "End") {
+      _startIconColor = const Color(0xFF66717C);
+      _endIconColor = Colors.blue;
+    } else {
+      _startIconColor = const Color(0xFF66717C);
+      _endIconColor = const Color(0xFF66717C);
+    }
+
+    notifyListeners();
+  }
+
+  disableInput(type) {
+    _isButtonSelected = false;
+    _selectedInput = "none";
+
+    if (type == "Start") {
+      _isStartButtonEnabled = false;
+      _startPointController.text = "Pin Marker";
+    } else if (type == "End") {
+      _isEndButtonEnabled = false;
+      _endPointController.text = "Pin Marker";
+    }
+    notifyListeners();
+  }
+
   //resets state
   init() {
-    isStartButtonEnabled = true;
-    isEndButtonEnabled = true;
-    isButtonSelected = false;
-    selectedInput = '';
-    startIconColor = const Color(0xFF66717C);
-    endIconColor = const Color(0xFF66717C);
-    startPointController = TextEditingController(text: '');
-    endPointController = TextEditingController(text: '');
-    routeNameInputController = TextEditingController();
+    _isStartButtonEnabled = true;
+    _isEndButtonEnabled = true;
+    _isButtonSelected = false;
+    _selectedInput = '';
+    _startIconColor = const Color(0xFF66717C);
+    _endIconColor = const Color(0xFF66717C);
+    _startPointController = TextEditingController(text: '');
+    _endPointController = TextEditingController(text: '');
+    _routeNameInputController = TextEditingController();
     notifyListeners();
   }
 
   initEnd() {
-    isEndButtonEnabled = true;
-    isButtonSelected = false;
-    selectedInput = '';
-    endIconColor = const Color(0xFF66717C);
-    endPointController = TextEditingController(text: '');
-    routeNameInputController = TextEditingController();
+    _isEndButtonEnabled = true;
+    _isButtonSelected = false;
+    _selectedInput = '';
+    _endIconColor = const Color(0xFF66717C);
+    _endPointController = TextEditingController(text: '');
+    _routeNameInputController = TextEditingController();
     notifyListeners();
   }
 
   initStart() {
-    isStartButtonEnabled = true;
-    isButtonSelected = false;
-    selectedInput = '';
-    startIconColor = const Color(0xFF66717C);
-    startPointController = TextEditingController(text: '');
-    routeNameInputController = TextEditingController();
+    _isStartButtonEnabled = true;
+    _isButtonSelected = false;
+    _selectedInput = '';
+    _startIconColor = const Color(0xFF66717C);
+    _startPointController = TextEditingController(text: '');
+    _routeNameInputController = TextEditingController();
     notifyListeners();
   }
 }

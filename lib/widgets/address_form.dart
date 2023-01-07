@@ -96,7 +96,7 @@ class AddressFormState extends State<AddressForm> {
               title: const Text('Route Name'),
               content: TextField(
                 onChanged: (value) {},
-                controller: formStateListener.routeNameInputController,
+                controller: formStateListener.getRouteName(),
                 decoration: const InputDecoration(hintText: "Name your route"),
               ),
               actions: <Widget>[
@@ -138,11 +138,6 @@ class AddressFormState extends State<AddressForm> {
     }
   }
 
-  // saveWalk(routeName) {
-  //   var mapStateSetter = context.read<MapStateProvider>();
-  //   mapStateSetter.saveRoute(routeName);
-  // }
-
   setFormContent(type) {
     final regex = RegExp(
         r'^([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\s?[0-9][A-Za-z]{2})$');
@@ -153,9 +148,10 @@ class AddressFormState extends State<AddressForm> {
           child: Row(
         children: [
           Visibility(
-            visible: formStateListener.isStartButtonEnabled == false &&
+            visible: formStateListener.getStartButtonStatus() == false &&
                     type == "Start" ||
-                formStateListener.isEndButtonEnabled == false && type == "End",
+                formStateListener.getEndButtonStatus() == false &&
+                    type == "End",
             child: IconButton(
                 onPressed: () {
                   if (type == "Start") {
@@ -175,17 +171,17 @@ class AddressFormState extends State<AddressForm> {
                 )),
           ),
           Visibility(
-            visible: formStateListener.isStartButtonEnabled == true &&
-                    type == "Start" ||
-                formStateListener.isEndButtonEnabled == true && type == "End",
+            visible:
+                formStateListener.getStartButtonStatus() && type == "Start" ||
+                    formStateListener.getEndButtonStatus() && type == "End",
             child: IconButton(
               onPressed: () {
                 var pinStateSetter = context.read<FormStateProvider>();
-                if (pinStateSetter.isButtonSelected) {
-                  pinStateSetter.setButton(false);
+                if (pinStateSetter.getButtonSelected()) {
+                  pinStateSetter.setButtonSelected(false);
                   pinStateSetter.setInput('none');
-                } else if (!pinStateSetter.isButtonSelected) {
-                  pinStateSetter.setButton(true);
+                } else if (!pinStateSetter.getButtonSelected()) {
+                  pinStateSetter.setButtonSelected(true);
                   pinStateSetter.setInput(type);
                 }
               },
@@ -194,26 +190,25 @@ class AddressFormState extends State<AddressForm> {
                   builder: (context, pinStateListener, child) {
                 return Icon(Icons.location_on,
                     color: type == "Start"
-                        ? pinStateListener.startIconColor
-                        : pinStateListener.endIconColor);
+                        ? pinStateListener.getStartIconColor()
+                        : pinStateListener.getEndIconColor());
               }),
             ),
           ),
           Expanded(
               // flex: 5,
               child: TextFormField(
-                  enabled: formStateListener.isStartButtonEnabled == true &&
+                  enabled: formStateListener.getStartButtonStatus() &&
                           type == "Start" ||
-                      formStateListener.isEndButtonEnabled == true &&
-                          type == "End",
+                      formStateListener.getEndButtonStatus() && type == "End",
                   style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
                     labelText: '$type Postcode',
                     labelStyle: const TextStyle(color: Colors.white),
                   ),
                   controller: type == "Start"
-                      ? formStateListener.startPointController
-                      : formStateListener.endPointController,
+                      ? formStateListener.getStartPointInput()
+                      : formStateListener.getEndPointInput(),
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) => value != "" &&
                           value != "Pin Marker" &&
@@ -224,41 +219,35 @@ class AddressFormState extends State<AddressForm> {
             width: 25,
           ),
           ElevatedButton(
-            onPressed: formStateListener.isStartButtonEnabled == false &&
+            onPressed: !formStateListener.getStartButtonStatus() &&
                         type == "Start" ||
-                    formStateListener.isEndButtonEnabled == false &&
-                        type == "End"
+                    !formStateListener.getEndButtonStatus() && type == "End"
                 ? null
                 : () {
-                    var mapStateSetter = context.read<MapStateProvider>();
-                    var pinStateSetter = context.read<FormStateProvider>();
+                    var mapState = context.read<MapStateProvider>();
+                    var pinState = context.read<FormStateProvider>();
 
                     var pointController = type == "Start"
-                        ? formStateListener.startPointController
-                        : formStateListener.endPointController;
+                        ? formStateListener.getStartPointInput()
+                        : formStateListener.getEndPointInput();
 
                     if (regex.hasMatch(pointController.text)) {
-                      pinStateSetter
-                          .getCoords(pointController.text)
-                          .then((res) {
-                        mapStateSetter.setMarkerLocation(res, type);
+                      pinState.getCoords(pointController.text).then((res) {
+                        mapState.setMarkerLocation(res, type);
                         type == "Start"
-                            ? mapStateSetter.startCoord = [
+                            ? mapState.startCoord = [
                                 res.longitude,
                                 res.latitude
                               ]
-                            : mapStateSetter.endCoord = [
-                                res.longitude,
-                                res.latitude
-                              ];
+                            : mapState.endCoord = [res.longitude, res.latitude];
 
-                        if (mapStateSetter.endCoord.isNotEmpty &&
-                            mapStateSetter.startCoord.isNotEmpty) {
-                          mapStateSetter.setInitialRoute();
+                        if (mapState.endCoord.isNotEmpty &&
+                            mapState.startCoord.isNotEmpty) {
+                          mapState.setInitialRoute();
                         }
                       });
-                      pinStateSetter.setButton(false);
-                      pinStateSetter.setInput('none');
+                      pinState.setButtonSelected(false);
+                      pinState.setInput('none');
                     }
                   },
             style: ElevatedButton.styleFrom(

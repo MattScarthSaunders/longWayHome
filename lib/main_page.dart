@@ -27,9 +27,9 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
-    var mapStateSetter = context.read<MapStateProvider>();
+    var mapState = context.read<MapStateProvider>();
     var profileState = context.read<ProfileStateProvider>();
-    mapStateSetter.setInitialPosition();
+    mapState.setInitialPosition();
 
     if (!profileState.getUserDataStatus()) {
       final user = FirebaseAuth.instance.currentUser!;
@@ -100,33 +100,15 @@ class _MainPageState extends State<MainPage> {
   setFormMarkers(pinStateListener, mapStateListener, point) {
     var pinStateSetter = context.read<FormStateProvider>();
     var mapStateSetter = context.read<MapStateProvider>();
+    String type = pinStateListener.getSelectedInput();
+    pinStateSetter.disableInput(type);
+    mapStateSetter.setMarkerLocation(point, type);
+    mapStateSetter.setCoords(point, type);
 
-    if (pinStateListener.selectedInput == "Start") {
-      pinStateSetter.setButton(false);
-      pinStateSetter.setInput("none");
-      // pinStateSetter.getPostcode(point);
-      mapStateSetter.setMarkerLocation(point, "Start");
-
-      pinStateSetter.isStartButtonEnabled = false;
-      pinStateSetter.startPointController.text = "Pin Marker";
-
-      mapStateSetter.setCoords(point, "Start");
-      if (mapStateListener.endCoord.isNotEmpty) {
-        mapStateSetter.setInitialRoute();
-      }
-    } else if (pinStateListener.selectedInput == "End") {
-      pinStateSetter.setButton(false);
-      pinStateSetter.setInput("none");
-      // pinStateSetter.getPostcode(point);
-      mapStateSetter.setMarkerLocation(point, "End");
-
-      pinStateSetter.isEndButtonEnabled = false;
-      pinStateSetter.endPointController.text = "Pin Marker";
-
-      mapStateSetter.setCoords(point, "End");
-      if (mapStateListener.startCoord.isNotEmpty) {
-        mapStateSetter.setInitialRoute();
-      }
+    if (type == "Start" && mapStateListener.endCoord.isNotEmpty) {
+      mapStateSetter.setInitialRoute();
+    } else if (type == "End" && mapStateListener.startCoord.isNotEmpty) {
+      mapStateSetter.setInitialRoute();
     }
   }
 

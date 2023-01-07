@@ -31,19 +31,18 @@ class _BottomDrawerWidget extends State<BottomDrawerWidget> {
                       backgroundColor: const Color(0xff3D9198)),
                   onPressed: () {
                     var formState = context.read<FormStateProvider>();
-                    if (formState.isVisible) {
+                    if (formState.getVisibility()) {
                       if (Navigator.canPop(context)) {
                         Navigator.pop(context);
                       }
                     } else {
                       showMenu();
                     }
-                    formState.isVisible = !formState.isVisible;
-                    formState.notifyListeners();
+                    formState.setVisibility(!formState.getVisibility());
                   },
                   child: Consumer<FormStateProvider>(
                       builder: (context, formStateListener, child) {
-                    if (formStateListener.isVisible) {
+                    if (formStateListener.getVisibility()) {
                       return const Text("Hide Planner");
                     } else {
                       return const Text('Plan Walk');
