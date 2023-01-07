@@ -9,8 +9,7 @@ class MapButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<MapStateProvider>(
-        builder: (context, mapStateListener, child) {
+    return Consumer<MapStateProvider>(builder: (context, mapState, child) {
       return Stack(children: [
         Positioned(
           right: 0,
@@ -18,9 +17,8 @@ class MapButtons extends StatelessWidget {
           child: FloatingActionButton(
             heroTag: const Text("mapbtn1"),
             onPressed: () {
-              mapStateListener.mapController.move(
-                  mapStateListener.mapController.center,
-                  mapStateListener.mapController.zoom - 1);
+              mapState.mapController.move(mapState.mapController.center,
+                  mapState.mapController.zoom - 1);
             },
             backgroundColor: const Color(0xff3D9198),
             child: const Icon(Icons.zoom_out),
@@ -32,9 +30,8 @@ class MapButtons extends StatelessWidget {
           child: FloatingActionButton(
             heroTag: const Text("mapbtn2"),
             onPressed: () {
-              mapStateListener.mapController.move(
-                  mapStateListener.mapController.center,
-                  mapStateListener.mapController.zoom + 1);
+              mapState.mapController.move(mapState.mapController.center,
+                  mapState.mapController.zoom + 1);
             },
             backgroundColor: const Color(0xff3D9198),
             child: const Icon(Icons.zoom_in),
@@ -44,14 +41,11 @@ class MapButtons extends StatelessWidget {
           right: 0,
           top: 260,
           child: Consumer<LocationStateProvider>(
-              builder: (context, locationStateListener, child) {
+              builder: (context, locationState, child) {
             return FloatingActionButton(
               heroTag: const Text("mapbtn3"),
               onPressed: () {
-                mapStateListener.mapController.move(
-                    LatLng(
-                        locationStateListener.lat, locationStateListener.lng),
-                    15);
+                mapState.mapController.move(locationState.getLatLng(), 15);
               },
               backgroundColor: const Color(0xff3D9198),
               child: const Icon(Icons.gps_fixed_outlined),
