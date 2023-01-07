@@ -33,7 +33,6 @@ class _MainPageState extends State<MainPage> {
 
     if (!profileState.getUserDataStatus()) {
       final user = FirebaseAuth.instance.currentUser!;
-      print("just once");
       getUser(user.email).then((res) {
         var userData = json.decode(res.body);
         profileState.setUserID(userData["user"]["_id"]);

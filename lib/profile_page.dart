@@ -41,7 +41,7 @@ class ProfilePage extends StatelessWidget {
             Expanded(
               child: Consumer<ProfileStateProvider>(
                 builder: (context, profileState, child) {
-                  if (profileState.isRouteListLoading) {
+                  if (profileState.getListLoadingStatus()) {
                     return const Center(child: CircularProgressIndicator());
                   } else {
                     List mapPoints = profileState.getMapPoints();
