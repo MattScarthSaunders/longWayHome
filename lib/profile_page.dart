@@ -1,12 +1,9 @@
-import 'dart:convert';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/widgets/state-providers/form_state_provider.dart';
 import 'package:flutter_application_1/widgets/state-providers/location_state_provider.dart';
 import 'package:flutter_application_1/widgets/state-providers/map_state_provider.dart';
 import 'package:flutter_application_1/widgets/state-providers/profile_state_provider.dart';
-import 'package:flutter_application_1/widgets/user_api.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -41,7 +38,7 @@ class ProfilePage extends StatelessWidget {
             Expanded(
               child: Consumer<ProfileStateProvider>(
                 builder: (context, profileState, child) {
-                  if (profileState.isRouteListLoading) {
+                  if (profileState.getListLoadingStatus()) {
                     return const Center(child: CircularProgressIndicator());
                   } else {
                     List mapPoints = profileState.getMapPoints();
@@ -118,7 +115,7 @@ class ProfilePage extends StatelessWidget {
                   'Sign Out',
                 ),
                 onPressed: () {
-                  context.read<MapStateProvider>().init();
+                  context.read<MapStateProvider>().initAll();
                   context.read<FormStateProvider>().init();
                   context.read<ProfileStateProvider>().init();
                   context.read<LocationStateProvider>().init();

@@ -27,13 +27,12 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
-    var mapStateSetter = context.read<MapStateProvider>();
+    var mapState = context.read<MapStateProvider>();
     var profileState = context.read<ProfileStateProvider>();
-    mapStateSetter.setInitialPosition();
+    mapState.setInitialPosition();
 
     if (!profileState.getUserDataStatus()) {
       final user = FirebaseAuth.instance.currentUser!;
-      print("just once");
       getUser(user.email).then((res) {
         var userData = json.decode(res.body);
         profileState.setUserID(userData["user"]["_id"]);
@@ -50,16 +49,15 @@ class _MainPageState extends State<MainPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Consumer2<MapStateProvider, FormStateProvider>(
-              builder: (context, mapStateListener, pinStateListener, child) {
+              builder: (context, mapStateGetter, formStateGetter, child) {
             return Flexible(
                 child: FlutterMap(
-                    mapController: mapStateListener.mapController,
+                    mapController: mapStateGetter.getMapController(),
                     options: MapOptions(
                       center: LatLng(0.0, 0.0),
                       zoom: 15,
                       onTap: (tapPosition, point) {
-                        setFormMarkers(
-                            pinStateListener, mapStateListener, point);
+                        setFormMarkers(formStateGetter, mapStateGetter, point);
                       },
                     ),
                     nonRotatedChildren: const [],
@@ -69,14 +67,14 @@ class _MainPageState extends State<MainPage> {
                         "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                     userAgentPackageName: 'dev.fleaflet.flutter_map.example',
                   ),
-                  mapStateListener.routePolyLine,
+                  mapStateGetter.getPolyLine(),
                   const CurrentPOSMarker(),
                   MarkerLayer(markers: [
-                    mapStateListener.startMark,
-                    mapStateListener.endMark
+                    mapStateGetter.getStartMarker(),
+                    mapStateGetter.getEndMarker()
                   ]),
-                  mapStateListener.localPOIMarkers,
-                  isLoading(mapStateListener),
+                  mapStateGetter.getLocalPOIs(),
+                  isLoading(mapStateGetter),
                 ]));
           }),
         ],
@@ -84,7 +82,7 @@ class _MainPageState extends State<MainPage> {
       bottomNavigationBar: BottomAppBar(
         elevation: 0,
         child: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               color: Color(0xff222E34),
               border:
                   Border(top: BorderSide(color: Color(0xff255777), width: 3))),
@@ -98,43 +96,25 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  setFormMarkers(pinStateListener, mapStateListener, point) {
-    var pinStateSetter = context.read<FormStateProvider>();
-    var mapStateSetter = context.read<MapStateProvider>();
+  setFormMarkers(formStateGetter, mapStateGetter, point) {
+    var formState = context.read<FormStateProvider>();
+    var mapState = context.read<MapStateProvider>();
+    String type = formStateGetter.getSelectedInput();
+    formState.disableInput(type);
+    mapState.setMarkerLocation(point, type);
+    mapState.setCoords(point, type);
 
-    if (pinStateListener.selectedInput == "Start") {
-      pinStateSetter.setButton(false);
-      pinStateSetter.setInput("none");
-      // pinStateSetter.getPostcode(point);
-      mapStateSetter.setMarkerLocation(point, "Start");
-
-      pinStateSetter.isStartButtonEnabled = false;
-      pinStateSetter.startPointController.text = "Pin Marker";
-
-      mapStateSetter.setCoords(point, "Start");
-      if (mapStateListener.endCoord.isNotEmpty) {
-        mapStateSetter.setInitialRoute();
-      }
-    } else if (pinStateListener.selectedInput == "End") {
-      pinStateSetter.setButton(false);
-      pinStateSetter.setInput("none");
-      // pinStateSetter.getPostcode(point);
-      mapStateSetter.setMarkerLocation(point, "End");
-
-      pinStateSetter.isEndButtonEnabled = false;
-      pinStateSetter.endPointController.text = "Pin Marker";
-
-      mapStateSetter.setCoords(point, "End");
-      if (mapStateListener.startCoord.isNotEmpty) {
-        mapStateSetter.setInitialRoute();
-      }
+    if (type == "Start" && mapStateGetter.getEndCoords().isNotEmpty) {
+      mapState.setInitialRoute();
+    } else if (type == "End" && mapStateGetter.getStartCoords().isNotEmpty) {
+      mapState.setInitialRoute();
     }
   }
 
-  isLoading(mapStateListener) {
-    bool a = mapStateListener.isInitialRouteLoading;
-    bool b = mapStateListener.isPOILoading;
-    bool c = mapStateListener.isRouteLoading;
+  isLoading(mapState) {
+    bool a = mapState.getInitialRouteStatus();
+    bool b = mapState.getPOIStatus();
+    bool c = mapState.getRouteStatus();
     if (a || b || c) {
       return Center(
         child: Column(

@@ -1,27 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 
 class LocationStateProvider with ChangeNotifier {
-  double lat = 0.0;
-  double lng = 0.0;
-  bool hasChanged = false;
-  Location location = Location();
+  double _lat = 0.0;
+  double _lng = 0.0;
+  Location _location = Location();
 
   //sets current user location
   locateMe() async {
-    location.onLocationChanged.listen((res) {
-      if (res.latitude != lat || res.longitude != lng) {
-        lat = res.latitude ?? 00;
-        lng = res.longitude ?? 00;
+    _location.onLocationChanged.listen((res) {
+      if (res.latitude != _lat || res.longitude != _lng) {
+        _lat = res.latitude ?? 00;
+        _lng = res.longitude ?? 00;
         notifyListeners();
       }
     });
   }
 
+  getLatLng() {
+    return LatLng(_lat, _lng);
+  }
+
+  getLngLat() {
+    return [_lng, _lat];
+  }
+
   init() {
-    lat = 0.0;
-    lng = 0.0;
-    hasChanged = false;
-    location = Location();
+    _lat = 0.0;
+    _lng = 0.0;
+    _location = Location();
+    notifyListeners();
   }
 }

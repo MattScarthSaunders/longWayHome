@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/widgets/state-providers/location_state_provider.dart';
-import 'package:flutter_application_1/widgets/state-providers/map_state_provider.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 
@@ -21,22 +19,15 @@ class CurrentPOSMarker extends StatefulWidget {
 class _CurrentPOSMarkerState extends State<CurrentPOSMarker> {
   @override
   Widget build(BuildContext context) {
-    var locationStateSetter = context.read<LocationStateProvider>();
-
-    locationStateSetter.locateMe();
+    context.read<LocationStateProvider>().locateMe();
 
     return Consumer<LocationStateProvider>(
-        builder: (context, locationStateListener, child) {
-      var mapState = context.read<MapStateProvider>();
-      mapState.userCoord = [
-        locationStateListener.lng,
-        locationStateListener.lat
-      ];
+        builder: (context, locationstate, child) {
       return MarkerLayer(markers: [
         Marker(
           width: 80,
           height: 80,
-          point: LatLng(locationStateListener.lat, locationStateListener.lng),
+          point: locationstate.getLatLng(),
           builder: (ctx) => Container(
             key: const Key('blue'),
             child: const Icon(

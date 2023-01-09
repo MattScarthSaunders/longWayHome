@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/profile_page.dart';
 import 'package:flutter_application_1/widgets/address_form.dart';
 import 'package:flutter_application_1/widgets/state-providers/form_state_provider.dart';
-import 'package:flutter_application_1/widgets/state-providers/map_state_provider.dart';
 import 'package:provider/provider.dart';
 
 class BottomDrawerWidget extends StatefulWidget {
@@ -18,7 +17,7 @@ class _BottomDrawerWidget extends State<BottomDrawerWidget> {
   Widget build(BuildContext context) {
     return Container(
       width: 340,
-      padding: EdgeInsets.only(left: 7, right: 7),
+      padding: const EdgeInsets.only(left: 7, right: 7),
       child: Row(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -31,26 +30,25 @@ class _BottomDrawerWidget extends State<BottomDrawerWidget> {
                       backgroundColor: const Color(0xff3D9198)),
                   onPressed: () {
                     var formState = context.read<FormStateProvider>();
-                    if (formState.isVisible) {
+                    if (formState.getVisibility()) {
                       if (Navigator.canPop(context)) {
                         Navigator.pop(context);
                       }
                     } else {
                       showMenu();
                     }
-                    formState.isVisible = !formState.isVisible;
-                    formState.notifyListeners();
+                    formState.setVisibility(!formState.getVisibility());
                   },
                   child: Consumer<FormStateProvider>(
                       builder: (context, formStateListener, child) {
-                    if (formStateListener.isVisible) {
+                    if (formStateListener.getVisibility()) {
                       return const Text("Hide Planner");
                     } else {
                       return const Text('Plan Walk');
                     }
                   })),
             )),
-            Spacer(),
+            const Spacer(),
             Align(
                 child: SizedBox(
               height: 40,
