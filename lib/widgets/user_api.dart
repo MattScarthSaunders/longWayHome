@@ -53,6 +53,7 @@ patchRoute(userID, routeID, routeName) async {
 }
 
 deleteRoute(userID, routeID, routeName) async {
+  print('deleting...');
   return await http.delete(Uri.parse(
       "https://rich-puce-bear-gown.cyclic.app/api/user/$userID/routes/$routeID"));
 }
