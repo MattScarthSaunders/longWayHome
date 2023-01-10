@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "446525243445",
-    "project_id": "power-projec-fe-a5e10",
-    "storage_bucket": "power-projec-fe-a5e10.appspot.com"
+    "project_number": "483201830082",
+    "project_id": "longwayhome-fe",
+    "storage_bucket": "longwayhome-fe.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:446525243445:android:961c5966a216405f3d717c",
+        "mobilesdk_app_id": "1:483201830082:android:1a6a9e60e49a26dde97f5b",
         "android_client_info": {
-          "package_name": "com.example.flutter_application_1"
+          "package_name": "longWayHome.android.FE"
         }
       },
       "oauth_client": [
         {
-          "client_id": "446525243445-474uldhj2eockrl0bsbqgvfgpe1tu9o3.apps.googleusercontent.com",
+          "client_id": "483201830082-dsjpi485bkdte9p13bor8ahts3ptl3rp.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBlETT27IsxVLuIEaAVwQdhRZ5A58yfan4"
+          "current_key": "AIzaSyBIks1G6MdXPcdCLuzrJoKT4EwaOlDs0a0"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "446525243445-474uldhj2eockrl0bsbqgvfgpe1tu9o3.apps.googleusercontent.com",
+              "client_id": "483201830082-dsjpi485bkdte9p13bor8ahts3ptl3rp.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

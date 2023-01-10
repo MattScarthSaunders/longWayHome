@@ -4,6 +4,8 @@ import 'package:flutter_application_1/widgets/state-providers/form_state_provide
 import 'package:flutter_application_1/widgets/state-providers/location_state_provider.dart';
 import 'package:flutter_application_1/widgets/state-providers/map_state_provider.dart';
 import 'package:flutter_application_1/widgets/state-providers/profile_state_provider.dart';
+import 'package:flutter_application_1/widgets/user_api.dart';
+import 'package:flutter_application_1/widgets/utils.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -57,7 +59,8 @@ class ProfilePage extends StatelessWidget {
                                       const Spacer(),
                                       IconButton(
                                           onPressed: () {
-                                            _confirmDelete(context, index);
+                                            _confirmDelete(
+                                                context, index, route);
                                           },
                                           icon: const Icon(
                                             Icons.close,
@@ -88,7 +91,13 @@ class ProfilePage extends StatelessWidget {
                         },
                       );
                     } else {
-                      return const Text("No saved routes");
+                      return ListView.builder(
+                          itemCount: 1,
+                          itemBuilder: (context, index) {
+                            return const Center(
+                                child: Text("No saved routes",
+                                    style: TextStyle(color: Colors.white)));
+                          });
                     }
                   }
                 },
@@ -130,7 +139,7 @@ class ProfilePage extends StatelessWidget {
   }
 }
 
-Future<void> _confirmDelete(BuildContext context, index) async {
+Future<void> _confirmDelete(BuildContext context, index, route) async {
   return showDialog(
       context: context,
       builder: (context) {
@@ -154,6 +163,15 @@ Future<void> _confirmDelete(BuildContext context, index) async {
                           backgroundColor: const Color(0xFF31AFB9)),
                       child: const Text('Confirm'),
                       onPressed: () {
+                        var user = context.read<ProfileStateProvider>();
+                        deleteRoute(user.getUserID(), route["_id"],
+                                route["routeName"])
+                            .then((res) {
+                          user.getRouteList();
+                          user.notifyListeners();
+                        }).catchError((err) {
+                          Utils.showSnackBar("Could not delete route");
+                        });
                         Navigator.pop(context);
                       }),
                 ],
