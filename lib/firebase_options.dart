@@ -3,6 +3,7 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
+import 'package:flutter_application_1/apikeys.dart';
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
 ///
@@ -53,7 +54,7 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBIks1G6MdXPcdCLuzrJoKT4EwaOlDs0a0',
+    apiKey: firebasekey,
     appId: '1:483201830082:android:1a6a9e60e49a26dde97f5b',
     messagingSenderId: '483201830082',
     projectId: 'longwayhome-fe',
