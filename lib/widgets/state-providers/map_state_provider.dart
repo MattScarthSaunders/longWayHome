@@ -27,44 +27,18 @@ class MapStateProvider with ChangeNotifier {
   bool _isInitialRouteLoading = false;
   bool _isPOILoading = false;
   bool _isRouteLoading = false;
+  bool _isRoutePlotted = false;
 
-  late Marker _startMark = Marker(
+  Marker _startMark = Marker(
     point: LatLng(0.0, 0.0),
-    width: 100,
-    height: 100,
-    builder: (ctx) => Container(
-      key: const Key('blue'),
-      child: const Icon(
-        Icons.location_on,
-        color: Colors.blue,
-        size: 30.0,
-      ),
-    ),
+    builder: (ctx) => Container(),
   );
-  late Marker _endMark = Marker(
+  Marker _endMark = Marker(
     point: LatLng(0.0, 0.0),
-    width: 100,
-    height: 100,
-    builder: (ctx) => Container(
-      key: const Key('blue'),
-      child: const Icon(
-        Icons.location_on,
-        color: Colors.blue,
-        size: 30.0,
-      ),
-    ),
+    builder: (ctx) => Container(),
   );
-  Widget _routePolyLine = PolylineLayer(
-    polylineCulling: false,
-    polylines: [
-      Polyline(
-        points: [],
-        color: Colors.blue,
-        strokeWidth: 10,
-      ),
-    ],
-  );
-  Widget _localPOIMarkers = const MarkerLayer(markers: []);
+  Widget _routePolyLine = PolylineLayer();
+  Widget _localPOIMarkers = const MarkerLayer();
 
   getStartCoords() {
     return _startCoord;
@@ -133,6 +107,15 @@ class MapStateProvider with ChangeNotifier {
     return _isPOILoading;
   }
 
+  getIsRoutePlotted() {
+    return _isRoutePlotted;
+  }
+
+  setIsRoutePlotted(value) {
+    _isRoutePlotted = value;
+    notifyListeners();
+  }
+
   //sets start and end point coords
   void setCoords(point, type) {
     if (type == 'Start') {
@@ -147,8 +130,6 @@ class MapStateProvider with ChangeNotifier {
   void setInitialPosition() {
     initialPosition(_serviceEnabled, _permissionGranted).then((res) {
       _userCoord = [res.longitude, res.latitude];
-      return;
-    }).then((res) {
       _mapController.move(LatLng(_userCoord[1], _userCoord[0]), 15);
       notifyListeners();
     });
@@ -169,8 +150,6 @@ class MapStateProvider with ChangeNotifier {
 
       _plottedRoute = tempRoute;
 
-      return;
-    }).then((res) {
       _routePolyLine = PolylineLayer(
         polylineCulling: false,
         polylines: [
@@ -231,8 +210,6 @@ class MapStateProvider with ChangeNotifier {
       }
 
       _allPOIMarkers = tempMarkers;
-      return;
-    }).then((res) {
       _localPOIMarkers = MarkerLayer(markers: _allPOIMarkers);
       _isPOILoading = false;
 
@@ -242,6 +219,7 @@ class MapStateProvider with ChangeNotifier {
 
   //this handles generating the final route polyline
   void setRoute() {
+    _isRoutePlotted = false;
     List fullRouteCoords = [
       [_startCoord[0], _startCoord[1]]
     ];
@@ -279,10 +257,8 @@ class MapStateProvider with ChangeNotifier {
         ],
       );
 
-      return;
-    }).then((res) {
       _isRouteLoading = false;
-
+      _isRoutePlotted = true;
       notifyListeners();
     });
   }

@@ -167,6 +167,8 @@ Future<void> _confirmDelete(BuildContext context, index, route) async {
                         deleteRoute(user.getUserID(), route["_id"],
                                 route["routeName"])
                             .then((res) {
+                          Utils.confirmationSnackbar(
+                              "Deleting route: ${route["routeName"]}...");
                           user.getRouteList();
                           user.notifyListeners();
                         }).catchError((err) {

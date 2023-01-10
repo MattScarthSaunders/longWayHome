@@ -17,6 +17,18 @@ class Utils {
       ..showSnackBar(snackBar);
   }
 
+  static confirmationSnackbar(String? text) {
+    if (text == null) return;
+    final snackBar = SnackBar(
+      content: Text(text, style: const TextStyle(color: Colors.white)),
+      backgroundColor: const Color(0xff3D9198),
+    );
+
+    messengerKey.currentState!
+      ..removeCurrentSnackBar()
+      ..showSnackBar(snackBar);
+  }
+
   static buildPOIMarker(poiData) {
     return Marker(
       point: LatLng(poiData[0], poiData[1]),

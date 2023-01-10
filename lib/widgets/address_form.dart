@@ -4,6 +4,7 @@ import 'package:flutter_application_1/widgets/state-providers/form_state_provide
 import 'package:flutter_application_1/widgets/state-providers/map_state_provider.dart';
 import 'package:flutter_application_1/widgets/state-providers/profile_state_provider.dart';
 import 'package:flutter_application_1/widgets/user_api.dart';
+import 'package:flutter_application_1/widgets/utils.dart';
 import 'package:provider/provider.dart';
 
 class AddressForm extends StatefulWidget {
@@ -71,14 +72,19 @@ class AddressFormState extends State<AddressForm> {
                       const Spacer(
                         flex: 1,
                       ),
-                      ElevatedButton(
-                          onPressed: () {
-                            routeNameInputDialog(context);
-                          },
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xff3D9198),
-                              fixedSize: const Size(80, 30)),
-                          child: const Text("Save")),
+                      Consumer<MapStateProvider>(
+                          builder: (context, mapState, child) {
+                        return ElevatedButton(
+                            onPressed: !mapState.getIsRoutePlotted()
+                                ? null
+                                : () {
+                                    routeNameInputDialog(context);
+                                  },
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xff3D9198),
+                                fixedSize: const Size(80, 30)),
+                            child: const Text("Save"));
+                      }),
                       const Spacer(
                         flex: 1,
                       ),
@@ -121,7 +127,9 @@ class AddressFormState extends State<AddressForm> {
                       var mapState = context.read<MapStateProvider>();
                       postNewRoute(userID, routeName, mapState.getStartCoords(),
                           mapState.getEndCoords(), mapState.getPOICoords());
-
+                      context.read<MapStateProvider>().setIsRoutePlotted(false);
+                      Utils.confirmationSnackbar(
+                          "Route: '$routeName' saved to profile.");
                       Navigator.pop(context);
                     }),
               ],
