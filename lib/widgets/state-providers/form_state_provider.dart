@@ -68,18 +68,18 @@ class FormStateProvider with ChangeNotifier {
   }
 
   //gets coords from postcode
-  getCoords(postcode) async {
+  getCoords(String postcode) async {
     List<Location> locations = await locationFromAddress(postcode);
     return locations[0];
   }
 
-  setVisibility(visibility) {
+  setVisibility(bool visibility) {
     _isVisible = visibility;
     notifyListeners();
   }
 
   //sets current form input type
-  setInput(type) {
+  setInput(String type) {
     _selectedInput = type;
     if (type == "Start") {
       _startIconColor = Colors.blue;
@@ -95,7 +95,7 @@ class FormStateProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  disableInput(type) {
+  disableInput(String type) {
     _isButtonSelected = false;
     _selectedInput = "none";
 

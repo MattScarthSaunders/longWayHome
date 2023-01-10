@@ -29,7 +29,7 @@ class _FormContentState extends State<FormContent> {
                 !formStateGetter.getEndButtonStatus() && widget.type == "End",
             child: IconButton(
                 onPressed: () {
-                  var mapState = context.read<MapStateProvider>();
+                  MapStateProvider mapState = context.read<MapStateProvider>();
                   mapState.initMarker(widget.type);
                   mapState.initInitialise();
                   if (widget.type == "Start") formStateGetter.initStart();
@@ -46,7 +46,8 @@ class _FormContentState extends State<FormContent> {
                 formStateGetter.getEndButtonStatus() && widget.type == "End",
             child: IconButton(
                 onPressed: () {
-                  var formState = context.read<FormStateProvider>();
+                  FormStateProvider formState =
+                      context.read<FormStateProvider>();
                   if (formState.getButtonSelected()) {
                     formState.setButtonSelected(false);
                     formState.setInput('none');
@@ -100,20 +101,20 @@ class _FormContentState extends State<FormContent> {
     });
   }
 
-  postCodeSetter(formStateGetter, regex, type) {
+  postCodeSetter(FormStateProvider formStateGetter, RegExp regex, String type) {
     if (!formStateGetter.getStartButtonStatus() && type == "Start" ||
         !formStateGetter.getEndButtonStatus() && type == "End") {
       return null;
     } else {
-      var mapState = context.read<MapStateProvider>();
-      var pinState = context.read<FormStateProvider>();
+      MapStateProvider mapState = context.read<MapStateProvider>();
+      FormStateProvider formState = context.read<FormStateProvider>();
 
-      var pointController = type == "Start"
+      TextEditingController pointController = type == "Start"
           ? formStateGetter.getStartPointInput()
           : formStateGetter.getEndPointInput();
 
       if (regex.hasMatch(pointController.text)) {
-        pinState.getCoords(pointController.text).then((res) {
+        formState.getCoords(pointController.text).then((res) {
           mapState.setMarkerLocation(res, type);
           type == "Start"
               ? mapState.setStartCoords([res.longitude, res.latitude])
@@ -125,10 +126,9 @@ class _FormContentState extends State<FormContent> {
           }
         });
 
-        pinState.setButtonSelected(false);
-        pinState.setInput('none');
+        formState.setButtonSelected(false);
+        formState.setInput('none');
       }
     }
-    ;
   }
 }

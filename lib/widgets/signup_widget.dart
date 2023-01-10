@@ -98,7 +98,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                     ),
                     onPressed: signUp),
                 Container(
-                  padding: EdgeInsets.only(top: 35),
+                  padding: const EdgeInsets.only(top: 35),
                   child: RichText(
                     text: TextSpan(
                         style:
