@@ -91,7 +91,13 @@ class ProfilePage extends StatelessWidget {
                         },
                       );
                     } else {
-                      return const Text("No saved routes");
+                      return ListView.builder(
+                          itemCount: 1,
+                          itemBuilder: (context, index) {
+                            return const Center(
+                                child: Text("No saved routes",
+                                    style: TextStyle(color: Colors.white)));
+                          });
                     }
                   }
                 },
@@ -161,7 +167,9 @@ Future<void> _confirmDelete(BuildContext context, index, route) async {
                         deleteRoute(user.getUserID(), route["_id"],
                                 route["routeName"])
                             .then((res) {
-                          print("deleted ${res.body}");
+                          if (user.getUserDataStatus()) {
+                            user.getRouteList();
+                          }
                         }).catchError((err) {
                           Utils.showSnackBar("Could not delete route");
                         });

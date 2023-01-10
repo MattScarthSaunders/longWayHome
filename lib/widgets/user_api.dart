@@ -51,7 +51,6 @@ patchRoute(userID, routeID, routeName) async {
 }
 
 deleteRoute(userID, routeID, routeName) async {
-  print('deleting...');
   return await http.delete(Uri.parse(
-      "https://longwayhome.onrender.com/api/user/$userID/routes/$routeID"));
+      "https://longwayhome.onrender.com/api/user/$userID/route/$routeID"));
 }
