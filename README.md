@@ -2,10 +2,13 @@ Long Way Home
 
 This app is a route finding app created during the Northcoders bootcamp as a final group project in which we were required to explore new tech.
 
+You will need the latest version of flutter installed to use the app.
+
 Run 'flutter pub get' to install all necessary packages.
 
-You will need to set up a firebase auth project and initialise it using flutterfire CLI in order to log in to the app.
-You will also need to provide an API key for open route service, and place it as so in the /lib folder, in a file called apikeys.dart:
+Initialise firebase auth using flutterfire CLI and the command 'flutterfire configure' and set up a project for use with the app. You will need email/password authentication selected.
+
+You will also need to provide an API key for open route service. In the /lib folder, create an 'apikeys.dart' file, and ensure it has a line of:
 const openrouteservicekey = "yourAPIKeyhere";
 
 This app is android only, so you will need to either run an android emulator, or attach and android phone with dev mode enabled.
