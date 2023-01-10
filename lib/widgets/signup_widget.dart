@@ -135,13 +135,15 @@ class _SignUpWidgetState extends State<SignUpWidget> {
           email: emailController.text.trim(),
           password: passwordController.text.trim());
       final newUser = FirebaseAuth.instance.currentUser!;
-      postUser(newUser.email);
+      postUser(newUser.email).then((res) {
+        navigatorKey.currentState!.popUntil((route) => route.isFirst);
+      });
     } on FirebaseAuthException catch (e) {
       Utils.showSnackBar(e.message);
+      navigatorKey.currentState!.popUntil((route) => route.isFirst);
     }
 
     //hide loading dialog after logging in
     //Navigator.of(context) not working!
-    navigatorKey.currentState!.popUntil((route) => route.isFirst);
   }
 }

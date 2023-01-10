@@ -20,7 +20,7 @@ class MapButtons extends StatelessWidget {
           child: FloatingActionButton(
             heroTag: const Text("mapbtn1"),
             onPressed: () {
-              mapState.mapMover(center, zoom - 1);
+              mapState.mapMover(mapState.getMapController().center, zoom - 1);
             },
             backgroundColor: const Color(0xff3D9198),
             child: const Icon(Icons.zoom_out),
@@ -32,7 +32,7 @@ class MapButtons extends StatelessWidget {
           child: FloatingActionButton(
             heroTag: const Text("mapbtn2"),
             onPressed: () {
-              mapState.mapMover(center, zoom + 1);
+              mapState.mapMover(mapState.getMapController().center, zoom + 1);
             },
             backgroundColor: const Color(0xff3D9198),
             child: const Icon(Icons.zoom_in),
