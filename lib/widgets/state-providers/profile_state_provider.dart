@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/widgets/user_api.dart';
+import 'package:flutter_application_1/utils/user_api.dart';
 
 class ProfileStateProvider with ChangeNotifier {
   late bool _isRouteListLoading = false;

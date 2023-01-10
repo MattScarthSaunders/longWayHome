@@ -3,8 +3,8 @@ import 'package:flutter_application_1/widgets/form_content_widget.dart';
 import 'package:flutter_application_1/widgets/state-providers/form_state_provider.dart';
 import 'package:flutter_application_1/widgets/state-providers/map_state_provider.dart';
 import 'package:flutter_application_1/widgets/state-providers/profile_state_provider.dart';
-import 'package:flutter_application_1/widgets/user_api.dart';
-import 'package:flutter_application_1/widgets/utils.dart';
+import 'package:flutter_application_1/utils/user_api.dart';
+import 'package:flutter_application_1/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class AddressForm extends StatefulWidget {
