@@ -20,54 +20,17 @@ class _FormContentState extends State<FormContent> {
   Widget build(BuildContext context) {
     return Consumer<FormStateProvider>(
         builder: (context, formStateGetter, child) {
+      bool isPinEnabled =
+          !formStateGetter.getStartButtonStatus() && widget.type == "Start" ||
+              !formStateGetter.getEndButtonStatus() && widget.type == "End";
+
       return Center(
           child: Row(
         children: [
-          Visibility(
-            visible: !formStateGetter.getStartButtonStatus() &&
-                    widget.type == "Start" ||
-                !formStateGetter.getEndButtonStatus() && widget.type == "End",
-            child: IconButton(
-                onPressed: () {
-                  MapStateProvider mapState = context.read<MapStateProvider>();
-                  mapState.initMarker(widget.type);
-                  mapState.initInitialise();
-                  if (widget.type == "Start") formStateGetter.initStart();
-                  if (widget.type == "End") formStateGetter.initEnd();
-                },
-                icon: const Icon(
-                  Icons.close,
-                  color: Colors.red,
-                )),
-          ),
-          Visibility(
-            visible: formStateGetter.getStartButtonStatus() &&
-                    widget.type == "Start" ||
-                formStateGetter.getEndButtonStatus() && widget.type == "End",
-            child: IconButton(
-                onPressed: () {
-                  FormStateProvider formState =
-                      context.read<FormStateProvider>();
-                  if (formState.getButtonSelected()) {
-                    formState.setButtonSelected(false);
-                    formState.setInput('none');
-                  } else if (!formState.getButtonSelected()) {
-                    formState.setButtonSelected(true);
-                    formState.setInput(widget.type);
-                  }
-                },
-                iconSize: 30,
-                icon: Icon(Icons.location_on,
-                    color: widget.type == "Start"
-                        ? formStateGetter.getStartIconColor()
-                        : formStateGetter.getEndIconColor())),
-          ),
+          setIconButtons(isPinEnabled, formStateGetter),
           Expanded(
               child: TextFormField(
-                  enabled: formStateGetter.getStartButtonStatus() &&
-                          widget.type == "Start" ||
-                      formStateGetter.getEndButtonStatus() &&
-                          widget.type == "End",
+                  enabled: !isPinEnabled,
                   style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
                     labelText: '${widget.type} Postcode',
@@ -99,6 +62,44 @@ class _FormContentState extends State<FormContent> {
         ],
       ));
     });
+  }
+
+  setIconButtons(bool isPinEnabled, FormStateProvider formStateGetter) {
+    if (isPinEnabled) {
+      return IconButton(
+          onPressed: () {
+            MapStateProvider mapState = context.read<MapStateProvider>();
+            mapState.initMarker(widget.type);
+            mapState.initInitialise();
+            if (widget.type == "Start") formStateGetter.initStart();
+            if (widget.type == "End") formStateGetter.initEnd();
+          },
+          icon: const Icon(
+            Icons.close,
+            color: Colors.red,
+          ));
+    } else {
+      return IconButton(
+          onPressed: () {
+            handleButtons();
+          },
+          iconSize: 30,
+          icon: Icon(Icons.location_on,
+              color: widget.type == "Start"
+                  ? formStateGetter.getStartIconColor()
+                  : formStateGetter.getEndIconColor()));
+    }
+  }
+
+  handleButtons() {
+    FormStateProvider formState = context.read<FormStateProvider>();
+    if (formState.getButtonSelected()) {
+      formState.setButtonSelected(false);
+      formState.setInput('none');
+    } else if (!formState.getButtonSelected()) {
+      formState.setButtonSelected(true);
+      formState.setInput(widget.type);
+    }
   }
 
   postCodeSetter(FormStateProvider formStateGetter, RegExp regex, String type) {

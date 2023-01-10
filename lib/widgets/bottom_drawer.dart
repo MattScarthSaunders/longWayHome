@@ -29,23 +29,13 @@ class _BottomDrawerWidget extends State<BottomDrawerWidget> {
                   style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xff3D9198)),
                   onPressed: () {
-                    var formState = context.read<FormStateProvider>();
-                    if (formState.getVisibility()) {
-                      if (Navigator.canPop(context)) {
-                        Navigator.pop(context);
-                      }
-                    } else {
-                      showMenu();
-                    }
-                    formState.setVisibility(!formState.getVisibility());
+                    handlePlanner();
                   },
                   child: Consumer<FormStateProvider>(
                       builder: (context, formStateListener, child) {
-                    if (formStateListener.getVisibility()) {
-                      return const Text("Hide Planner");
-                    } else {
-                      return const Text('Plan Walk');
-                    }
+                    bool isVisible = formStateListener.getVisibility();
+
+                    return Text(isVisible ? "Hide Planner" : "PlanWalk");
                   })),
             )),
             const Spacer(),
@@ -63,6 +53,18 @@ class _BottomDrawerWidget extends State<BottomDrawerWidget> {
             ))
           ]),
     );
+  }
+
+  handlePlanner() {
+    FormStateProvider formState = context.read<FormStateProvider>();
+    if (formState.getVisibility()) {
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
+    } else {
+      showMenu();
+    }
+    formState.setVisibility(!formState.getVisibility());
   }
 
   showMenu() {

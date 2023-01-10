@@ -3,8 +3,8 @@ import 'package:flutter_application_1/widgets/form_content_widget.dart';
 import 'package:flutter_application_1/widgets/state-providers/form_state_provider.dart';
 import 'package:flutter_application_1/widgets/state-providers/map_state_provider.dart';
 import 'package:flutter_application_1/widgets/state-providers/profile_state_provider.dart';
-import 'package:flutter_application_1/widgets/user_api.dart';
-import 'package:flutter_application_1/widgets/utils.dart';
+import 'package:flutter_application_1/utils/user_api.dart';
+import 'package:flutter_application_1/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class AddressForm extends StatefulWidget {
@@ -50,12 +50,8 @@ class AddressFormState extends State<AddressForm> {
                             fixedSize: const Size(80, 30),
                           ),
                           onPressed: () {
-                            var mapStateSetter =
-                                context.read<MapStateProvider>();
-                            var pinStateSetter =
-                                context.read<FormStateProvider>();
-                            mapStateSetter.initAll();
-                            pinStateSetter.init();
+                            context.read<MapStateProvider>().initAll();
+                            context.read<FormStateProvider>().init();
                           },
                           child: const Text('Clear')),
                       const Spacer(
@@ -120,22 +116,26 @@ class AddressFormState extends State<AddressForm> {
                         backgroundColor: const Color(0xff3D9198)),
                     child: const Text('Save'),
                     onPressed: () {
-                      var routeName =
-                          context.read<FormStateProvider>().getRouteName();
-                      String userID =
-                          context.read<ProfileStateProvider>().getUserID();
-                      var mapState = context.read<MapStateProvider>();
-                      postNewRoute(userID, routeName, mapState.getStartCoords(),
-                          mapState.getEndCoords(), mapState.getPOICoords());
-                      context.read<MapStateProvider>().setIsRoutePlotted(false);
-                      Utils.confirmationSnackbar(
-                          "Route: '$routeName' saved to profile.");
-                      Navigator.pop(context);
+                      handleSave();
                     }),
               ],
             );
           });
         });
+  }
+
+  handleSave() {
+    FormStateProvider routeName =
+        context.read<FormStateProvider>().getRouteName();
+    MapStateProvider mapState = context.read<MapStateProvider>();
+    String userID = context.read<ProfileStateProvider>().getUserID();
+
+    postNewRoute(userID, routeName, mapState.getStartCoords(),
+        mapState.getEndCoords(), mapState.getPOICoords());
+    context.read<MapStateProvider>().setIsRoutePlotted(false);
+
+    Utils.confirmationSnackbar("Route: '$routeName' saved to profile.");
+    Navigator.pop(context);
   }
 
   submitForm() {

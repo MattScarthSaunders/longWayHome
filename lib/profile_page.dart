@@ -4,8 +4,8 @@ import 'package:flutter_application_1/widgets/state-providers/form_state_provide
 import 'package:flutter_application_1/widgets/state-providers/location_state_provider.dart';
 import 'package:flutter_application_1/widgets/state-providers/map_state_provider.dart';
 import 'package:flutter_application_1/widgets/state-providers/profile_state_provider.dart';
-import 'package:flutter_application_1/widgets/user_api.dart';
-import 'package:flutter_application_1/widgets/utils.dart';
+import 'package:flutter_application_1/utils/user_api.dart';
+import 'package:flutter_application_1/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -172,7 +172,6 @@ Future<void> _confirmDelete(BuildContext context, index, route) async {
                           Utils.confirmationSnackbar(
                               "Deleting route: ${route["routeName"]}...");
                           user.getRouteList();
-                          user.notifyListeners();
                         }).catchError((err) {
                           Utils.showSnackBar("Could not delete route");
                         });

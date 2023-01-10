@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/widgets/api_utils.dart';
+import 'package:flutter_application_1/utils/api_utils.dart';
 import 'package:flutter_application_1/widgets/geolocation.dart';
-import 'package:flutter_application_1/widgets/utils.dart';
+import 'package:flutter_application_1/utils/utils.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:google_polyline_algorithm/google_polyline_algorithm.dart';
 import 'package:latlong2/latlong.dart';
@@ -400,6 +400,7 @@ class MapStateProvider with ChangeNotifier {
     _allPOIMarkerCoords = [];
     _allPOIMarkers = [];
     _localPOIMarkers = const MarkerLayer(markers: []);
+    _isRoutePlotted = false;
   }
 
   void initInitialise() {
