@@ -45,12 +45,12 @@ class ProfileStateProvider with ChangeNotifier {
     }
   }
 
-  setUserDataStatus(isSet) {
+  setUserDataStatus(bool isSet) {
     _isUserDataSet = isSet;
     notifyListeners();
   }
 
-  setUserID(inputID) {
+  setUserID(String inputID) {
     _userID = inputID;
     notifyListeners();
   }

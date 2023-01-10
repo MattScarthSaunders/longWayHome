@@ -44,7 +44,7 @@ class MapStateProvider with ChangeNotifier {
     return _startCoord;
   }
 
-  setStartCoords(value) {
+  setStartCoords(List value) {
     _startCoord = value;
     notifyListeners();
   }
@@ -53,7 +53,7 @@ class MapStateProvider with ChangeNotifier {
     return _endCoord;
   }
 
-  setEndCoords(value) {
+  setEndCoords(List value) {
     _endCoord = value;
     notifyListeners();
   }
@@ -74,8 +74,8 @@ class MapStateProvider with ChangeNotifier {
     return _mapController.zoom;
   }
 
-  mapMover(center, zoom) {
-    _mapController.move(center, zoom.toDouble());
+  mapMover(LatLng center, double zoom) {
+    _mapController.move(center, zoom);
     notifyListeners();
   }
 
@@ -111,13 +111,13 @@ class MapStateProvider with ChangeNotifier {
     return _isRoutePlotted;
   }
 
-  setIsRoutePlotted(value) {
+  setIsRoutePlotted(bool value) {
     _isRoutePlotted = value;
     notifyListeners();
   }
 
   //sets start and end point coords
-  void setCoords(point, type) {
+  void setCoords(point, String type) {
     if (type == 'Start') {
       _startCoord = [point.longitude, point.latitude];
     } else if (type == 'End') {
@@ -167,7 +167,8 @@ class MapStateProvider with ChangeNotifier {
   }
 
   //this handles retrieving the local POIs
-  void setRoutePOI(buffer, markerLimit, categoryGroupIds, categoryIds) {
+  void setRoutePOI(
+      int buffer, int markerLimit, List categoryGroupIds, List categoryIds) {
     List tempCoords = [];
     _isPOILoading = true;
 
@@ -316,7 +317,7 @@ class MapStateProvider with ChangeNotifier {
   }
 
   //sets start and end point markers on map
-  void setMarkerLocation(point, type) {
+  void setMarkerLocation(point, String type) {
     final markColor = type == "Start" ? Colors.green : Colors.red;
 
     Marker mark = Marker(
@@ -342,7 +343,7 @@ class MapStateProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  List sortPOIsDistance(POIList, startPoint) {
+  List sortPOIsDistance(List poiList, List startPoint) {
     int distance(coor1, coor2) {
       dynamic x = coor2[0] - coor1[0];
       dynamic y = coor2[1] - coor1[1];
@@ -355,10 +356,10 @@ class MapStateProvider with ChangeNotifier {
       return coordinates;
     }
 
-    return sortByDistance(POIList, startPoint);
+    return sortByDistance(poiList, startPoint);
   }
 
-  void initMarker(type) {
+  void initMarker(String type) {
     Marker newMark = Marker(
       point: LatLng(0.0, 0.0),
       width: 100,

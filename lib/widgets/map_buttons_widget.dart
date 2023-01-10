@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/widgets/state-providers/location_state_provider.dart';
 import 'package:flutter_application_1/widgets/state-providers/map_state_provider.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
 class MapButtons extends StatelessWidget {
@@ -9,8 +10,8 @@ class MapButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<MapStateProvider>(builder: (context, mapState, child) {
-      var center = mapState.getMapCenter();
-      var zoom = mapState.getCurrentZoom();
+      LatLng center = mapState.getMapCenter();
+      double zoom = mapState.getCurrentZoom();
 
       return Stack(children: [
         Positioned(
@@ -19,7 +20,7 @@ class MapButtons extends StatelessWidget {
           child: FloatingActionButton(
             heroTag: const Text("mapbtn1"),
             onPressed: () {
-              mapState.mapMover(center, zoom - 1);
+              mapState.mapMover(mapState.getMapController().center, zoom - 1);
             },
             backgroundColor: const Color(0xff3D9198),
             child: const Icon(Icons.zoom_out),
@@ -31,7 +32,7 @@ class MapButtons extends StatelessWidget {
           child: FloatingActionButton(
             heroTag: const Text("mapbtn2"),
             onPressed: () {
-              mapState.mapMover(center, zoom + 1);
+              mapState.mapMover(mapState.getMapController().center, zoom + 1);
             },
             backgroundColor: const Color(0xff3D9198),
             child: const Icon(Icons.zoom_in),
@@ -45,7 +46,7 @@ class MapButtons extends StatelessWidget {
             return FloatingActionButton(
               heroTag: const Text("mapbtn3"),
               onPressed: () {
-                mapState.mapMover(locationState.getLatLng(), 15);
+                mapState.mapMover(locationState.getLatLng(), 15.0);
               },
               backgroundColor: const Color(0xff3D9198),
               child: const Icon(Icons.gps_fixed_outlined),

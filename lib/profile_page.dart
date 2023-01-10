@@ -14,9 +14,10 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser!;
-    final profileState1 = context.read<ProfileStateProvider>();
-    if (profileState1.getUserDataStatus()) {
-      profileState1.getRouteList();
+    ProfileStateProvider initialProfileState =
+        context.read<ProfileStateProvider>();
+    if (initialProfileState.getUserDataStatus()) {
+      initialProfileState.getRouteList();
     }
 
     return Scaffold(
@@ -163,7 +164,8 @@ Future<void> _confirmDelete(BuildContext context, index, route) async {
                           backgroundColor: const Color(0xFF31AFB9)),
                       child: const Text('Confirm'),
                       onPressed: () {
-                        var user = context.read<ProfileStateProvider>();
+                        ProfileStateProvider user =
+                            context.read<ProfileStateProvider>();
                         deleteRoute(user.getUserID(), route["_id"],
                                 route["routeName"])
                             .then((res) {

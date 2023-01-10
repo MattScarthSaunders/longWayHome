@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/widgets/bottom_drawer.dart';
@@ -7,7 +6,6 @@ import 'package:flutter_application_1/widgets/state-providers/form_state_provide
 import 'package:flutter_application_1/widgets/state-providers/map_state_provider.dart';
 import 'package:flutter_application_1/widgets/map_buttons_widget.dart';
 import 'package:flutter_application_1/widgets/user_api.dart';
-
 import 'package:flutter_application_1/widgets/state-providers/profile_state_provider.dart';
 import 'package:flutter_application_1/widgets/utils.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -27,8 +25,8 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
-    var mapState = context.read<MapStateProvider>();
-    var profileState = context.read<ProfileStateProvider>();
+    MapStateProvider mapState = context.read<MapStateProvider>();
+    ProfileStateProvider profileState = context.read<ProfileStateProvider>();
     mapState.setInitialPosition();
 
     if (!profileState.getUserDataStatus()) {
@@ -97,8 +95,8 @@ class _MainPageState extends State<MainPage> {
   }
 
   setFormMarkers(formStateGetter, mapStateGetter, point) {
-    var formState = context.read<FormStateProvider>();
-    var mapState = context.read<MapStateProvider>();
+    FormStateProvider formState = context.read<FormStateProvider>();
+    MapStateProvider mapState = context.read<MapStateProvider>();
     String type = formStateGetter.getSelectedInput();
     formState.disableInput(type);
     mapState.setMarkerLocation(point, type);
