@@ -116,26 +116,25 @@ class AddressFormState extends State<AddressForm> {
                         backgroundColor: const Color(0xff3D9198)),
                     child: const Text('Save'),
                     onPressed: () {
-                      handleSave();
+                      String routeName =
+                          context.read<FormStateProvider>().getRouteName();
+                      MapStateProvider mapState =
+                          context.read<MapStateProvider>();
+                      String userID =
+                          context.read<ProfileStateProvider>().getUserID();
+
+                      postNewRoute(userID, routeName, mapState.getStartCoords(),
+                          mapState.getEndCoords(), mapState.getPOICoords());
+                      context.read<MapStateProvider>().setIsRoutePlotted(false);
+
+                      Utils.confirmationSnackbar(
+                          "Route: '$routeName' saved to profile.");
+                      Navigator.pop(context);
                     }),
               ],
             );
           });
         });
-  }
-
-  handleSave() {
-    FormStateProvider routeName =
-        context.read<FormStateProvider>().getRouteName();
-    MapStateProvider mapState = context.read<MapStateProvider>();
-    String userID = context.read<ProfileStateProvider>().getUserID();
-
-    postNewRoute(userID, routeName, mapState.getStartCoords(),
-        mapState.getEndCoords(), mapState.getPOICoords());
-    context.read<MapStateProvider>().setIsRoutePlotted(false);
-
-    Utils.confirmationSnackbar("Route: '$routeName' saved to profile.");
-    Navigator.pop(context);
   }
 
   submitForm() {

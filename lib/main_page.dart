@@ -86,9 +86,7 @@ class _MainPageState extends State<MainPage> {
                   Border(top: BorderSide(color: Color(0xff255777), width: 3))),
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
           height: 65.0,
-          child: Row(
-            children: const [BottomDrawerWidget()],
-          ),
+          child: const BottomDrawerWidget(),
         ),
       ),
     );

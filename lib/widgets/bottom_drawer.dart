@@ -15,44 +15,39 @@ class BottomDrawerWidget extends StatefulWidget {
 class _BottomDrawerWidget extends State<BottomDrawerWidget> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 340,
-      padding: const EdgeInsets.only(left: 7, right: 7),
-      child: Row(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Align(
-                child: SizedBox(
-              height: 40,
-              child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xff3D9198)),
-                  onPressed: () {
-                    handlePlanner();
-                  },
-                  child: Consumer<FormStateProvider>(
-                      builder: (context, formStateListener, child) {
-                    bool isVisible = formStateListener.getVisibility();
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Align(
+              child: SizedBox(
+            height: 40,
+            child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xff3D9198)),
+                onPressed: () {
+                  handlePlanner();
+                },
+                child: Consumer<FormStateProvider>(
+                    builder: (context, formStateListener, child) {
+                  bool isVisible = formStateListener.getVisibility();
 
-                    return Text(isVisible ? "Hide Planner" : "PlanWalk");
-                  })),
-            )),
-            const Spacer(),
-            Align(
-                child: SizedBox(
-              height: 40,
-              child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xff3D9198)),
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const ProfilePage()));
-                  },
-                  child: const Text('Profile')),
-            ))
-          ]),
-    );
+                  return Text(isVisible ? "Hide Planner" : "Plan Walk");
+                })),
+          )),
+          Align(
+              child: SizedBox(
+            height: 40,
+            child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xff3D9198)),
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const ProfilePage()));
+                },
+                child: const Text('Profile')),
+          )),
+        ]);
   }
 
   handlePlanner() {
