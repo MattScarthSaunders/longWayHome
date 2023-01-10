@@ -20,19 +20,17 @@ class _FormContentState extends State<FormContent> {
   Widget build(BuildContext context) {
     return Consumer<FormStateProvider>(
         builder: (context, formStateGetter, child) {
-      bool isIcon =
+      bool isPinEnabled =
           !formStateGetter.getStartButtonStatus() && widget.type == "Start" ||
               !formStateGetter.getEndButtonStatus() && widget.type == "End";
+
       return Center(
           child: Row(
         children: [
-          setIconButtons(isIcon, formStateGetter),
+          setIconButtons(isPinEnabled, formStateGetter),
           Expanded(
               child: TextFormField(
-                  enabled: formStateGetter.getStartButtonStatus() &&
-                          widget.type == "Start" ||
-                      formStateGetter.getEndButtonStatus() &&
-                          widget.type == "End",
+                  enabled: !isPinEnabled,
                   style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
                     labelText: '${widget.type} Postcode',
@@ -66,8 +64,8 @@ class _FormContentState extends State<FormContent> {
     });
   }
 
-  setIconButtons(bool isIcon, FormStateProvider formStateGetter) {
-    if (isIcon) {
+  setIconButtons(bool isPinEnabled, FormStateProvider formStateGetter) {
+    if (isPinEnabled) {
       return IconButton(
           onPressed: () {
             MapStateProvider mapState = context.read<MapStateProvider>();

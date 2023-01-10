@@ -50,12 +50,8 @@ class AddressFormState extends State<AddressForm> {
                             fixedSize: const Size(80, 30),
                           ),
                           onPressed: () {
-                            var mapStateSetter =
-                                context.read<MapStateProvider>();
-                            var pinStateSetter =
-                                context.read<FormStateProvider>();
-                            mapStateSetter.initAll();
-                            pinStateSetter.init();
+                            context.read<MapStateProvider>().initAll();
+                            context.read<FormStateProvider>().init();
                           },
                           child: const Text('Clear')),
                       const Spacer(
@@ -120,22 +116,26 @@ class AddressFormState extends State<AddressForm> {
                         backgroundColor: const Color(0xff3D9198)),
                     child: const Text('Save'),
                     onPressed: () {
-                      var routeName =
-                          context.read<FormStateProvider>().getRouteName();
-                      String userID =
-                          context.read<ProfileStateProvider>().getUserID();
-                      var mapState = context.read<MapStateProvider>();
-                      postNewRoute(userID, routeName, mapState.getStartCoords(),
-                          mapState.getEndCoords(), mapState.getPOICoords());
-                      context.read<MapStateProvider>().setIsRoutePlotted(false);
-                      Utils.confirmationSnackbar(
-                          "Route: '$routeName' saved to profile.");
-                      Navigator.pop(context);
+                      handleSave();
                     }),
               ],
             );
           });
         });
+  }
+
+  handleSave() {
+    FormStateProvider routeName =
+        context.read<FormStateProvider>().getRouteName();
+    MapStateProvider mapState = context.read<MapStateProvider>();
+    String userID = context.read<ProfileStateProvider>().getUserID();
+
+    postNewRoute(userID, routeName, mapState.getStartCoords(),
+        mapState.getEndCoords(), mapState.getPOICoords());
+    context.read<MapStateProvider>().setIsRoutePlotted(false);
+
+    Utils.confirmationSnackbar("Route: '$routeName' saved to profile.");
+    Navigator.pop(context);
   }
 
   submitForm() {
