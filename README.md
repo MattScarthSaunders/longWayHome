@@ -8,7 +8,7 @@ This app is a route finding app created during the Northcoders bootcamp as a fin
 
 ## Run Locally
 
-You will need the latest version of flutter installed to use the app.
+You will need version 3.3.9 or greater of Flutter installed to use the app.
 
 To install all necessary packages, run:
 
